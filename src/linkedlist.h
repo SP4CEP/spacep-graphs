@@ -10,13 +10,13 @@ struct ListNode<T> {
 template <typename T>
 class LinkedList<T> {
 public:
-    ListNode* start;
+    ListNode<T>* start;
 
     LinkedList();
 
     ~LinkedList();
 
-    void find()
+    bool find(T value);
 
     bool add(T value);
 
