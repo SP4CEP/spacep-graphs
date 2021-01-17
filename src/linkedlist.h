@@ -8,12 +8,40 @@ struct ListNode{
 };
 
 template <class T>
+class IListNode {
+    ListNode<T>* p;
+public:
+    IListNode(ListNode<T>* p1) {
+        p=p1;
+    }
+    bool operator!=(IListNode<T> rhs) {
+        return p!=rhs.p;
+    }
+    T& operator*() {
+        return p->value;
+    }
+    void operator++() {
+        p=p->next;
+    }
+};
+
+template <class T>
 class LinkedList{
 
     ListNode<T> *start;
     int length;
 
 public:
+
+    IListNode<T> begin() {
+        return IListNode<T>(start);
+    }
+    IListNode<T> end() {
+        return IListNode<T>(nullptr);
+    }
+
+
+
     /**
      * @brief Linkedlist structure constructor
      **/
