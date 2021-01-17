@@ -9,6 +9,9 @@ Description: Functions of the implementetion of a linked list
 #include <iostream>
 #include "linkedlist.h"
 
+template class LinkedList<int>;
+template class LinkedList<std::string>;
+
 using std::cout;
 using std::endl;
 
