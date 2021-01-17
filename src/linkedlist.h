@@ -1,30 +1,27 @@
 #ifndef LINKEDLIST_H_INCLUDED
 #define LINKEDLIST_H_INCLUDED
 
-template <typename T>
-struct ListNode<T> {
-    T value;
-    ListNode<T>* next;
+//template <typename T>
+struct ListNode{
+    int value;
+    ListNode* next;
 };
 
-template <typename T>
-class LinkedList<T> {
+//template <class T>
+class LinkedList{
+
+    ListNode *start;
+    int length;
+
 public:
-    ListNode<T>* start;
 
     LinkedList();
-
     ~LinkedList();
-
-    bool find(T value);
-
-    bool add(T value);
-
-    bool remove(T value);
-
+    ListNode* find(int value);
+    bool add(int value);
+    bool remove(int value);
     void print();
-
-    int length();
+    int Length();
 
 };
 
