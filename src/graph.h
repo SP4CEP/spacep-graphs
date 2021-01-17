@@ -6,28 +6,34 @@
 
 #include "linkedlist.h"
 
+struct GraphEdge {
+    string tag;
+    GraphNode* node;
+};
+
 struct GraphNode {
-    // etiqueta
-    LinkedList<GraphNode*> in_edges, out_edges;
+    string tag;
+    LinkedList<GraphEdge> edges;
 };
 
 class Graph{
-public:
     LinkedList<GraphNode> nodes;
 
-
+public:
     Graph();
 
     ~Graph();
 
-    bool add_node(/*etiqueta*/);
-    bool add_edge(/*etiquetanodo1, etiquetanodo2, peso?, etiqueta?*/);
+    bool add_node(string tag);
+    bool add_edge(string node1_tag, string node2_tag, string edge_tag);
 
-    bool remove_node(/*etiqueta nodo*/);
-    bool remove_edge(/*etiquetanodo1?, etiquetanodo2?, etiqueta?*/);
+    bool remove_node(string tag);
+    bool remove_edge(string node1_tag, string node2_tag);
+    bool remove_edge(string tag);
 
-    bool find_node(/*etiqueta*/);
-    bool find_edge(/*etiquetanodo1?, etiquetanodo2?, etiqueta?*/);
+    bool find_node(string tag);
+    bool find_edge(string node1_tag, string node2_tag);
+    bool find_edge(string tag);
 
     int node_degree(/*etiqueta*/);
 
