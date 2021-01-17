@@ -9,17 +9,35 @@ struct ListNode{
 
 template <class T>
 class IListNode {
+
     ListNode<T>* p;
+
 public:
+
+    /**
+    * @brief Constructor for iterator
+    **/
     IListNode(ListNode<T>* p1) {
         p=p1;
     }
+
+    /**
+    * @brief Override for != operator
+    **/
     bool operator!=(IListNode<T> rhs) {
         return p!=rhs.p;
     }
+
+    /**
+    * @brief Get value at current IListNode
+    **/
     T& operator*() {
         return p->value;
     }
+
+    /**
+    * @brief Override for incrementator operator
+    **/
     void operator++() {
         p=p->next;
     }
@@ -33,14 +51,19 @@ class LinkedList{
 
 public:
 
+    /**
+    * @brief IListNode iterator begin
+    **/
     IListNode<T> begin() {
         return IListNode<T>(start);
     }
+
+    /**
+     * @brief IListNode iterator end
+     **/
     IListNode<T> end() {
         return IListNode<T>(nullptr);
     }
-
-
 
     /**
      * @brief Linkedlist structure constructor

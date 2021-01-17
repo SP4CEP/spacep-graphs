@@ -8,9 +8,12 @@ Description: Functions of the implementetion of a linked list
 */
 #include <iostream>
 #include "linkedlist.h"
+#include "graphstructs.h"
 
 template class LinkedList<int>;
 template class LinkedList<std::string>;
+template class LinkedList<GraphNode>;
+template class LinkedList<GraphEdge>;
 
 using std::cout;
 using std::endl;
@@ -54,7 +57,7 @@ template <class T>
 bool LinkedList<T>::add(T value){
    // case 1: the node is already in the list
    if(find(value)) return false;
-   
+
    ListNode<T> *p = (ListNode<T>*) new ListNode<T>;
     p->value = value;
     length++;
