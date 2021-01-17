@@ -1,22 +1,12 @@
 #ifndef GRAPH_H_INCLUDED
 #define GRAPH_H_INCLUDED
 
-#include <iostream>
-#include <stdlib>
-
 #include "linkedlist.h"
+#include "graphstructs.h"
 
-struct GraphEdge {
-    string tag;
-    GraphNode* node;
-};
+using std::string;
 
-struct GraphNode {
-    string tag;
-    LinkedList<GraphEdge> edges;
-};
-
-class Graph{
+class Graph {
     LinkedList<GraphNode> nodes;
 
 public:
@@ -34,6 +24,8 @@ public:
     bool find_node(string tag);
     bool find_edge(string node1_tag, string node2_tag);
     bool find_edge(string tag);
+
+    GraphNode* get_node(string tag);
 
     int node_degree(/*etiqueta*/);
 
