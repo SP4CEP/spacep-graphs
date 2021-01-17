@@ -1,6 +1,8 @@
 /*
 Filename: main.cpp
-Author: Domínguez Acosta María Fernanda
+Authors: Domínguez Acosta María Fernanda
+         Murcia Yocupicio Raúl Octavio
+         Sandoval del Hoyo María Ximena
 Date: 15/01/2021
 Description: Main class of 
 */
@@ -12,7 +14,7 @@ using std::cout;
 using std::endl;
 
 int main(){
-   LinkedList L;
+   LinkedList<int> L;
    //
    cout << "case 2: empty list" << endl;
    cout << L.add(3) << endl << endl;
@@ -70,4 +72,6 @@ int main(){
    cout << L.add(4) << endl << endl;
    cout << "list: len " << L.Length() << endl;
    L.print();
+
+   return 0;
 }

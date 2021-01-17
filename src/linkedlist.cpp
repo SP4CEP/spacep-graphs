@@ -1,6 +1,8 @@
 /*
 Filename: linkedlist.cpp
-Author: Domínguez Acosta María Fernanda
+Authors: Domínguez Acosta María Fernanda
+         Murcia Yocupicio Raúl Octavio
+         Sandoval del Hoyo María Ximena
 Date: 16/01/2021
 Description: Functions of the implementetion of a linked list
 */
@@ -12,15 +14,17 @@ using std::endl;
 
 //**********************************************************************//
 
-LinkedList::LinkedList(){
+template <class T>
+LinkedList<T>::LinkedList(){
     start = nullptr;
     length = 0;
 }
 
 //**********************************************************************//
 
-LinkedList::~LinkedList(){
-    ListNode *p;
+template <class T>
+LinkedList<T>::~LinkedList(){
+    ListNode<T> *p;
     while(start){
         p = start;
         start = p->next;
@@ -30,8 +34,9 @@ LinkedList::~LinkedList(){
 
 //**********************************************************************//
 
-ListNode* LinkedList::find(int value){
-    ListNode *p=start;
+template <class T>
+ListNode<T>* LinkedList<T>::find(T value){
+    ListNode<T> *p=start;
 
     while(p != nullptr){
         if(p->value == value) return p;
@@ -42,11 +47,12 @@ ListNode* LinkedList::find(int value){
 
 //**********************************************************************//
 
-bool LinkedList::add(int value){
+template <class T>
+bool LinkedList<T>::add(T value){
    // case 1: the node is already in the list
    if(find(value)) return false;
    
-   ListNode *p = (ListNode*) new ListNode;
+   ListNode<T> *p = (ListNode<T>*) new ListNode<T>;
     p->value = value;
     length++;
 
@@ -63,7 +69,7 @@ bool LinkedList::add(int value){
        return true;
    }
 
-   ListNode *q = start;
+   ListNode<T> *q = start;
    while(q->next != nullptr){
 
        // case 4: node goes in the middle of the list
@@ -83,8 +89,9 @@ bool LinkedList::add(int value){
 
 //**********************************************************************//
 
-void LinkedList::print(){
-    ListNode *p = start;
+template <class T>
+void LinkedList<T>::print(){
+    ListNode<T> *p = start;
     while(p){
         std::cout << p->value << "  ";
         p = p->next;
@@ -93,8 +100,9 @@ void LinkedList::print(){
 }
 //**********************************************************************//
 
-bool LinkedList::remove(int value){
-    ListNode *p = find(value);
+template <class T>
+bool LinkedList<T>::remove(T value){
+    ListNode<T> *p = find(value);
     // case 1: the node is not in the list
    if(p == nullptr) return false;
 
@@ -106,7 +114,7 @@ bool LinkedList::remove(int value){
        return true;
    }
     // case 3: node is in the middle/last of the list
-   ListNode *q = start;
+   ListNode<T> *q = start;
    while(q){
        if(q->next == p){
            length--;
@@ -120,7 +128,8 @@ bool LinkedList::remove(int value){
 }
 //**********************************************************************//
 
-int LinkedList::Length(){
+template <class T>
+int LinkedList<T>::Length(){
     return length;
 }
 //**********************************************************************//
