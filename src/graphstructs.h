@@ -29,7 +29,7 @@ inline ostream& operator<<(ostream& os, const GraphEdge& edge) {
 
 struct GraphNode {
     string tag;
-    LinkedList<GraphEdge> edges;
+    LinkedList<GraphEdge> *edges;
     bool operator==(const GraphNode& other) {
         return tag == other.tag;
     }

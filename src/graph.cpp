@@ -7,8 +7,20 @@ Date: 17/01/2021
 Description: Functions of the implementetion of a graph
 */
 #include <iostream>
-#include "graph.h"
 #include "graphstructs.h"
+#include "linkedlist.h"
+#include "graph.h"
+
+using std::cout;
+using std::endl;
+
+Graph::Graph() {
+    ;
+}
+
+Graph::~Graph() {
+    clear();
+}
 
 //**********************************************************************//
 
@@ -16,6 +28,7 @@ bool Graph::add_node(string tag) {
     if (!find_node(tag)) { // If tag found
         GraphNode new_node;
         new_node.tag = tag;
+        new_node.edges = new LinkedList<GraphEdge>;
         nodes.add(new_node);
         return true;
     }
@@ -127,4 +140,14 @@ bool Graph::find_edge(string tag) {
         if (node.edges.find(pivot_edge)) return true;
     }
     return false;
+}
+
+void Graph::print() {
+     for (GraphNode& node: nodes) {
+         cout << node << " ";
+         for (GraphEdge& edge: node.edges) {
+             cout << "| " << edge << " " << *(edge.node) ;
+         }
+         cout << endl;
+     }
 }
