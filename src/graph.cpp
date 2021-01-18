@@ -99,6 +99,9 @@ bool Graph::remove_edge(string tag) {
     for (GraphNode& node: nodes) {
         if (node.edges->remove(tmp_edge)) {
             if (deleted) break; // both edges in both nodes already deleted
+            else if (node.edges->remove(tmp_edge)) { 
+                break;
+            }
             deleted = true;
         }
     }
