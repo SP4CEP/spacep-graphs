@@ -212,9 +212,9 @@ void Graph::clear() {
 
 void Graph::print() {
      for (GraphNode& node: nodes) {
-         cout << node << " ";
+         cout << node;
          for (GraphEdge& edge: *(node.edges)) {
-             cout << "| " << edge << " " << *(edge.node) ;
+             cout << " | " << edge << " " << *(edge.node) ;
          }
          cout << endl;
      }
