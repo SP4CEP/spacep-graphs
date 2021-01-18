@@ -8,6 +8,8 @@ using std::string;
 
 class Graph {
     LinkedList<GraphNode> nodes;
+    int num_nodes;
+    int num_edges;
 
 public:
 
@@ -90,7 +92,7 @@ public:
 
     /**
      * @brief Function that obtains node's degree of given node
-     * @param tag node's tag 
+     * @param tag node's tag
      **/
     int node_degree(string tag);
 

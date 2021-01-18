@@ -15,7 +15,8 @@ using std::cout;
 using std::endl;
 
 Graph::Graph() {
-    ;
+    num_edges = 0;
+    num_nodes = 0;
 }
 
 Graph::~Graph() {
@@ -30,6 +31,7 @@ bool Graph::add_node(string tag) {
         new_node.tag = tag;
         new_node.edges = new LinkedList<GraphEdge>;
         nodes.add(new_node);
+        num_nodes++;
         return true;
     }
     return false;
@@ -48,6 +50,7 @@ bool Graph::add_edge(string node1_tag, string node2_tag, string edge_tag) {
         p1->edges->add(new_edge);
         new_edge.node = p1;
         p2->edges->add(new_edge);
+        num_edges++;
         return true;
     }
     return false;
@@ -65,6 +68,7 @@ bool Graph::remove_node(string tag) {
         }
         delete p->edges;
         nodes.remove(*p);
+        num_nodes--;
         return true;
     }
     return false;
@@ -87,6 +91,9 @@ bool Graph::remove_edge(string node1_tag, string node2_tag) {
             break;
         }
     }
+    if (found) {
+        num_edges--;
+    }
     return found;
 }
 
@@ -99,11 +106,14 @@ bool Graph::remove_edge(string tag) {
     for (GraphNode& node: nodes) {
         if (node.edges->remove(tmp_edge)) {
             if (deleted) break; // both edges in both nodes already deleted
-            else if (node.edges->remove(tmp_edge)) { 
+            else if (node.edges->remove(tmp_edge)) {
                 break;
             }
             deleted = true;
         }
+    }
+    if (deleted) {
+        num_edges--;
     }
     return deleted;
 }
