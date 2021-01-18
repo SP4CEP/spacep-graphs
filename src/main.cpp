@@ -4,74 +4,65 @@ Authors: Domínguez Acosta María Fernanda
          Murcia Yocupicio Raúl Octavio
          Sandoval del Hoyo María Ximena
 Date: 15/01/2021
-Description: Main class of 
+Description: Main class of
 */
 #include <iostream>
 #include <fstream>
 #include "linkedlist.h"
+#include "graph.h"
 
 using std::cout;
 using std::endl;
 
 int main(){
-   LinkedList<std::string> L;
-   //
-   cout << "case 2: empty list" << endl;
-   cout << L.add("c") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
-   // 
-   cout << "case 1: node already on list" << endl;
-   cout << L.add("c") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
-   //
-   cout << "case 3: node goes first on list" << endl;
-   cout << L.add("c") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
-   //
-   cout << "case 4: node goes middle on list" << endl;
-   cout << L.add("b") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
-   //
-   cout << "case 5: node goes last on list" << endl;
-   cout << L.add("d") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
-   //
-   cout << "****************** DELETE ********************" <<endl;
-   //
-   cout << "case 0: not on list (rm 5)" << endl;
-   cout << L.remove("e") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
-   //
-   cout << "case 1: first on list (rm 1)" << endl;
-   cout << L.remove("a") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
-   //
-   cout << "case 2: middle on list (rm 3)" << endl;
-   cout << L.remove("c") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
-   //
-   cout << "case 3: end on list (rm 4)" << endl;
-   cout << L.remove("d") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
-   //
-   cout << "case 4: to empty list (rm 2)" << endl;
-   cout << L.remove("b") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
-   //
-   cout << "case 4: un empty list (add 4)" << endl;
-   cout << L.add("d") << endl << endl;
-   cout << "list: len " << L.Length() << endl;
-   L.print();
+    // creation ***********************************
+    cout << "creando G" << endl;
+    Graph G;
+    cout << "G creado" << endl;
+    G.print();
 
-   return 0;
+    // add vertices ***********************************
+    G.add_node("v1");
+    cout << "v1 creado" << endl;
+    G.print();
+
+    G.add_node("v2");
+    cout << "v2 creado" << endl;
+    G.print();
+
+    G.add_node("v3");
+    cout << "v3 creado" << endl;
+    G.print();
+
+    G.add_node("v4");
+    cout << "v4 creado" << endl;
+    G.print();
+
+    // add edges ***********************************
+    G.add_edge("v1", "v2", "e1");
+    cout << "v12 creado" << endl;
+    G.print();
+
+    G.add_edge("v2", "v3", "e2");
+    cout << "v23 creado" << endl;
+    G.print();
+
+    G.add_edge("v3", "v4", "e3");
+    cout << "v34 creado" << endl;
+    G.print();
+
+    // delete edges ******************************
+    G.remove_edge("e3");
+    cout << "e3 eliminado" << endl;
+    G.print();
+
+    G.remove_edge("v1", "v2");
+    cout << "v1 v2 eliminado" << endl;
+    G.print();
+
+    //delete nodes *******************
+    G.remove_node("v3");
+    cout << "v3 eliminado" << endl;
+    G.print();
+    return 0;
 }

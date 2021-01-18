@@ -1,7 +1,7 @@
 #ifndef GRAPHSTRUCTS_H_INCLUDED
 #define GRAPHSTRUCTS_H_INCLUDED
 
-//#include <ostream>
+#include "linkedlist.h"
 
 using std::string;
 using std::ostream;
@@ -32,7 +32,7 @@ struct GraphNode {
     LinkedList<GraphEdge> *edges;
     bool operator==(const GraphNode& other) {
         return tag == other.tag;
-    }
+    };
     bool operator<(const GraphNode& other) {
         return tag < other.tag;
     };
