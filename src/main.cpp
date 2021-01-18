@@ -15,6 +15,7 @@ using std::cout;
 using std::endl;
 
 int main(){
+   /*
     // creation ***********************************
     cout << "creando G" << endl;
     Graph G;
@@ -64,5 +65,21 @@ int main(){
     G.remove_node("v3");
     cout << "v3 eliminado" << endl;
     G.print();
+    */
+
+    Graph G;
+
+    G.add_node("v1");
+    G.add_node("v2");
+    G.add_edge("v1", "v1", "e1");
+    G.add_edge("v1", "v2", "e2");
+
+    G.add_node("v3");
+    G.print();
+
+    G.clear();
+
+    G.print();
+
     return 0;
 }
