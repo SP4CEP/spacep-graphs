@@ -55,20 +55,18 @@ ListNode<T>* LinkedList<T>::find(T value){
 
 template <class T>
 bool LinkedList<T>::add(T value){
-   // case 1: the node is already in the list
-   if(find(value)) return false;
-
+   // **NOTE**: this lists accepts repetitions
    ListNode<T> *p = (ListNode<T>*) new ListNode<T>;
     p->value = value;
     length++;
 
-   // case 2: empty list
+   // case 1: empty list
    if(start == nullptr){
        start = p;
        p->next = nullptr;
        return true;
 
-    // case 3: node goes first on the list
+    // case 2: node goes first on the list
    }else if(start->value > p->value){
        p->next = start;
        start = p;
@@ -78,7 +76,7 @@ bool LinkedList<T>::add(T value){
    ListNode<T> *q = start;
    while(q->next != nullptr){
 
-       // case 4: node goes in the middle of the list
+       // case 3: node goes in the middle of the list
        if((q->next)->value > p->value){
            p->next = q->next;
            q->next = p;
@@ -87,7 +85,7 @@ bool LinkedList<T>::add(T value){
        q = q->next;
    }
 
-   // case 5: node goes at the end
+   // case 4: node goes at the end
    q->next = p;
    p->next = nullptr;
    return true;
@@ -139,3 +137,16 @@ int LinkedList<T>::Length(){
     return length;
 }
 //**********************************************************************//
+
+template <class T>
+bool LinkedList<T>::clear(){
+   ListNode<T> *p;
+    while(start){
+        p = start;
+        start = p->next;
+        delete p;
+    }
+   start = nullptr;
+   length = 0; 
+   return true;
+}

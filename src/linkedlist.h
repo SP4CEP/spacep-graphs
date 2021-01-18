@@ -106,6 +106,11 @@ public:
      **/
     int Length();
 
+    /**
+     * @brief Function that clears the list.
+     **/
+    bool clear();
+
 };
 
 #endif // LINKEDLIST_H_INCLUDED
