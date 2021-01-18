@@ -27,12 +27,12 @@ public:
 
     GraphNode* get_node(string tag);
 
-    int node_degree(/*etiqueta*/);
+    int node_degree(string tag);
 
     int node_count();
     int edge_count();
 
-    bool remove_edges(/*etiqueta nodo*/);
+    bool remove_edges(string tag);
 
     void clear();
 

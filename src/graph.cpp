@@ -148,6 +148,58 @@ bool Graph::find_edge(string tag) {
     return false;
 }
 
+//**********************************************************************//
+
+int Graph::node_degree(string tag) {
+    GraphNode* temp_node = get_node(tag);
+    LinkedList<GraphEdge> *edge_list = temp_node->edges;
+
+    return (*edge_list).Length();
+}
+
+//**********************************************************************//
+
+int Graph::node_count() {
+    return nodes.Length();
+}
+
+//**********************************************************************//
+
+int Graph::edge_count() {
+    int total = 0;
+    for (GraphNode node: nodes) {
+        total += node.edges->Length();
+    }
+    return total / 2;
+}
+
+//**********************************************************************//
+
+bool Graph::remove_edges(string tag) {
+    GraphNode* p = get_node(tag);
+    if (p) {
+        GraphEdge tmp_edge; // pivot edge to delete edges
+        for (GraphEdge& edge: *(p->edges)) {
+            tmp_edge.tag = edge.tag; // assign the tag to delete from edges
+            edge.node->edges->remove(tmp_edge);
+        }
+        p->edges->clear();
+        return true;
+    }
+    return false;
+}
+//**********************************************************************//
+
+void Graph::clear() {
+    for (GraphNode node: nodes) {
+        delete node.edges;
+    }
+    nodes.clear();
+}
+
+
+//**********************************************************************//
+
 void Graph::print() {
      for (GraphNode& node: nodes) {
          cout << node << " ";
