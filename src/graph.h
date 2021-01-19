@@ -7,9 +7,9 @@
 using std::string;
 
 class Graph {
-    LinkedList<GraphNode> nodes;
-    int num_nodes;
     int num_edges;
+    int num_nodes;
+    LinkedList<GraphNode> nodes;
 
 public:
 
@@ -17,6 +17,11 @@ public:
     * @brief Constructor for Graph
     **/
     Graph();
+
+    /**
+    * @brief Copy constructor for Graph
+    **/
+    Graph(const Graph&);
 
     /**
     * @brief Destructor for Graph
@@ -121,6 +126,11 @@ public:
      *@brief Function to print the graph
      **/
     void print();
+
+    /**
+    * @brief Overload for = operator
+    **/
+    Graph& operator=(const Graph &);
 
 };
 

@@ -7,16 +7,46 @@ Date: 17/01/2021
 Description: Functions of the implementetion of a graph
 */
 #include <iostream>
+#include <unordered_set>
 #include "graphstructs.h"
 #include "linkedlist.h"
 #include "graph.h"
 
 using std::cout;
 using std::endl;
+using std::string;
+using std::unordered_set;
 
-Graph::Graph() {
-    num_edges = 0;
-    num_nodes = 0;
+Graph::Graph() : num_edges(0), num_nodes(0) {}
+
+//**********************************************************************//
+
+Graph::Graph(const Graph &G) : num_edges(0), num_nodes(0) {
+    *this = G;
+}
+
+//**********************************************************************//
+
+Graph& Graph::operator=(const Graph &G) {
+    if (this == &G) return *this;
+    // set to keep already added nodes
+    unordered_set<string> added_edges;
+    clear();
+    // add each node
+    for (ListNode<GraphNode> *p=G.nodes.start; p; p=p->next) {
+        add_node((p->value).tag);
+    }
+    // iterate edges for each node
+    for (ListNode<GraphNode> *p=G.nodes.start; p; p=p->next) {
+        for (ListNode<GraphEdge> *q=(p->value).edges->start; q; q=q->next) {
+            if (added_edges.find((q->value).tag) == added_edges.end()) {
+                // if tag not already added
+                add_edge((p->value).tag, (q->value).node->tag, (q->value).tag);
+                added_edges.insert((q->value).tag);
+            }
+        }
+    }
+    return *this;
 }
 
 Graph::~Graph() {
