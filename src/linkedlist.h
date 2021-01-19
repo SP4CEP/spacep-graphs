@@ -17,9 +17,7 @@ public:
     /**
     * @brief Constructor for iterator
     **/
-    IListNode(ListNode<T>* p1) {
-        p=p1;
-    }
+    IListNode(ListNode<T>* p) : p(p) {}
 
     /**
     * @brief Override for != operator
@@ -46,29 +44,20 @@ public:
 template <class T>
 class LinkedList{
 
-    ListNode<T> *start;
-    int length;
 
 public:
-
-    /**
-    * @brief IListNode iterator begin
-    **/
-    IListNode<T> begin() {
-        return IListNode<T>(start);
-    }
-
-    /**
-     * @brief IListNode iterator end
-     **/
-    IListNode<T> end() {
-        return IListNode<T>(nullptr);
-    }
+    ListNode<T> *start;
+    int length;
 
     /**
      * @brief Linkedlist structure constructor
      **/
     LinkedList();
+
+    /**
+     * @brief Linkedlist structure constructor
+     **/
+    LinkedList(const LinkedList<T> &L);
 
     /**
      * @brief Linkedlist structure destroyer(?)
@@ -110,6 +99,25 @@ public:
      * @brief Function that clears the list.
      **/
     bool clear();
+
+    /**
+    * @brief Overload for = operator
+    **/
+    LinkedList<T>& operator=(const LinkedList<T> &L);
+
+    /**
+    * @brief IListNode iterator begin
+    **/
+    IListNode<T> begin() {
+        return IListNode<T>(start);
+    }
+
+    /**
+    * @brief IListNode iterator end
+    **/
+    IListNode<T> end() {
+        return IListNode<T>(nullptr);
+    }
 
 };
 

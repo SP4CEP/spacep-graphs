@@ -21,9 +21,25 @@ using std::endl;
 //**********************************************************************//
 
 template <class T>
-LinkedList<T>::LinkedList(){
-    start = nullptr;
-    length = 0;
+LinkedList<T>::LinkedList() : start(nullptr), length(0) {}
+
+//**********************************************************************//
+
+template <class T>
+LinkedList<T>::LinkedList(const LinkedList<T> &L) : start(nullptr), length(0) {
+    *this = L;
+}
+
+//**********************************************************************//
+
+template <class T>
+LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T> &L) {
+    if (this == &L) return *this;
+    clear();
+    for (ListNode<T>* element = L.start; element; element=element->next) {
+        add(element->value);
+    }
+    return *this;
 }
 
 //**********************************************************************//
@@ -147,6 +163,6 @@ bool LinkedList<T>::clear(){
         delete p;
     }
    start = nullptr;
-   length = 0; 
+   length = 0;
    return true;
 }
