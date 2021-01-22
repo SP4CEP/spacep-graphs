@@ -13,21 +13,18 @@ Description: Main file
 
 using std::cout;
 using std::endl;
+using std::string;
 using std::ifstream;
 
-int main(){
-
-    Graph G;
-
+void read_graph(string path, Graph &G) {
     ifstream file;
-
+    G.clear();
     std::string v="", v1, v2, tag;
-    file.open("graph.txt");
+    file.open(path);
     if(file.fail()){
         cout << "Error Opening File... \n";
         exit(1);
     }
-
     file >> v;
     while(v != "<TOKEN>"){
        G.add_node(v);
@@ -37,10 +34,22 @@ int main(){
        file >> v1 >> v2 >> tag;
        G.add_edge(v1, v2, tag);
     }
+}
+
+int main(int argc, char *argv[]) {
+
+    if (argc < 2) {
+        cout << "Missing graph source file" << endl;
+        return 1;
+    }
+
+    Graph G;
+    read_graph(argv[1], G);
+
     cout << "     **GRAPH**      " << endl;
-
     G.print();
-
+    cout << "Es bipartita: " << G.is_bipartite() << endl;
+/*
     //1)
     cout << "Nodes: " << G.node_count() << endl;
     cout << "Edges: " << G.edge_count() << endl;
@@ -96,6 +105,6 @@ int main(){
     G.print();
     cout << "Graph H (G copy)" << endl;
     H.print();
-
+*/
     return 0;
 }
