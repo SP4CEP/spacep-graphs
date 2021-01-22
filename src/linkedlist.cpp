@@ -14,6 +14,7 @@ template class LinkedList<int>;
 template class LinkedList<std::string>;
 template class LinkedList<GraphNode>;
 template class LinkedList<GraphEdge>;
+template class LinkedList<GraphNode*>;
 
 using std::cout;
 using std::endl;
@@ -118,6 +119,7 @@ void LinkedList<T>::print(){
     }
     std::cout << std::endl;
 }
+
 //**********************************************************************//
 
 template <class T>
@@ -146,12 +148,14 @@ bool LinkedList<T>::remove(T value){
    }
    return false;
 }
+
 //**********************************************************************//
 
 template <class T>
 int LinkedList<T>::Length(){
     return length;
 }
+
 //**********************************************************************//
 
 template <class T>
@@ -165,4 +169,14 @@ bool LinkedList<T>::clear(){
    start = nullptr;
    length = 0;
    return true;
+}
+
+//**********************************************************************//
+
+template <class T>
+bool LinkedList<T>::pop_front(T &value) {
+    if (!start) return false;
+    value = start->value;
+    remove(value);
+    return true;
 }

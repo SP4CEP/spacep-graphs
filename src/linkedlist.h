@@ -86,6 +86,12 @@ public:
     bool remove(T value);
 
     /**
+     * @brief Function that removes a the first node from the list.
+     * @return The node's value.
+     **/
+    bool pop_front(T&);
+
+    /**
      * @brief Function that prints the list.
      **/
     void print();
