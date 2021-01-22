@@ -30,6 +30,7 @@ inline ostream& operator<<(ostream& os, const GraphEdge& edge) {
 struct GraphNode {
     string tag;
     LinkedList<GraphEdge> *edges;
+    int partition_tag = 0;
     bool operator==(const GraphNode& other) {
         return tag == other.tag;
     };

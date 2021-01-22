@@ -49,6 +49,8 @@ Graph& Graph::operator=(const Graph &G) {
     return *this;
 }
 
+//**********************************************************************//
+
 Graph::~Graph() {
     clear();
 }
@@ -57,9 +59,11 @@ Graph::~Graph() {
 
 bool Graph::add_node(string tag) {
     if (!find_node(tag)) { // If tag found
-        GraphNode new_node;
-        new_node.tag = tag;
-        new_node.edges = new LinkedList<GraphEdge>;
+        GraphNode new_node = {
+            .tag = tag,
+            .edges = new LinkedList<GraphEdge>,
+            .partition_tag = 0
+        };
         nodes.add(new_node);
         num_nodes++;
         return true;
@@ -228,6 +232,7 @@ bool Graph::remove_edges(string tag) {
     }
     return false;
 }
+
 //**********************************************************************//
 
 void Graph::clear() {
@@ -237,15 +242,48 @@ void Graph::clear() {
     nodes.clear();
 }
 
-
 //**********************************************************************//
 
 void Graph::print() {
-     for (GraphNode& node: nodes) {
-         cout << node;
-         for (GraphEdge& edge: *(node.edges)) {
-             cout << " | " << edge << " " << *(edge.node) ;
-         }
-         cout << endl;
-     }
+    for (GraphNode& node: nodes) {
+        cout << node;
+        for (GraphEdge& edge: *(node.edges)) {
+            cout << " | " << edge << " " << *(edge.node) ;
+        }
+        cout << endl;
+    }
+}
+
+//**********************************************************************//
+
+bool Graph::is_bipartite() {
+    LinkedList<GraphNode*> frontier;
+    GraphNode *p;
+    bool found_partition = true;
+
+    for (GraphNode& n : nodes) {
+        if (n.partition_tag == 0)
+            n.partition_tag = 1;
+            frontier.add(&n);
+
+        while(frontier.Length() > 0 && found_partition) {
+            frontier.pop_front(p);
+            for (GraphEdge& e : *(p->edges)) {
+                if (e.node->partition_tag == 0) { // not assigned tag yet
+                    e.node->partition_tag = (p->partition_tag == 1 ? 2 : 1);
+                    frontier.add(e.node);
+                } else if (e.node->partition_tag == p->partition_tag) {
+                    found_partition = false;
+                    break;
+                }
+            }
+        }
+        if (!found_partition) break;
+    }
+
+    for (GraphNode& n : nodes) {
+        n.partition_tag = 0;
+    }
+
+    return found_partition;
 }

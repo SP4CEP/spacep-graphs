@@ -132,6 +132,11 @@ public:
     **/
     Graph& operator=(const Graph &);
 
+    /**
+    * @brief Function that determines if graph is bipartite
+    **/
+    bool is_bipartite();
+
 };
 
 #endif // GRAPH_H_INCLUDED
