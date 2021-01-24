@@ -37,19 +37,35 @@ void read_graph(string path, Graph &G) {
 }
 
 int main(int argc, char *argv[]) {
+    string path;
+    Graph G;
 
     if (argc < 2) {
         cout << "Missing graph source file" << endl;
-        return 1;
+        cout << "Using graph.txt" << endl;
+        path = "graph.txt";
+    } else {
+        path = argv[1];
     }
 
-    Graph G;
-    read_graph(argv[1], G);
+
+    cout << "Reading file " << path << endl;
+    read_graph(path, G);
+
+    LinkedList<string> p1, p2;
 
     cout << "     **GRAPH**      " << endl;
     G.print();
-    cout << "Es bipartita: " << G.is_bipartite() << endl;
-/*
+    bool is_bip = G.is_bipartite(&p1, &p2);
+    cout << "Is bipartite: " << is_bip << endl;
+
+    cout << "Partition 1" << endl;
+    p1.print();
+    cout << "Partition 2" << endl;
+    p2.print();
+
+
+    /*
     //1)
     cout << "Nodes: " << G.node_count() << endl;
     cout << "Edges: " << G.edge_count() << endl;

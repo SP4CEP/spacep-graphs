@@ -256,16 +256,17 @@ void Graph::print() {
 
 //**********************************************************************//
 
-bool Graph::is_bipartite() {
+bool Graph::is_bipartite(LinkedList<string> *P1, LinkedList<string> *P2) {
     LinkedList<GraphNode*> frontier;
     GraphNode *p;
     bool found_partition = true;
 
-    for (GraphNode& n : nodes) {
-        if (n.partition_tag == 0)
+    for (GraphNode& n : nodes) { // While nodes without tag exist
+        if (n.partition_tag == 0) {
             n.partition_tag = 1;
             frontier.add(&n);
-
+        }
+        // for every node in the frontier
         while(frontier.Length() > 0 && found_partition) {
             frontier.pop_front(p);
             for (GraphEdge& e : *(p->edges)) {
@@ -281,8 +282,16 @@ bool Graph::is_bipartite() {
         if (!found_partition) break;
     }
 
-    for (GraphNode& n : nodes) {
-        n.partition_tag = 0;
+    if (found_partition && P1 && P2) {
+        P1->clear();
+        P2->clear();
+        for (GraphNode& n : nodes) {
+            (n.partition_tag == 1 ? P1 : P2)->add(n.tag);
+            n.partition_tag = 0;
+        }
+    } else {
+        for (GraphNode& n : nodes)
+            n.partition_tag = 0;
     }
 
     return found_partition;

@@ -135,7 +135,7 @@ public:
     /**
     * @brief Function that determines if graph is bipartite
     **/
-    bool is_bipartite();
+    bool is_bipartite(LinkedList<string> *P1=nullptr, LinkedList<string> *P2=nullptr);
 
 };
 
