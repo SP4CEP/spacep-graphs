@@ -102,6 +102,12 @@ public:
     int node_degree(string tag);
 
     /**
+     * @brief Function that obtains node's degree of given node
+     * @param tag node's tag
+     **/
+    int node_degree(GraphNode node);
+
+    /**
      *@brief Function that obtains graph's node count
      **/
     int node_count();
@@ -136,6 +142,11 @@ public:
     * @brief Function that determines if graph is bipartite
     **/
     bool is_bipartite(LinkedList<string> *P1=nullptr, LinkedList<string> *P2=nullptr);
+
+    /**
+    * @brief Function that returns an eulerian path
+    **/
+    bool find_eulerian_path(LinkedList<string> *P1=nullptr);
 
 };
 

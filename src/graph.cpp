@@ -8,6 +8,8 @@ Description: Functions of the implementetion of a graph
 */
 #include <iostream>
 #include <unordered_set>
+#include <stack>
+#include <queue>
 #include "graphstructs.h"
 #include "linkedlist.h"
 #include "graph.h"
@@ -203,6 +205,12 @@ int Graph::node_degree(string tag) {
 
 //**********************************************************************//
 
+int Graph::node_degree(GraphNode node) {
+    return node.edges->Length();
+}
+
+//**********************************************************************//
+
 int Graph::node_count() {
     return nodes.Length();
 }
@@ -295,4 +303,83 @@ bool Graph::is_bipartite(LinkedList<string> *P1, LinkedList<string> *P2) {
     }
 
     return found_partition;
+}
+
+//**********************************************************************//
+
+bool Graph::find_eulerian_path(LinkedList<string> *P=nullptr) {
+    // check if it is connected
+    // if (!is_connected()) return false;
+    string odd_nodes[2];
+    int n_odd = 0;
+
+    for (GraphNode& node : nodes) {
+        if (node_degree(node) % 2 == 1) {
+            if (n_odd == 2)
+                return false;
+            odd_nodes[n_odd] = node.tag;
+            n_odd++;
+        }
+    }
+
+    Graph G = *this;
+    GraphNode* p = nullptr;
+    queue<GraphNode*> q;
+    stack<GraphNode*> s;
+    unordered_set<string> visited;
+
+    if (n_odd == 2) {
+        // two nodes odd
+        q.push(G.get_node(odd_nodes[0]));
+        s.push(G.get_node(odd_nodes[1]));
+        visited.insert(odd_nodes[0]->tag);
+        visited.insert(odd_nodes[1]->tag);
+    } else {
+        // all nodes even
+        q.push(&(G.nodes.start->value));
+        s.push(&(G.nodes.start->value));
+        visited.insert((G.nodes.start->value).tag)
+    }
+
+    while (G.node_degree(*q.back()) > 0 && G.node_degree(*s.top()) > 0) {
+        p = q.back(); // vc
+        if (G.node_degree(*p) > 0) {
+            GraphNode* w = nullptr;
+            for (GraphEdge& edge : *(p->edges)) {
+                if (G.node_degree(*edge.node) > 1) {
+                    w = edge.node;
+                    break;
+                }
+            }
+            if (w) {
+                G.remove_edge(p->tag, w->tag);
+                q.push(w);
+                visited.insert(w->tag);
+            }
+        }
+        p = s.top(); //vp
+        if (G.node_degree(*p) == 1) {
+            GraphNode *k = nullptr;
+            k = (p->edges->start->value).node;
+            G.remove_edge(p->tag, k->tag);
+            s.push(k);
+            visited.insert(k->tag);
+        }
+    }
+
+    if (unordered_set.size() < num_nodes) //no es conexa
+        return false;
+
+    if (P) {
+        P->clear();
+        while (!q.empty()) {
+            P.add(q.pop()->tag);
+        }
+        s.pop();
+        while (!s.empty()) {
+            P.add(s.pop()->tag);
+        }
+    }
+
+    return true;
 }
