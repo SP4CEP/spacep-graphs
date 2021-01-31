@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     cout << "     **GRAPH**      " << endl;
     G.print();
     bool is_bip = G.is_bipartite(&p1, &p2);
-    cout << "Is bipartite: " << is_bip << endl;
+    cout << "Is bipartite: " << std::boolalpha << is_bip << endl;
 
     cout << "Partition 1" << endl;
     p1.print();
