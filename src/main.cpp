@@ -62,6 +62,7 @@ int main(int argc, char *argv[]) {
     cout << "Eulerian path: " << std::boolalpha << is_bip << endl;
     for (auto i: p1)
         std::cout << i << ' ';
+    cout << endl;
     /*
     LinkedList<string> p1, p2;
 
