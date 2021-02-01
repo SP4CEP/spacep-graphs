@@ -18,6 +18,8 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::unordered_set;
+using std::queue;
+using std::stack;
 
 Graph::Graph() : num_edges(0), num_nodes(0) {}
 
@@ -307,9 +309,7 @@ bool Graph::is_bipartite(LinkedList<string> *P1, LinkedList<string> *P2) {
 
 //**********************************************************************//
 
-bool Graph::find_eulerian_path(LinkedList<string> *P=nullptr) {
-    // check if it is connected
-    // if (!is_connected()) return false;
+bool Graph::find_eulerian_path(vector<string> *P) {
     string odd_nodes[2];
     int n_odd = 0;
 
@@ -332,13 +332,13 @@ bool Graph::find_eulerian_path(LinkedList<string> *P=nullptr) {
         // two nodes odd
         q.push(G.get_node(odd_nodes[0]));
         s.push(G.get_node(odd_nodes[1]));
-        visited.insert(odd_nodes[0]->tag);
-        visited.insert(odd_nodes[1]->tag);
+        visited.insert(odd_nodes[0]);
+        visited.insert(odd_nodes[1]);
     } else {
         // all nodes even
         q.push(&(G.nodes.start->value));
         s.push(&(G.nodes.start->value));
-        visited.insert((G.nodes.start->value).tag)
+        visited.insert((G.nodes.start->value).tag);
     }
 
     while (G.node_degree(*q.back()) > 0 && G.node_degree(*s.top()) > 0) {
@@ -367,19 +367,20 @@ bool Graph::find_eulerian_path(LinkedList<string> *P=nullptr) {
         }
     }
 
-    if (unordered_set.size() < num_nodes) //no es conexa
+    if (visited.size() < num_nodes) //graph is not connected
         return false;
 
     if (P) {
         P->clear();
         while (!q.empty()) {
-            P.add(q.pop()->tag);
+            P->push_back(q.front()->tag);
+            q.pop();
         }
         s.pop();
         while (!s.empty()) {
-            P.add(s.pop()->tag);
+            P->push_back(s.top()->tag);
+            s.pop();
         }
     }
-
     return true;
 }

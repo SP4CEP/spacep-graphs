@@ -8,6 +8,7 @@ Description: Main file
 */
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "linkedlist.h"
 #include "graph.h"
 
@@ -15,6 +16,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::ifstream;
+using std::vector;
 
 void read_graph(string path, Graph &G) {
     ifstream file;
@@ -52,6 +54,15 @@ int main(int argc, char *argv[]) {
     cout << "Reading file " << path << endl;
     read_graph(path, G);
 
+    vector<string> p1; 
+    
+    cout << "     **GRAPH**      " << endl;
+    G.print();
+    bool is_bip = G.find_eulerian_path(&p1);
+    cout << "Eulerian path: " << std::boolalpha << is_bip << endl;
+    for (auto i: p1)
+        std::cout << i << ' ';
+    /*
     LinkedList<string> p1, p2;
 
     cout << "     **GRAPH**      " << endl;
@@ -65,7 +76,7 @@ int main(int argc, char *argv[]) {
     p2.print();
 
 
-    /*
+    
     //1)
     cout << "Nodes: " << G.node_count() << endl;
     cout << "Edges: " << G.edge_count() << endl;

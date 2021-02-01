@@ -3,9 +3,10 @@
 
 #include "linkedlist.h"
 #include "graphstructs.h"
+#include <vector>
 
 using std::string;
-
+using std::vector;
 class Graph {
     int num_edges;
     int num_nodes;
@@ -146,7 +147,7 @@ public:
     /**
     * @brief Function that returns an eulerian path
     **/
-    bool find_eulerian_path(LinkedList<string> *P1=nullptr);
+    bool find_eulerian_path(vector<string> *P1=nullptr);
 
 };
 
