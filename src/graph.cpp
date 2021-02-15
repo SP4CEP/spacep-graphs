@@ -8,6 +8,7 @@ Description: Functions of the implementetion of a graph
 */
 #include <iostream>
 #include <unordered_set>
+#include <unordered_map>
 #include <stack>
 #include <queue>
 #include "graphstructs.h"
@@ -18,6 +19,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::unordered_set;
+using std::unordered_map;
 using std::queue;
 using std::stack;
 
@@ -383,4 +385,98 @@ bool Graph::find_eulerian_path(vector<string> *P) {
         }
     }
     return true;
+}
+
+//***************************************************************//
+
+vector<Graph> Graph::bfs() {
+    GraphNode *t;
+    queue<GraphNode*> q;
+    unordered_map<string, bool> node_tags;
+    int marked_nodes = 0;
+    vector<Graph> forest;
+
+    // initialize with false vaules
+    for (GraphNode& node : nodes)
+        node_tags.insert({node.tag, false});
+
+
+    for (GraphNode& node : nodes) {
+        if (node_tags[node.tag]) continue; // find unmarked node
+
+        Graph tree;
+        q.push(&node);
+        node_tags[node.tag] = true; // mark node
+        tree.add_node(node.tag);
+        marked_nodes++;
+
+        while (!q.empty()) {
+            t = q.front(); // pop node out of queue
+            q.pop();
+            for (GraphEdge& edge : *(t->edges)) {
+                if (!node_tags[edge.node->tag]) {
+                    q.push(edge.node);
+                    node_tags[edge.node->tag] = true; // mark node
+                    tree.add_node(edge.node->tag);
+                    tree.add_edge(t->tag, edge.node->tag, edge.tag);
+                    marked_nodes++;
+                }
+            }
+        }
+
+        forest.push_back(tree);
+
+        if (marked_nodes == num_nodes) break;
+    }
+
+    return forest;
+}
+
+//***************************************************************//
+
+vector<Graph> Graph::dfs() {
+    GraphNode *t;
+    stack<GraphNode*> s;
+    unordered_map<string, bool> node_tags;
+    int marked_nodes = 0;
+    vector<Graph> forest;
+
+    // initialize with false vaules
+    for (GraphNode& node : nodes)
+        node_tags.insert({node.tag, false});
+
+
+    for (GraphNode& node : nodes) {
+        if (node_tags[node.tag]) continue; // find unmarked node
+
+        Graph tree;
+        s.push(&node);
+        node_tags[node.tag] = true; // mark node
+        tree.add_node(node.tag);
+        marked_nodes++;
+
+        while (!s.empty()) {
+            t = s.top(); // get node on top of stack
+            bool found_next = false;
+            for (GraphEdge& edge : *(t->edges)) {
+                if (!node_tags[edge.node->tag]) {
+                    found_next = true;
+                    s.push(edge.node);
+                    node_tags[edge.node->tag] = true; // mark node
+                    tree.add_node(edge.node->tag);
+                    tree.add_edge(t->tag, edge.node->tag, edge.tag);
+                    marked_nodes++;
+                    break;
+                }
+            }
+            if (!found_next) s.pop();
+        }
+
+        forest.push_back(tree);
+
+        if (marked_nodes == num_nodes) break;
+    }
+
+    return forest;
+
 }

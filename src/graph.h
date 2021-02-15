@@ -149,6 +149,18 @@ public:
     **/
     bool find_eulerian_path(vector<string> *P1=nullptr);
 
+    /**
+    * @brief Function that performs a breadth first search and returns the
+    * found forest of spanning trees
+    **/
+    vector<Graph> bfs();
+
+    /**
+    * @brief Function that performs a depth first search and returns the
+    * found forest of spanning trees
+    **/
+    vector<Graph> dfs();
+
 };
 
 #endif // GRAPH_H_INCLUDED
