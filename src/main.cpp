@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     if (argc < 2) {
         cout << "Missing graph source file" << endl;
         cout << "Using graph.txt" << endl;
-        path = "graph.txt";
+        path = "examples/disconexa.txt";
     } else {
         path = argv[1];
     }

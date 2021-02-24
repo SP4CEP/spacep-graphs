@@ -400,7 +400,6 @@ vector<Graph> Graph::bfs() {
     for (GraphNode& node : nodes)
         node_tags.insert({node.tag, false});
 
-
     for (GraphNode& node : nodes) {
         if (node_tags[node.tag]) continue; // find unmarked node
 
@@ -414,7 +413,7 @@ vector<Graph> Graph::bfs() {
             t = q.front(); // pop node out of queue
             q.pop();
             for (GraphEdge& edge : *(t->edges)) {
-                if (!node_tags[edge.node->tag]) {
+                if (!node_tags[edge.node->tag]) { // if neighbor unmarked
                     q.push(edge.node);
                     node_tags[edge.node->tag] = true; // mark node
                     tree.add_node(edge.node->tag);
@@ -423,9 +422,7 @@ vector<Graph> Graph::bfs() {
                 }
             }
         }
-
         forest.push_back(tree);
-
         if (marked_nodes == num_nodes) break;
     }
 
@@ -445,7 +442,6 @@ vector<Graph> Graph::dfs() {
     for (GraphNode& node : nodes)
         node_tags.insert({node.tag, false});
 
-
     for (GraphNode& node : nodes) {
         if (node_tags[node.tag]) continue; // find unmarked node
 
@@ -457,7 +453,7 @@ vector<Graph> Graph::dfs() {
 
         while (!s.empty()) {
             t = s.top(); // get node on top of stack
-            bool found_next = false;
+            bool found_next = false; // flag to check if one available edge found
             for (GraphEdge& edge : *(t->edges)) {
                 if (!node_tags[edge.node->tag]) {
                     found_next = true;
@@ -466,17 +462,14 @@ vector<Graph> Graph::dfs() {
                     tree.add_node(edge.node->tag);
                     tree.add_edge(t->tag, edge.node->tag, edge.tag);
                     marked_nodes++;
-                    break;
+                    break; // breaks to continue on last added node
                 }
             }
             if (!found_next) s.pop();
         }
-
         forest.push_back(tree);
-
         if (marked_nodes == num_nodes) break;
     }
 
     return forest;
-
 }

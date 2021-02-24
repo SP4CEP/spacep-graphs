@@ -160,7 +160,12 @@ public:
     * found forest of spanning trees
     **/
     vector<Graph> dfs();
-
+    
+    /**
+    * @brief Function that performs a depth first search and returns the
+    * found forest of spanning trees
+    **/
+    vector<Graph> kruskal();
 };
 
 #endif // GRAPH_H_INCLUDED
