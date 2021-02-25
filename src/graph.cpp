@@ -21,7 +21,9 @@ using std::string;
 using std::unordered_set;
 using std::unordered_map;
 using std::queue;
+using std::priority_queue;
 using std::stack;
+using std::greater;
 
 Graph::Graph() : num_edges(0), num_nodes(0) {}
 
@@ -79,14 +81,16 @@ bool Graph::add_node(string tag) {
 
 //**********************************************************************//
 
-bool Graph::add_edge(string node1_tag, string node2_tag, string edge_tag) {
+bool Graph::add_edge(string node1_tag, string node2_tag, string edge_tag, float weight) {
     //find both nodes
     GraphNode* p1 = get_node(node1_tag);
     GraphNode* p2 = get_node(node2_tag);
     if (!find_edge(edge_tag) && p1 && p2) {
-        GraphEdge new_edge; // Link them using the graph edge as value
-        new_edge.tag = edge_tag;
-        new_edge.node = p2;
+        GraphEdge new_edge = { // Link them using the graph edge as value
+            .tag = edge_tag,
+            .node = p2,
+            .weight = weight
+        };
         p1->edges->add(new_edge);
         new_edge.node = p1;
         p2->edges->add(new_edge);
@@ -472,4 +476,55 @@ vector<Graph> Graph::dfs() {
     }
 
     return forest;
+}
+
+string Graph::find_root(string node, unordered_map<string, string> &parent) {
+    if(parent[node] == node) return node;
+    parent[node] = find_root(parent[node], parent);
+    return parent[node];
+}
+
+void Graph::union_root(string node1, string node2, unordered_map<string, string> &parent) {
+    parent[find_root(node1, parent)] = find_root(node2, parent);
+}
+
+Graph Graph::kruskal() {
+    priority_queue<HeapEdge, vector<HeapEdge>, greater<HeapEdge>> h;
+    unordered_set<string> added_edges;
+    unordered_map<string, string> parent;
+    Graph expansion_tree;
+    int tree_edges = 0;
+
+    for (GraphNode node : nodes) {
+        // add to expansion_tree
+        expansion_tree.add_node(node.tag);
+        // parents for union-find set
+        parent.insert({node.tag, node.tag});
+        // add each edge to the heap
+        for (GraphEdge edge : *(node.edges)) {
+            if (added_edges.find(edge.tag) == added_edges.end()) {
+                HeapEdge e = {
+                    .tag = edge.tag,
+                    .node1 = &node,
+                    .node2 = edge.node,
+                    .weight = edge.weight
+                };
+                added_edges.insert(edge.tag);
+                h.push(e);
+            }
+        }
+    }
+
+    while (tree_edges < num_nodes - 1) {
+        if (h.empty()) break;
+        HeapEdge edge = h.top();
+        if (find_root(edge.node1->tag, parent) != find_root(edge.node2->tag, parent)) {
+            expansion_tree.add_edge(edge.node1->tag, edge.node2->tag, edge.tag, edge.weight);
+            union_root(edge.node1->tag, edge.node2->tag);
+            ++tree_edges;
+        }
+        h.pop();
+    }
+
+    return expansion_tree;
 }

@@ -4,6 +4,7 @@
 #include "linkedlist.h"
 #include "graphstructs.h"
 #include <vector>
+#include <unordered_map>
 
 using std::string;
 using std::vector;
@@ -43,7 +44,7 @@ public:
     * @param edge_tag Name for the edge.
     * @return Whether the edge was inserted.
     **/
-    bool add_edge(string node1_tag, string node2_tag, string edge_tag);
+    bool add_edge(string node1_tag, string node2_tag, string edge_tag, float weight=0);
 
     /**
     * @brief Function that removes a node.
@@ -160,12 +161,16 @@ public:
     * found forest of spanning trees
     **/
     vector<Graph> dfs();
-    
+
+    string find_root(string node, unordered_map<string, string> &parent);
+
+    void union_root(string node1, string node2, unordered_map<string, string> &parent);
+
     /**
     * @brief Function that performs a depth first search and returns the
     * found forest of spanning trees
     **/
-    vector<Graph> kruskal();
+    Graph kruskal();
 };
 
 #endif // GRAPH_H_INCLUDED

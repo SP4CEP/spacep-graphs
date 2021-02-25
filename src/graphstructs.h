@@ -12,6 +12,7 @@ struct GraphNode;
 struct GraphEdge {
     string tag;
     GraphNode* node;
+    float weight;
     bool operator==(const GraphEdge& other) {
         return tag == other.tag;
     };
@@ -45,5 +46,23 @@ struct GraphNode {
 inline ostream& operator<<(ostream& os, const GraphNode& node) {
     return os << node.tag;
 }
+
+struct HeapEdge {
+    string tag;
+    GraphNode *node1, *node2;
+    float weight;
+    bool operator==(const HeapEdge &other)
+    {
+        return weight == other.weight;
+    };
+    bool operator<(const HeapEdge &other)
+    {
+        return tag < other.tag;
+    };
+    bool operator>(const HeapEdge &other)
+    {
+        return tag > other.tag;
+    };
+};
 
 #endif
