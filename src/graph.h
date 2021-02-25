@@ -163,14 +163,28 @@ public:
     **/
     vector<Graph> dfs();
 
+    /**
+     * @brief Finds the root of a node given its tag on the Union-Find Set
+     * @param node Node to find its root
+     * @param param Map of nodes' parents
+     * @return The tag of the parent
+     **/
     string find_root(string node, unordered_map<string, string> &parent);
 
+    /**
+     * @brief Makes node2 the parent of node1 on the Union-Find Set
+     * @param node1 Node to set as child of the other
+     * @param node2 Node to set as parent of the other
+     * @param param Map of nodes' parents
+     * @return The tag of the parent
+     **/
     void union_root(string node1, string node2, unordered_map<string, string> &parent);
 
     /**
-    * @brief Function that performs a depth first search and returns the
-    * found forest of spanning trees
-    **/
+     * @brief Function that performs a depth first search and returns the
+     * found forest of spanning trees
+     * @return A Graph containing the minimum-expansion tree.
+     **/
     Graph kruskal();
 };
 
