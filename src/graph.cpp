@@ -26,11 +26,11 @@ using std::priority_queue;
 using std::stack;
 using std::greater;
 
-Graph::Graph() : num_edges(0), num_nodes(0) {}
+Graph::Graph() : num_edges(0), num_nodes(0), weighted(0) {}
 
 //**********************************************************************//
 
-Graph::Graph(const Graph &G) : num_edges(0), num_nodes(0) {
+Graph::Graph(const Graph &G) : num_edges(0), num_nodes(0), weighted(0) {
     *this = G;
 }
 
@@ -62,6 +62,12 @@ Graph& Graph::operator=(const Graph &G) {
 
 Graph::~Graph() {
     clear();
+}
+
+//**********************************************************************//
+
+void Graph::set_type(int t) {
+    weighted = t;
 }
 
 //**********************************************************************//
@@ -265,7 +271,7 @@ void Graph::print() {
     for (GraphNode& node: nodes) {
         cout << node;
         for (GraphEdge& edge: *(node.edges)) {
-            cout << " | " << edge << " " << *(edge.node) ;
+            cout << " | " << edge << " " << *(edge.node) << " w: " << edge.weight ;
         }
         cout << endl;
     }

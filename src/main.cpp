@@ -22,19 +22,30 @@ void read_graph(string path, Graph &G) {
     ifstream file;
     G.clear();
     std::string v="", v1, v2, tag;
+    int type;
     file.open(path);
     if(file.fail()){
         cout << "Error Opening File... \n";
         exit(1);
     }
+    file >> type;
+    G.set_type(type);
     file >> v;
     while(v != "<TOKEN>"){
        G.add_node(v);
        file >> v;
     }
-    while(file.eof() == false){
+    if(type == 0){
+       while(file.eof() == false){
        file >> v1 >> v2 >> tag;
        G.add_edge(v1, v2, tag);
+       }
+    }else{
+       float w;
+       while(file.eof() == false){
+       file >> v1 >> v2 >> tag >> w;
+       G.add_edge(v1, v2, tag, w);
+       } 
     }
 }
 
@@ -44,8 +55,8 @@ int main(int argc, char *argv[]) {
 
     if (argc < 2) {
         cout << "Missing graph source file" << endl;
-        cout << "Using graph.txt" << endl;
-        path = "examples/disconexa.txt";
+        cout << "Using kruskal.txt" << endl;
+        path = "examples/kruskal.txt";
     } else {
         path = argv[1];
     }
@@ -55,7 +66,7 @@ int main(int argc, char *argv[]) {
 
     G.print();
 
-    Graph forest = G.kruskal();
+    //Graph forest = G.kruskal();
 
 
     return 0;

@@ -12,6 +12,7 @@ using std::unordered_map;
 class Graph {
     int num_edges;
     int num_nodes;
+    int weighted;
     LinkedList<GraphNode> nodes;
 
 public:
@@ -30,7 +31,10 @@ public:
     * @brief Destructor for Graph
     **/
     ~Graph();
-
+    /**
+     * 
+     */
+    void set_type(int t);
     /**
      * @brief Function that adds a node.
      * @param tag Name for the node.
