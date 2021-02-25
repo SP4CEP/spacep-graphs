@@ -66,7 +66,11 @@ int main(int argc, char *argv[]) {
 
     G.print();
 
-    //Graph forest = G.kruskal();
+    Graph forest = G.kruskal();
+
+    cout << "EXPANSION TREE" << endl;
+
+    forest.print();
 
 
     return 0;
