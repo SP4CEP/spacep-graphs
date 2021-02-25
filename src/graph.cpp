@@ -25,11 +25,11 @@ using std::priority_queue;
 using std::stack;
 using std::greater;
 
-Graph::Graph() : num_edges(0), num_nodes(0), weighted(0) {}
+Graph::Graph() : num_edges(0), num_nodes(0), weighted(0), weight(0) {}
 
 //**********************************************************************//
 
-Graph::Graph(const Graph &G) : num_edges(0), num_nodes(0), weighted(0) {
+Graph::Graph(const Graph &G) : num_edges(0), num_nodes(0), weighted(0), weight(0) {
     *this = G;
 }
 
@@ -71,6 +71,12 @@ void Graph::set_type(int t) {
 
 //**********************************************************************//
 
+float Graph::get_weight() {
+    return weight;
+}
+
+//**********************************************************************//
+
 bool Graph::add_node(string tag) {
     if (!find_node(tag)) { // If tag found
         GraphNode new_node = {
@@ -101,6 +107,7 @@ bool Graph::add_edge(string node1_tag, string node2_tag, string edge_tag, float 
         new_edge.node = p1;
         p2->edges->add(new_edge);
         num_edges++;
+        this->weight += weight;
         return true;
     }
     return false;
@@ -494,20 +501,19 @@ void Graph::union_root(string node1, string node2, unordered_map<string, string>
     parent[find_root(node1, parent)] = find_root(node2, parent);
 }
 
-Graph Graph::kruskal() {
+bool Graph::kruskal(Graph &expansion_tree) {
     priority_queue<HeapEdge, vector<HeapEdge>, greater<HeapEdge>> h;
     unordered_set<string> added_edges;
     unordered_map<string, string> parent;
-    Graph expansion_tree;
     int tree_edges = 0;
 
-    for (GraphNode node : nodes) {
+    for (GraphNode &node : nodes) {
         // add to expansion_tree
         expansion_tree.add_node(node.tag);
         // parents for union-find set
         parent.insert({node.tag, node.tag});
         // add each edge to the heap
-        for (GraphEdge edge : *(node.edges)) {
+        for (GraphEdge &edge : *(node.edges)) {
             if (added_edges.find(edge.tag) == added_edges.end()) {
                 HeapEdge e = {
                     .tag = edge.tag,
@@ -522,7 +528,7 @@ Graph Graph::kruskal() {
     }
 
     while (tree_edges < num_nodes - 1) {
-        if (h.empty()) break;
+        if (h.empty()) return false;
         HeapEdge edge = h.top();
         if (find_root(edge.node1->tag, parent) != find_root(edge.node2->tag, parent)) {
             expansion_tree.add_edge(edge.node1->tag, edge.node2->tag, edge.tag, edge.weight);
@@ -532,5 +538,5 @@ Graph Graph::kruskal() {
         h.pop();
     }
 
-    return expansion_tree;
+    return true;
 }

@@ -66,12 +66,15 @@ int main(int argc, char *argv[]) {
 
     G.print();
 
-    Graph forest = G.kruskal();
+    Graph forest;
+    bool connected = G.kruskal(forest);
 
     cout << "EXPANSION TREE" << endl;
 
     forest.print();
 
+    cout << "The tree's weight is: " << forest.get_weight() << endl;
+    cout << "The tree is connected: " << connected << endl;
 
     return 0;
 }

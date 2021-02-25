@@ -13,6 +13,7 @@ class Graph {
     int num_edges;
     int num_nodes;
     int weighted;
+    float weight;
     LinkedList<GraphNode> nodes;
 
 public:
@@ -31,10 +32,17 @@ public:
     * @brief Destructor for Graph
     **/
     ~Graph();
+
     /**
      * 
      */
     void set_type(int t);
+    
+    /**
+     * 
+     */
+    float get_weight();
+
     /**
      * @brief Function that adds a node.
      * @param tag Name for the node.
@@ -187,9 +195,10 @@ public:
     /**
      * @brief Function that performs a depth first search and returns the
      * found forest of spanning trees
-     * @return A Graph containing the minimum-expansion tree.
+     * @param expansion_tree A Graph to store the minimum-expansion tree.
+     * @return True if the graph is connected, false otherwise
      **/
-    Graph kruskal();
+    bool kruskal(Graph &expansion_tree);
 };
 
 #endif // GRAPH_H_INCLUDED
