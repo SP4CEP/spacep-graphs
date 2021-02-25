@@ -11,7 +11,6 @@ Description: Functions of the implementetion of a graph
 #include <unordered_map>
 #include <stack>
 #include <queue>
-#include<bits/stdc++.h> 
 #include "graphstructs.h"
 #include "linkedlist.h"
 #include "graph.h"
@@ -521,10 +520,9 @@ Graph Graph::kruskal() {
             }
         }
     }
-    /*
 
     while (tree_edges < num_nodes - 1) {
-        // if (h.empty()) break;
+        if (h.empty()) break;
         HeapEdge edge = h.top();
         if (find_root(edge.node1->tag, parent) != find_root(edge.node2->tag, parent)) {
             expansion_tree.add_edge(edge.node1->tag, edge.node2->tag, edge.tag, edge.weight);
@@ -533,6 +531,6 @@ Graph Graph::kruskal() {
         }
         h.pop();
     }
-    */
+
     return expansion_tree;
 }

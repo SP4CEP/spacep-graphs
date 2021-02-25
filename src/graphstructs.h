@@ -14,13 +14,13 @@ struct GraphEdge {
     string tag;
     GraphNode* node;
     float weight;
-    bool operator==(const GraphEdge& other) {
+    bool operator==(const GraphEdge& other) const {
         return tag == other.tag;
     };
-    bool operator<(const GraphEdge& other) {
+    bool operator<(const GraphEdge& other) const {
         return tag < other.tag;
     };
-    bool operator>(const GraphEdge& other) {
+    bool operator>(const GraphEdge& other) const {
         return tag > other.tag;
     };
 };
@@ -33,13 +33,13 @@ struct GraphNode {
     string tag;
     LinkedList<GraphEdge> *edges;
     int partition_tag = 0;
-    bool operator==(const GraphNode& other) {
+    bool operator==(const GraphNode& other) const {
         return tag == other.tag;
     };
-    bool operator<(const GraphNode& other) {
+    bool operator<(const GraphNode& other) const {
         return tag < other.tag;
     };
-    bool operator>(const GraphNode& other) {
+    bool operator>(const GraphNode& other) const {
         return tag > other.tag;
     };
 };
@@ -52,16 +52,13 @@ struct HeapEdge {
     string tag;
     GraphNode *node1, *node2;
     float weight;
-    bool operator==(const HeapEdge& other)
-    {
+    bool operator==(const HeapEdge& other) const {
         return weight == other.weight;
     };
-    bool operator<(const HeapEdge& other)
-    {
+    bool operator<(const HeapEdge& other) const {
         return weight < other.weight;
     };
-    bool operator>(const HeapEdge& other)
-    {
+    bool operator>(const HeapEdge& other) const {
         return weight > other.weight;
     };
 };
