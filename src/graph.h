@@ -8,6 +8,7 @@
 
 using std::string;
 using std::vector;
+using std::unordered_map;
 class Graph {
     int num_edges;
     int num_nodes;

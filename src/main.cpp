@@ -55,14 +55,8 @@ int main(int argc, char *argv[]) {
 
     G.print();
 
-    auto forest = G.dfs();
+    Graph forest = G.kruskal();
 
-    int i = 0;
-    for (Graph &tree : forest) {
-        std::cout << "Tree " << i << '\n';
-        tree.print();
-        i++;
-    }
 
     return 0;
 }

@@ -8,6 +8,7 @@ using std::ostream;
 
 struct GraphEdge;
 struct GraphNode;
+struct HeapEdge;
 
 struct GraphEdge {
     string tag;
@@ -51,17 +52,17 @@ struct HeapEdge {
     string tag;
     GraphNode *node1, *node2;
     float weight;
-    bool operator==(const HeapEdge &other)
+    bool operator==(const HeapEdge& other)
     {
         return weight == other.weight;
     };
-    bool operator<(const HeapEdge &other)
+    bool operator<(const HeapEdge& other)
     {
-        return tag < other.tag;
+        return weight < other.weight;
     };
-    bool operator>(const HeapEdge &other)
+    bool operator>(const HeapEdge& other)
     {
-        return tag > other.tag;
+        return weight > other.weight;
     };
 };
 
