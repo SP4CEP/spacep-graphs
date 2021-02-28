@@ -14,14 +14,23 @@ struct GraphEdge {
     string tag;
     GraphNode* node;
     float weight;
-    bool operator==(const GraphEdge& other) const {
+    bool operator==(const GraphEdge &other) const {
         return tag == other.tag;
     };
-    bool operator<(const GraphEdge& other) const {
+    bool operator<(const GraphEdge &other) const {
         return tag < other.tag;
     };
-    bool operator>(const GraphEdge& other) const {
+    bool operator>(const GraphEdge &other) const {
         return tag > other.tag;
+    };
+    bool operator!=(const GraphEdge &other) const {
+        return !(*this == other);
+    };
+    bool operator<=(const GraphEdge &other) const {
+        return *this < other || *this == other;
+    };
+    bool operator>=(const GraphEdge &other) const {
+        return *this > other || *this == other;
     };
 };
 
@@ -42,6 +51,15 @@ struct GraphNode {
     bool operator>(const GraphNode& other) const {
         return tag > other.tag;
     };
+    bool operator!=(const GraphNode &other) const {
+        return !(*this == other);
+    };
+    bool operator<=(const GraphNode &other) const {
+        return *this < other || *this == other;
+    };
+    bool operator>=(const GraphNode &other) const {
+        return *this > other || *this == other;
+    };
 };
 
 inline ostream& operator<<(ostream& os, const GraphNode& node) {
@@ -61,6 +79,16 @@ struct HeapEdge {
     bool operator>(const HeapEdge& other) const {
         return weight > other.weight;
     };
+    bool operator!=(const HeapEdge& other) const {
+        return !(*this == other);
+    };
+    bool operator<=(const HeapEdge& other) const {
+        return *this < other || *this == other;
+    };
+    bool operator>=(const HeapEdge& other) const {
+        return *this > other || *this == other;
+    };
+    /* Añadir el resto de comparadores */
 };
 
 #endif
