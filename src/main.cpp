@@ -65,15 +65,17 @@ int main(int argc, char *argv[]) {
     read_graph(path, G);
 
     G.print();
-
-    Graph forest;
-    bool connected = G.kruskal(forest);
+    vector<Graph> forest;
+    bool connected = G.prim(forest);
 
     cout << "EXPANSION TREE" << endl;
+    for (Graph g : forest){
+        g.print();
+        cout << "The tree's weight is: " << g.get_weight() << endl;
+    }
 
-    forest.print();
+    // forest.print();
 
-    cout << "The tree's weight is: " << forest.get_weight() << endl;
     cout << "The tree is connected: " << connected << endl;
 
     return 0;

@@ -10,6 +10,7 @@ Description: Functions of the implementetion of a graph
 #include <unordered_set>
 #include <unordered_map>
 #include <stack>
+#include <limits>
 #include <queue>
 #include "graphstructs.h"
 #include "linkedlist.h"
@@ -24,6 +25,7 @@ using std::queue;
 using std::priority_queue;
 using std::stack;
 using std::greater;
+using std::numeric_limits;
 
 Graph::Graph() : num_edges(0), num_nodes(0), weighted(0), weight(0) {}
 
@@ -502,10 +504,11 @@ void Graph::union_root(string node1, string node2, unordered_map<string, string>
 }
 
 bool Graph::kruskal(Graph &expansion_tree) {
-    priority_queue<HeapEdge, vector<HeapEdge>, greater<HeapEdge>> h;
+    priority_queue<AuxEdge, vector<AuxEdge>, greater<AuxEdge>> h;
     unordered_set<string> added_edges;
     unordered_map<string, string> parent;
-    int tree_edges = 0;
+
+    expansion_tree.clear();
 
     for (GraphNode &node : nodes) {
         // add to expansion_tree
@@ -515,28 +518,85 @@ bool Graph::kruskal(Graph &expansion_tree) {
         // add each edge to the heap
         for (GraphEdge &edge : *(node.edges)) {
             if (added_edges.find(edge.tag) == added_edges.end()) {
-                HeapEdge e = {
+                AuxEdge e;
+                e.set(node, edge);
+                /* 
+                AuxEdge e = {
                     .tag = edge.tag,
                     .node1 = &node,
                     .node2 = edge.node,
                     .weight = edge.weight
                 };
+                */
                 added_edges.insert(edge.tag);
                 h.push(e);
             }
         }
     }
 
-    while (tree_edges < num_nodes - 1) {
+    while (expansion_tree.num_edges < num_nodes - 1) {
         if (h.empty()) return false;
-        HeapEdge edge = h.top();
+        AuxEdge edge = h.top();
         if (find_root(edge.node1->tag, parent) != find_root(edge.node2->tag, parent)) {
             expansion_tree.add_edge(edge.node1->tag, edge.node2->tag, edge.tag, edge.weight);
             union_root(edge.node1->tag, edge.node2->tag, parent);
-            ++tree_edges;
         }
         h.pop();
     }
 
     return true;
+}
+
+bool Graph::prim(vector<Graph> &expansion_tree_forest) {
+    float min_w;
+    bool exists_edge;
+    unordered_set<string> added_nodes;
+    AuxEdge min_edge;
+
+    expansion_tree_forest.clear();
+
+    for (GraphNode &n : nodes) {
+        if (added_nodes.find(n.tag) != added_nodes.end())
+            continue; // find not added node
+
+        Graph tree;
+        tree.add_node(n.tag);
+        added_nodes.insert(n.tag);
+
+        while (tree.num_nodes < num_nodes) {
+            exists_edge = false;
+            min_w = numeric_limits<float>::max();
+
+            for (GraphNode &node : nodes) {
+                // look only through already added nodes
+                if (added_nodes.find(node.tag) == added_nodes.end())
+                    continue;
+
+                for (GraphEdge &edge : *(node.edges)) {
+                    // look only through not added nodes
+                    if (added_nodes.find(edge.node->tag) != added_nodes.end())
+                        continue;
+
+                    exists_edge = true;
+
+                    if (edge.weight < min_w) {
+                        min_w = edge.weight;
+                        min_edge.set(node, edge);
+                    }
+                }
+            }
+
+            if (exists_edge) {
+                tree.add_node(min_edge.node2->tag);
+                tree.add_edge(min_edge.node1->tag,
+                              min_edge.node2->tag,
+                              min_edge.tag,
+                              min_edge.weight);
+                added_nodes.insert(min_edge.node2->tag);
+            } else {
+                expansion_tree_forest.push_back(tree);
+            }
+        }
+    }
+    return expansion_tree_forest.size() == 1;
 }

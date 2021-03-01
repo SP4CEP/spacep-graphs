@@ -193,12 +193,20 @@ public:
     void union_root(string node1, string node2, unordered_map<string, string> &parent);
 
     /**
-     * @brief Function that performs a depth first search and returns the
+     * @brief Function that performs the kruskal algorithm and returns the
      * found forest of spanning trees
      * @param expansion_tree A Graph to store the minimum-expansion tree.
      * @return True if the graph is connected, false otherwise
      **/
     bool kruskal(Graph &expansion_tree);
+
+    /**
+     * @brief Function that performs the primm algorithm and returns the
+     * found forest of spanning trees
+     * @param expansion_tree A Graph to store the minimum-expansion tree.
+     * @return True if the graph is connected, false otherwise
+     **/
+    bool prim(vector<Graph> &expansion_tree_forest);
 };
 
 #endif // GRAPH_H_INCLUDED

@@ -8,7 +8,7 @@ using std::ostream;
 
 struct GraphEdge;
 struct GraphNode;
-struct HeapEdge;
+struct AuxEdge;
 
 struct GraphEdge {
     string tag;
@@ -66,26 +66,33 @@ inline ostream& operator<<(ostream& os, const GraphNode& node) {
     return os << node.tag;
 }
 
-struct HeapEdge {
+struct AuxEdge {
     string tag;
     GraphNode *node1, *node2;
     float weight;
-    bool operator==(const HeapEdge& other) const {
+    AuxEdge(){};
+    void set(GraphNode &n, GraphEdge &e) {
+        tag = e.tag;
+        node1 = &n;
+        node2 = e.node;
+        weight = e.weight;
+    };
+    bool operator==(const AuxEdge& other) const {
         return weight == other.weight;
     };
-    bool operator<(const HeapEdge& other) const {
+    bool operator<(const AuxEdge& other) const {
         return weight < other.weight;
     };
-    bool operator>(const HeapEdge& other) const {
+    bool operator>(const AuxEdge& other) const {
         return weight > other.weight;
     };
-    bool operator!=(const HeapEdge& other) const {
+    bool operator!=(const AuxEdge& other) const {
         return !(*this == other);
     };
-    bool operator<=(const HeapEdge& other) const {
+    bool operator<=(const AuxEdge& other) const {
         return *this < other || *this == other;
     };
-    bool operator>=(const HeapEdge& other) const {
+    bool operator>=(const AuxEdge& other) const {
         return *this > other || *this == other;
     };
     /* Añadir el resto de comparadores */

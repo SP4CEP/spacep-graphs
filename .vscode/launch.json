@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/graph.out",
             "args": [
-                "${workspaceFolder}/src/examples/disconexa.txt"
+                "${workspaceFolder}/src/examples/kruskal1.txt"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
