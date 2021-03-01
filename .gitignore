@@ -1,4 +1,4 @@
 *.o
 *.out
-/src/examples/*
 .vscode/settings.json
+.DS_Store

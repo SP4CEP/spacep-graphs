@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
     if (argc < 2) {
         cout << "Missing graph source file" << endl;
         cout << "Using kruskal.txt" << endl;
-        path = "examples/kruskal.txt";
+        path = "examples/grafica2.txt";
     } else {
         path = argv[1];
     }
@@ -68,13 +68,14 @@ int main(int argc, char *argv[]) {
     vector<Graph> forest;
     bool connected = G.prim(forest);
 
-    cout << "EXPANSION TREE" << endl;
-    for (Graph g : forest){
+    cout << "EXPANSION TREE FOREST" << endl;
+
+    for (Graph &g : forest){
         g.print();
         cout << "The tree's weight is: " << g.get_weight() << endl;
     }
 
-    // forest.print();
+
 
     cout << "The tree is connected: " << connected << endl;
 

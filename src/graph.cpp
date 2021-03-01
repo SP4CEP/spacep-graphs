@@ -1,5 +1,5 @@
 /*
-Filename: linkedlist.cpp
+Filename: graph.cpp
 Authors: Domínguez Acosta María Fernanda
          Murcia Yocupicio Raúl Octavio
          Sandoval del Hoyo María Ximena
@@ -33,6 +33,7 @@ Graph::Graph() : num_edges(0), num_nodes(0), weighted(0), weight(0) {}
 
 Graph::Graph(const Graph &G) : num_edges(0), num_nodes(0), weighted(0), weight(0) {
     *this = G;
+    cout << " COPIANDO.." << endl;
 }
 
 //**********************************************************************//
@@ -48,14 +49,15 @@ Graph& Graph::operator=(const Graph &G) {
     }
     // iterate edges for each node
     for (ListNode<GraphNode> *p=G.nodes.start; p; p=p->next) {
-        for (ListNode<GraphEdge> *q=(p->value).edges->start; q; q=q->next) {
+        for (ListNode<GraphEdge> *q = (p->value).edges->start; q; q=q->next) {
             if (added_edges.find((q->value).tag) == added_edges.end()) {
                 // if tag not already added
-                add_edge((p->value).tag, (q->value).node->tag, (q->value).tag);
+                add_edge((p->value).tag, (q->value).node->tag, (q->value).tag, (q->value).weight);
                 added_edges.insert((q->value).tag);
             }
         }
     }
+    cout << "IGUALANDO... " << endl;
     return *this;
 }
 
@@ -520,14 +522,6 @@ bool Graph::kruskal(Graph &expansion_tree) {
             if (added_edges.find(edge.tag) == added_edges.end()) {
                 AuxEdge e;
                 e.set(node, edge);
-                /* 
-                AuxEdge e = {
-                    .tag = edge.tag,
-                    .node1 = &node,
-                    .node2 = edge.node,
-                    .weight = edge.weight
-                };
-                */
                 added_edges.insert(edge.tag);
                 h.push(e);
             }
@@ -556,13 +550,14 @@ bool Graph::prim(vector<Graph> &expansion_tree_forest) {
     expansion_tree_forest.clear();
 
     for (GraphNode &n : nodes) {
+        //find node that hasn't been added to tree
         if (added_nodes.find(n.tag) != added_nodes.end())
             continue; // find not added node
 
         Graph tree;
         tree.add_node(n.tag);
         added_nodes.insert(n.tag);
-
+    
         while (tree.num_nodes < num_nodes) {
             exists_edge = false;
             min_w = numeric_limits<float>::max();
@@ -587,6 +582,7 @@ bool Graph::prim(vector<Graph> &expansion_tree_forest) {
             }
 
             if (exists_edge) {
+                cout << "min_edge: " << (min_edge.node1)->tag << (min_edge.node2)->tag << min_edge.weight << endl;
                 tree.add_node(min_edge.node2->tag);
                 tree.add_edge(min_edge.node1->tag,
                               min_edge.node2->tag,
@@ -594,9 +590,10 @@ bool Graph::prim(vector<Graph> &expansion_tree_forest) {
                               min_edge.weight);
                 added_nodes.insert(min_edge.node2->tag);
             } else {
-                expansion_tree_forest.push_back(tree);
+                break;
             }
         }
+        expansion_tree_forest.push_back(tree);
     }
     return expansion_tree_forest.size() == 1;
 }

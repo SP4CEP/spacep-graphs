@@ -1,0 +1,37 @@
+1
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+<TOKEN>
+a d e1 3
+a b e2 1
+a e e3 2
+b c e4 5
+b e e5 3
+b f e6 4
+c d e7 2
+c f e8 2
+c g e9 1
+d g e10 1
+e f e11 5
+e g e12 1
+f g e13 2
+h i e14 2
+h l e15 1
+i l e16 2
+i j e17 3
+j l e18 4
+j m e19 1
+j k e20 5
+k m e21 2
+l m e22 2
