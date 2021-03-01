@@ -33,7 +33,6 @@ Graph::Graph() : num_edges(0), num_nodes(0), weighted(0), weight(0) {}
 
 Graph::Graph(const Graph &G) : num_edges(0), num_nodes(0), weighted(0), weight(0) {
     *this = G;
-    cout << " COPIANDO.." << endl;
 }
 
 //**********************************************************************//
@@ -57,7 +56,6 @@ Graph& Graph::operator=(const Graph &G) {
             }
         }
     }
-    cout << "IGUALANDO... " << endl;
     return *this;
 }
 
@@ -582,7 +580,6 @@ bool Graph::prim(vector<Graph> &expansion_tree_forest) {
             }
 
             if (exists_edge) {
-                cout << "min_edge: " << (min_edge.node1)->tag << (min_edge.node2)->tag << min_edge.weight << endl;
                 tree.add_node(min_edge.node2->tag);
                 tree.add_edge(min_edge.node1->tag,
                               min_edge.node2->tag,
