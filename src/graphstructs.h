@@ -157,4 +157,37 @@ inline ostream& operator<<(ostream& os, const DigraphNode& node) {
     return os << node.tag;
 }
 
+struct DijkstraAux {
+    float accumulated_weight, edge_weight;
+    DigraphNode *node, *predecessor;
+    string edge_tag;
+
+
+    void set(DigraphNode &n, DigraphNode &p, float ac, float w, string t) {
+        node = &n;
+        predecessor = &p;
+        edge_weight = w;
+        accumulated_weight = ac;
+        edge_tag = t;
+    }
+    bool operator==(const DijkstraAux& other) const {
+        return accumulated_weight == other.accumulated_weight;
+    };
+    bool operator<(const DijkstraAux& other) const {
+        return accumulated_weight < other.accumulated_weight;
+    };
+    bool operator>(const DijkstraAux& other) const {
+        return accumulated_weight > other.accumulated_weight;
+    };
+    bool operator!=(const DijkstraAux& other) const {
+        return !(*this == other);
+    };
+    bool operator<=(const DijkstraAux& other) const {
+        return *this < other || *this == other;
+    };
+    bool operator>=(const DijkstraAux& other) const {
+        return *this > other || *this == other;
+    };
+};
+
 #endif
