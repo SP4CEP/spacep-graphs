@@ -334,9 +334,18 @@ void Digraph::print() {
 
 //**********************************************************************//
 
-Digraph Digraph::dijkstra(string initial_tag, string destination_tag) {
+inline DigraphNode* ancestor(DigraphNode *p) {
+    return (*(p->inedges->begin())).origin;
+}
+
+inline DigraphNode* descendant(DigraphNode *p) {
+    return (*(p->outedges->begin())).dest;
+}
+
+//**********************************************************************//
+
+bool Digraph::dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle, float &cycle_len, string destination_tag, bool optimize) {
     enum {non_visited, visited, permanent};
-    Digraph tree;
     unordered_map<string, DijkstraAux> label;
 
     DigraphNode *initial;
@@ -361,7 +370,7 @@ Digraph Digraph::dijkstra(string initial_tag, string destination_tag) {
         // Update state
         nodes_states[current.node->tag] = permanent;
 
-        if (destination_tag != "" && current.node->tag == destination_tag) return tree;
+        if (destination_tag != "" && current.node->tag == destination_tag) return true;
 
         for (DigraphEdge &edge : *(current.node->outedges)) {
             if (nodes_states[edge.dest->tag] == permanent) continue;
@@ -395,6 +404,70 @@ Digraph Digraph::dijkstra(string initial_tag, string destination_tag) {
 
     }
 
+    if (tree.num_nodes != num_nodes) return false;
+
     tree.remove_edge(initial_tag, initial_tag);
-    return tree;
+    
+    if (!optimize) return true;
+
+    // Optimization step
+    while (true) {
+        DigraphNode *i = nullptr, *j = nullptr;
+        float aux_weight, dl;
+        string aux_tag;
+
+        bool found_improv = false; // flag
+        for (DigraphNode n : nodes) {
+            for (DigraphEdge e : *(n.outedges)) {
+                // Every edge not in arborescence
+                if (!tree.find_edge(n.tag, e.dest->tag)) {
+                    if (label[n.tag].accumulated_weight + e.weight < label[e.dest->tag].accumulated_weight) {
+                        i = &n;
+                        j = e.dest;
+                        aux_tag = e.tag;
+                        aux_weight = e.weight;
+                        found_improv = true;
+                        break;
+                    }
+                }
+            }
+            if (found_improv) break;
+        }
+
+        // if no improvement found, break and finalize
+        if (!found_improv) break;
+        
+        // total improvement in each node
+        dl = label[j->tag].accumulated_weight - (label[i->tag].accumulated_weight + aux_weight);
+
+        // find arborescence pointers
+        DigraphNode *tree_i = tree.get_node(i->tag);
+        DigraphNode *tree_j = tree.get_node(j->tag);
+
+        // look for j in every ancestor of i in the arborescence
+        cycle.clear();
+        for (DigraphNode* p = tree_i; p->inedges->Length() > 0; p = ancestor(p)) {
+            cycle.push_back(p->tag);
+            if (p == tree_j) {
+                cycle_len = -dl;
+                return false;
+            }
+        }
+
+        // replace edge
+        tree.remove_edge(ancestor(tree_j)->tag, tree_j->tag);
+        tree.add_edge(tree_i->tag, tree_j->tag, aux_tag, aux_weight);
+
+        // update j label
+        label[j->tag].set(*j, *i, label[j->tag].accumulated_weight - dl, aux_weight, aux_tag);
+
+        // update every descendant
+        DigraphNode *p = tree_j;
+        while (p->outedges->Length() > 0) {
+            // take first outgoing node
+            p = descendant(p);
+            label[p->tag].accumulated_weight -= dl;
+        }
+    }
+    return true;
 }

@@ -48,7 +48,9 @@ void read_digraph(string path, Digraph &G) {
 
 int main(int argc, char *argv[]) {
     string path;
-    Digraph G;
+    Digraph G, tree;
+    vector<string> cycle;
+    float cycle_length;
 
     if (argc < 2) {
         cout << "Missing graph source file" << endl;
@@ -61,5 +63,16 @@ int main(int argc, char *argv[]) {
     cout << "Reading file " << path << endl;
     read_digraph(path, G);
     G.print();
+
+    if (G.dijkstra("a", tree, cycle, cycle_length)) {
+        tree.print();
+    } else {
+        cout << "Found a cycle length: " << cycle_length << " in vertices: " << endl;
+        for (string n : cycle) {
+            cout << n << " ";
+        }
+        cout << endl;
+    }
+
     return 0;
 }

@@ -8,9 +8,9 @@
             "name": "g++ - Build and debug project",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/graph.out",
+            "program": "${workspaceFolder}/src/digraph.out",
             "args": [
-                "${workspaceFolder}/src/examples/kruskal1.txt"
+                "${workspaceFolder}/src/examples/dijkstra_neg1.txt"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

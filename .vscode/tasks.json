@@ -7,10 +7,10 @@
             "args": [
                 "-g",
                 "${workspaceFolder}/src/main.cpp",
-                "${workspaceFolder}/src/graph.cpp",
+                "${workspaceFolder}/src/digraph.cpp",
                 "${workspaceFolder}/src/linkedlist.cpp",
                 "-o",
-                "${workspaceFolder}/src/graph.out"
+                "${workspaceFolder}/src/digraph.out"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

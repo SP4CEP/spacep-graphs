@@ -158,8 +158,10 @@ public:
     **/
     Digraph& operator=(const Digraph &);
 
-    Digraph dijkstra(string initial_tag, string destination_tag="");
-
+    /**
+    * @brief General Dijkstra algorithm
+    **/
+    bool dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle, float &cycle_len, string destination_tag = "", bool optimize = true);
 };
 
 #endif // DIGRAPH_H_INCLUDED
