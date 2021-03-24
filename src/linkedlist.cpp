@@ -15,6 +15,10 @@ template class LinkedList<std::string>;
 template class LinkedList<GraphNode>;
 template class LinkedList<GraphEdge>;
 template class LinkedList<GraphNode*>;
+template class LinkedList<DigraphEdge>;
+template class LinkedList<DigraphNode>;
+template class LinkedList<DigraphNode*>;
+
 
 using std::cout;
 using std::endl;

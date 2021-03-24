@@ -9,6 +9,8 @@ using std::ostream;
 struct GraphEdge;
 struct GraphNode;
 struct AuxEdge;
+struct DigraphEdge;
+struct DigraphNode;
 
 struct GraphEdge {
     string tag;
@@ -97,5 +99,62 @@ struct AuxEdge {
     };
     /* Añadir el resto de comparadores */
 };
+
+struct DigraphEdge{
+    string tag;
+    DigraphNode* origin;
+    DigraphNode* dest;
+    float weight;
+    bool operator==(const DigraphEdge &other) const {
+        return tag == other.tag;
+    };
+    bool operator<(const DigraphEdge &other) const {
+        return tag < other.tag;
+    };
+    bool operator>(const DigraphEdge &other) const {
+        return tag > other.tag;
+    };
+    bool operator!=(const DigraphEdge &other) const {
+        return !(*this == other);
+    };
+    bool operator<=(const DigraphEdge &other) const {
+        return *this < other || *this == other;
+    };
+    bool operator>=(const DigraphEdge &other) const {
+        return *this > other || *this == other;
+    };
+};
+
+inline ostream& operator<<(ostream& os, const DigraphEdge& edge) {
+    return os << edge.tag;
+}
+
+struct DigraphNode {
+    string tag;
+    LinkedList<DigraphEdge>* inedges; 
+    LinkedList<DigraphEdge>* outedges;
+    bool operator==(const DigraphNode& other) const {
+        return tag == other.tag;
+    };
+    bool operator<(const DigraphNode& other) const {
+        return tag < other.tag;
+    };
+    bool operator>(const DigraphNode& other) const {
+        return tag > other.tag;
+    };
+    bool operator!=(const DigraphNode &other) const {
+        return !(*this == other);
+    };
+    bool operator<=(const DigraphNode &other) const {
+        return *this < other || *this == other;
+    };
+    bool operator>=(const DigraphNode &other) const {
+        return *this > other || *this == other;
+    };
+};
+
+inline ostream& operator<<(ostream& os, const DigraphNode& node) {
+    return os << node.tag;
+}
 
 #endif
