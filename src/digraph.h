@@ -157,6 +157,9 @@ public:
     * @brief Overload for = operator
     **/
     Digraph& operator=(const Digraph &);
+
+    Digraph dijkstra(string initial_tag, string destination_tag="");
+
 };
 
 #endif // DIGRAPH_H_INCLUDED

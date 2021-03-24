@@ -14,7 +14,8 @@ Description: Functions of the implementetion of a Digraph
 #include <queue>
 #include "graphstructs.h"
 #include "linkedlist.h"
-#include "Digraph.h"
+#include "digraph.h"
+#include "dijkstraheap.h"
 
 using std::cout;
 using std::endl;
@@ -329,4 +330,69 @@ void Digraph::print() {
          cout << "weight : " << weight << endl;
     }
     
+}
+
+//**********************************************************************//
+
+Digraph Digraph::dijkstra(string initial_tag, string destination_tag) {
+    enum {non_visited, visited, permanent};
+    Digraph tree;
+
+    DigraphNode *initial;
+    initial = get_node(initial_tag);
+
+    unordered_map<string, int> nodes_states;
+    DijkstraHeap p;     // Priority queue
+
+    for (DigraphNode &n: nodes) {
+        nodes_states.insert({n.tag, non_visited});
+    }
+
+    DijkstraAux dInitial;
+    dInitial.set(*initial, *initial, 0, 0, initial->tag);
+    p.push(dInitial);
+
+    while (!p.is_empty()){
+        DijkstraAux current;
+
+        current = p.pop();
+
+        // Update state
+        nodes_states[current.node->tag] = permanent;
+
+        if (destination_tag != "" && current.node->tag == destination_tag) return tree;
+
+        for (DigraphEdge &edge : *(current.node->outedges)) {
+            if (nodes_states[edge.dest->tag] == permanent) continue;
+            
+            else if (nodes_states[edge.dest->tag] == non_visited) {
+                nodes_states[edge.dest->tag] = visited;
+                DijkstraAux d;
+                d.set(*(edge.dest), *(current.node), 
+                    current.accumulated_weight + edge.weight, edge.weight, edge.tag);
+                p.push(d);
+
+            } else {
+                if (p.get_priority(edge.dest->tag) > current.accumulated_weight + edge.weight) {
+                    // Update priority
+                    DijkstraAux d;
+                    d.set(*(edge.dest), *(current.node), 
+                        current.accumulated_weight + edge.weight, edge.weight, current.edge_tag);
+                    p.update_priority(d);
+                }
+            }
+        }
+
+        // Add to tree
+
+        tree.add_node(current.node->tag);
+        tree.add_node(current.predecessor->tag);
+
+        tree.add_edge(current.predecessor->tag, current.node->tag, 
+                        current.edge_tag, current.edge_weight);
+
+    }
+
+    tree.remove_edge(initial_tag, initial_tag);
+    return tree;
 }
