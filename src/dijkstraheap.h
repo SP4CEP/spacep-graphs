@@ -1,5 +1,5 @@
-#ifndef GRAPHSTRUCTS_H_INCLUDED
-#define GRAPHSTRUCTS_H_INCLUDED
+#ifndef DIJKSTRA_H_INCLUDED
+#define DIJKSTRA_H_INCLUDED
 
 #include <algorithm>
 #include <vector>
@@ -22,18 +22,18 @@ class DijkstraHeap {
 
 public:
 
-    DijkstraHeap::DijkstraHeap(int alloc_size = 0) {
+    DijkstraHeap(int alloc_size = 0) {
         container.reserve(alloc_size);
     }
 
-    void DijkstraHeap::push(DijkstraAux n) {
+    void push(DijkstraAux n) {
         container.push_back(n);
         push_heap(container.begin(), container.end(), comp);
         queue_node.insert({n.node->tag, n});
     }
     
     
-    DijkstraAux DijkstraHeap::pop() {
+    DijkstraAux pop() {
         DijkstraAux aux = container.front();
         pop_heap(container.begin(), container.end(), comp);
         container.pop_back();
@@ -41,11 +41,11 @@ public:
         return aux;
     }
     
-    DijkstraAux DijkstraHeap::top() {
+    DijkstraAux top() {
         return container.front();
     }
 
-    void DijkstraHeap::update_priority(DijkstraAux n) {
+    void update_priority(DijkstraAux n) {
         for (int i = 0; i < container.size(); i++) {
             if (container[i].node->tag == n.node->tag) {
                 container[i] = n;
@@ -61,12 +61,16 @@ public:
         }
     }
 
-    float DijkstraHeap::get_priority(string tag) {
-        return queue_node[tag].weight;
+    float get_priority(string tag) {
+        return queue_node[tag].accumulated_weight;
     }
     
-    DijkstraAux DijkstraHeap::get(string tag) {
+    DijkstraAux get(string tag) {
         return queue_node[tag];
+    }
+
+    bool is_empty() {
+        return container.empty();
     }
 };
 
