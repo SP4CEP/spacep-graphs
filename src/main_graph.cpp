@@ -8,14 +8,17 @@ Description: Main file
 */
 #include <iostream>
 #include <fstream>
-#include "digraph.h"
+#include <vector>
+#include "linkedlist.h"
+#include "graph.h"
 
 using std::cout;
 using std::endl;
 using std::string;
 using std::ifstream;
+using std::vector;
 
-void read_digraph(string path, Digraph &G) {
+void read_graph(string path, Graph &G) {
     ifstream file;
     G.clear();
     std::string v="", v1, v2, tag;
@@ -48,7 +51,7 @@ void read_digraph(string path, Digraph &G) {
 
 int main(int argc, char *argv[]) {
     string path;
-    Digraph G;
+    Graph G;
 
     if (argc < 2) {
         cout << "Missing graph source file" << endl;
@@ -59,7 +62,22 @@ int main(int argc, char *argv[]) {
     }
 
     cout << "Reading file " << path << endl;
-    read_digraph(path, G);
+    read_graph(path, G);
+
     G.print();
+    vector<Graph> forest;
+    bool connected = G.prim(forest);
+
+    cout << "EXPANSION TREE FOREST" << endl;
+
+    for (Graph &g : forest){
+        g.print();
+        cout << "The tree's weight is: " << g.get_weight() << endl;
+    }
+
+
+
+    cout << "The tree is connected: " << connected << endl;
+
     return 0;
 }
