@@ -337,6 +337,7 @@ void Digraph::print() {
 Digraph Digraph::dijkstra(string initial_tag, string destination_tag) {
     enum {non_visited, visited, permanent};
     Digraph tree;
+    unordered_map<string, DijkstraAux> label;
 
     DigraphNode *initial;
     initial = get_node(initial_tag);
@@ -390,6 +391,7 @@ Digraph Digraph::dijkstra(string initial_tag, string destination_tag) {
 
         tree.add_edge(current.predecessor->tag, current.node->tag, 
                         current.edge_tag, current.edge_weight);
+        label.insert({current.node->tag, current});
 
     }
 
