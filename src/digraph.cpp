@@ -120,10 +120,6 @@ bool Digraph::add_edge(string node1_tag, string node2_tag, string edge_tag, floa
         this->weight += weight;
         return true;
     }
-    if (find_edge((edge_tag))) cout << "Ya esta en la digrafica" << endl;
-    if (!p1) cout << "No tiene p1" << endl;
-    if (!p2) cout << "No tiene p2" << endl;
-    cout << "no se agrego arista la arista " << node1_tag << "-" << node2_tag << endl;
     return false;
 }
 
@@ -381,7 +377,7 @@ Digraph Digraph::dijkstra(string initial_tag, string destination_tag) {
                     // Update priority
                     DijkstraAux d;
                     d.set(*(edge.dest), *(current.node), 
-                        current.accumulated_weight + edge.weight, edge.weight, current.edge_tag);
+                        current.accumulated_weight + edge.weight, edge.weight, edge.tag);
                     p.update_priority(d);
                 }
             }
@@ -391,15 +387,9 @@ Digraph Digraph::dijkstra(string initial_tag, string destination_tag) {
 
         tree.add_node(current.node->tag);
         tree.add_node(current.predecessor->tag);
-        DigraphEdge e;
-        e.tag = current.edge_tag;
-        e.origin = current.predecessor;
-        e.dest = current.node;
-        e.weight = current.edge_weight;
-        
+
         tree.add_edge(current.predecessor->tag, current.node->tag, 
                         current.edge_tag, current.edge_weight);
-        tree.print();
 
     }
 
