@@ -197,7 +197,7 @@ struct DijkstraAux {
 };
 
 inline ostream& operator<<(ostream& os, const DijkstraAux& a) {
-    return os << a.node->tag << ", " << a.accumulated_weight;
+    return os << a.predecessor->tag << ", " << a.accumulated_weight;
 }
 
 #endif

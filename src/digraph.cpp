@@ -511,11 +511,22 @@ Matrix<DijkstraAux> Digraph::Graph2Mat(){
 //**********************************************************************//
 
 void Digraph::printMatrix(Matrix<DijkstraAux> F){
+    int i = 0;
     cout << endl << "*****  MATRIX *****" << endl;
-    for (int i=0; i < num_nodes; i++){
-        cout << endl << "*" << F[i][i].predecessor->tag << "* |";
-        for(int j=0; j<num_nodes; j++){
-            cout << " (" << F[i][j] << ") |";
-        }
+    cout << "\t";
+    for(DigraphNode& node: nodes){
+        cout << "  *" << node << "* \t|\t";
     }
+    for(DigraphNode& node: nodes){
+       cout << endl << "*" << node << "* |\t"; 
+       for(int j=0; j<num_nodes; j++){
+           if(F[i][j].node){
+            cout << " (" << F[i][j] << ") |\t";
+           }else{
+              cout << " (-, ∞) |\t"; 
+           }
+        }
+        i++;
+    }
+    cout << endl;
 }
