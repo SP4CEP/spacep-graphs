@@ -16,6 +16,7 @@ Description: Functions of the implementetion of a Digraph
 #include "linkedlist.h"
 #include "digraph.h"
 #include "dijkstraheap.h"
+#include "matrix.h"
 
 using std::cout;
 using std::endl;
@@ -474,4 +475,47 @@ bool Digraph::dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle,
         }
     }
     return true;
+}
+//**********************************************************************//
+
+Matrix<DijkstraAux> Digraph::Graph2Mat(){
+    Matrix<DijkstraAux> Floyd(num_nodes,num_nodes);
+    unordered_map<string, int> aux_map; //auxMap
+    DijkstraAux aux;
+    int ix = 0;
+
+    for(DigraphNode& node: nodes){
+        aux_map.insert({node.tag,ix});
+        ix++;
+    }
+
+    for (DigraphNode& row: nodes) {
+        for(DigraphNode& col: nodes){
+            aux.set(nullptr, &row, numeric_limits<float>::max(), numeric_limits<float>::max());
+            Floyd[aux_map[row.tag]][aux_map[col.tag]] = aux;
+
+        }
+    }
+
+    for (DigraphNode& node: nodes) {
+        for (DigraphEdge& edge: *(node.outedges)) {
+            aux.set(edge.dest, edge.origin, edge.weight, edge.weight);
+            Floyd[aux_map[node.tag]][aux_map[edge.dest->tag]] = aux;
+        }
+        aux.set(&node, &node, 0, 0);
+        Floyd[aux_map[node.tag]][aux_map[node.tag]] = aux;
+    }
+    return Floyd;
+}
+
+//**********************************************************************//
+
+void Digraph::printMatrix(Matrix<DijkstraAux> F){
+    cout << endl << "*****  MATRIX *****" << endl;
+    for (int i=0; i < num_nodes; i++){
+        cout << endl << "*" << F[i][i].predecessor->tag << "* |";
+        for(int j=0; j<num_nodes; j++){
+            cout << " (" << F[i][j] << ") |";
+        }
+    }
 }

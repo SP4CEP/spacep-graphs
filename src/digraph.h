@@ -3,6 +3,7 @@
 
 #include "linkedlist.h"
 #include "graphstructs.h"
+#include "matrix.h"
 #include <vector>
 #include <unordered_map>
 
@@ -162,6 +163,16 @@ public:
     * @brief General Dijkstra algorithm
     **/
     bool dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle, float &cycle_len, string destination_tag = "", bool optimize = true);
+
+    /**
+     *@brief Function to generate matrix of the graph
+     **/
+    Matrix<DijkstraAux> Graph2Mat();
+    
+    /**
+     * @brief Function to print graph matrix
+     **/
+    void printMatrix(Matrix<DijkstraAux> F);
 };
 
 #endif // DIGRAPH_H_INCLUDED

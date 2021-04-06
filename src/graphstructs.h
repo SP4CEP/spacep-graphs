@@ -162,8 +162,14 @@ struct DijkstraAux {
     DigraphNode *node, *predecessor;
     string edge_tag;
 
+    void set(DigraphNode *n, DigraphNode *p, float ac, float w){
+        node = n;
+        predecessor = p;
+        edge_weight = w;
+        accumulated_weight = ac;
+    }
 
-    void set(DigraphNode &n, DigraphNode &p, float ac, float w, string t) {
+    void set(DigraphNode &n, DigraphNode &p, float ac, float w, string t){
         node = &n;
         predecessor = &p;
         edge_weight = w;
@@ -189,5 +195,9 @@ struct DijkstraAux {
         return *this > other || *this == other;
     };
 };
+
+inline ostream& operator<<(ostream& os, const DijkstraAux& a) {
+    return os << a.node->tag << ", " << a.accumulated_weight;
+}
 
 #endif

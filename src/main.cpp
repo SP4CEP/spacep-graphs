@@ -9,6 +9,8 @@ Description: Main file
 #include <iostream>
 #include <fstream>
 #include "digraph.h"
+#include "graphstructs.h"
+#include "matrix.h"
 
 using std::cout;
 using std::endl;
@@ -48,9 +50,7 @@ void read_digraph(string path, Digraph &G) {
 
 int main(int argc, char *argv[]) {
     string path;
-    Digraph G, tree;
-    vector<string> cycle;
-    float cycle_length;
+    Digraph G;
 
     if (argc < 2) {
         cout << "Missing graph source file" << endl;
@@ -64,15 +64,7 @@ int main(int argc, char *argv[]) {
     read_digraph(path, G);
     G.print();
 
-    if (G.dijkstra("a", tree, cycle, cycle_length)) {
-        tree.print();
-    } else {
-        cout << "Found a cycle length: " << cycle_length << " in vertices: " << endl;
-        for (string n : cycle) {
-            cout << n << " ";
-        }
-        cout << endl;
-    }
-
+    Matrix<DijkstraAux> m = G.Graph2Mat();
+    G.printMatrix(m);
     return 0;
 }
