@@ -370,7 +370,11 @@ bool Digraph::dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle,
         // Update state
         nodes_states[current.node->tag] = permanent;
 
-        if (destination_tag != "" && current.node->tag == destination_tag) return true;
+        if (destination_tag != "" && current.node->tag == destination_tag){
+            tree.add_node(destination_tag);
+            tree.add_edge(current.predecessor->tag, destination_tag, current.edge_tag, current.edge_weight);
+            return true;
+        } 
 
         for (DigraphEdge &edge : *(current.node->outedges)) {
             if (nodes_states[edge.dest->tag] == permanent) continue;
