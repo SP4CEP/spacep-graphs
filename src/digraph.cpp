@@ -478,9 +478,7 @@ bool Digraph::dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle,
 }
 //**********************************************************************//
 
-Matrix<DijkstraAux> Digraph::Graph2Mat(){
-    Matrix<DijkstraAux> Floyd(num_nodes,num_nodes);
-    unordered_map<string, int> aux_map; //auxMap
+void Digraph::Graph2Mat(Matrix<DijkstraAux> &Floyd, unordered_map<string, int> &aux_map) {
     DijkstraAux aux;
     int ix = 0;
 
@@ -491,9 +489,8 @@ Matrix<DijkstraAux> Digraph::Graph2Mat(){
 
     for (DigraphNode& row: nodes) {
         for(DigraphNode& col: nodes){
-            aux.set(nullptr, &row, numeric_limits<float>::max(), numeric_limits<float>::max());
+            aux.set(nullptr, &row, numeric_limits<float>::infinity(), numeric_limits<float>::infinity());
             Floyd[aux_map[row.tag]][aux_map[col.tag]] = aux;
-
         }
     }
 
@@ -505,7 +502,30 @@ Matrix<DijkstraAux> Digraph::Graph2Mat(){
         aux.set(&node, &node, 0, 0);
         Floyd[aux_map[node.tag]][aux_map[node.tag]] = aux;
     }
-    return Floyd;
+}
+
+//**********************************************************************//
+
+bool Digraph::floyd() {
+    Matrix<DijkstraAux> Floyd(num_nodes, num_nodes);
+    unordered_map<string, int> tag_to_index;
+    Graph2Mat(Floyd, tag_to_index);
+
+    for (int k = 0; k < num_nodes; ++k) {
+        for (int i = 0; i < num_nodes; ++i) {
+            for (int j= 0; j < num_nodes; ++j) {
+                if (Floyd[i][j].accumulated_weight > Floyd[i][k].accumulated_weight +
+                                                     Floyd[k][j].accumulated_weight) {
+
+                    Floyd[i][j].accumulated_weight = Floyd[i][k].accumulated_weight +
+                                                     Floyd[k][j].accumulated_weight;
+                    Floyd[i][j].predecessor = Floyd[k][j].predecessor;
+                    Floyd[i][j].edge_tag = Floyd[k][j].edge_tag;
+                    Floyd[i][j].edge_weight = Floyd[k][j].edge_weight;
+                }
+            }
+        }
+    }
 }
 
 //**********************************************************************//

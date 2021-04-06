@@ -167,12 +167,14 @@ public:
     /**
      *@brief Function to generate matrix of the graph
      **/
-    Matrix<DijkstraAux> Graph2Mat();
-    
+    void Graph2Mat(Matrix<DijkstraAux> &Floyd, unordered_map<string, int> &aux_map);
+
     /**
      * @brief Function to print graph matrix
      **/
     void printMatrix(Matrix<DijkstraAux> F);
+
+    bool floyd();
 };
 
 #endif // DIGRAPH_H_INCLUDED
