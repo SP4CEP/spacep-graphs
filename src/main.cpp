@@ -63,8 +63,37 @@ int main(int argc, char *argv[]) {
     cout << "Reading file " << path << endl;
     read_digraph(path, G);
     G.print();
+    vector<string> cycle;
+    float len_cycle;
 
-    Matrix<DijkstraAux> m = G.Graph2Mat();
-    G.printMatrix(m);
+    Matrix<DijkstraAux> mat(1,1);
+
+    cout << "Testing Floyd" << endl;
+
+    if (G.floyd(mat, cycle, len_cycle)) {
+        cout << "Solution found" << endl;
+        G.printMatrix(mat);
+    } else {
+        cout << "Cycle of length " << len_cycle << " found" << endl;
+        for (string tag: cycle)
+            cout << tag << " ";
+        cout << endl;
+    }
+
+    cout << "Testing Dijkstra" << endl;
+
+    Digraph tree;
+
+    if (G.dijkstra("a", tree, cycle, len_cycle)) {
+        cout << "Solution found" <<  endl;
+        tree.print();
+    } else {
+        cout << "Cycle of length " << len_cycle << " found" << endl;
+        for (string tag : cycle)
+            cout << tag << " ";
+        cout << endl;
+    }
+
+
     return 0;
 }

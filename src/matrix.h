@@ -13,7 +13,16 @@ class Matrix {
     int nrows, ncols;
 
 public:
-    Matrix(int nrows, int ncols) {
+    Matrix(int nrows, int ncols) : mat(nullptr), storage(nullptr), nrows(0), ncols(0) {
+        init(nrows, ncols);
+    }
+
+    Matrix(const Matrix<T> &m) : mat(nullptr), storage(nullptr), nrows(0), ncols(0) {
+        *this = m;
+    }
+
+    void init(int nrows, int ncols) {
+        clear();
         this->nrows = nrows;
         this->ncols = ncols;
         storage = new T[nrows * ncols];
@@ -21,10 +30,6 @@ public:
         for (int i = 0; i < nrows; ++i) {
             mat[i] = storage + i * ncols;
         }
-    }
-
-    Matrix(const Matrix<T> &m) : mat(nullptr), storage(nullptr), nrows(0), ncols(0) {
-        *this = m;
     }
 
     Matrix<T>& operator=(const Matrix<T> &m) {
@@ -62,9 +67,19 @@ public:
         }
     }
 
+    void clear() {
+        if (mat != nullptr)
+            delete[] mat;
+        if (storage != nullptr)
+            delete[] storage;
+        mat = nullptr;
+        storage = nullptr;
+        nrows = 0;
+        ncols = 0;
+    }
+
     ~Matrix() {
-        delete [] storage;
-        delete [] mat;
+        clear();
     }
 };
 

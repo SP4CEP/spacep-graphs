@@ -174,7 +174,10 @@ public:
      **/
     void printMatrix(Matrix<DijkstraAux> F);
 
-    bool floyd();
+    /**
+    * @brief Floyd-Warshall Algorithm
+    **/
+    bool floyd(Matrix<DijkstraAux> &Floyd, vector<string> &cycle, float &cycle_len);
 };
 
 #endif // DIGRAPH_H_INCLUDED

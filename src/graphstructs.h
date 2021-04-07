@@ -162,7 +162,8 @@ struct DijkstraAux {
     DigraphNode *node, *predecessor;
     string edge_tag;
 
-    void set(DigraphNode *n, DigraphNode *p, float ac, float w){
+    void set(DigraphNode *n, DigraphNode *p, float ac, float w, string t="")
+    {
         node = n;
         predecessor = p;
         edge_weight = w;

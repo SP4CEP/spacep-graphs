@@ -9,9 +9,11 @@ Description: Functions of the implementetion of a Digraph
 #include <iostream>
 #include <unordered_set>
 #include <unordered_map>
+#include <algorithm>
 #include <stack>
 #include <limits>
 #include <queue>
+
 #include "graphstructs.h"
 #include "linkedlist.h"
 #include "digraph.h"
@@ -20,6 +22,7 @@ Description: Functions of the implementetion of a Digraph
 
 using std::cout;
 using std::endl;
+using std::reverse;
 using std::string;
 using std::unordered_set;
 using std::unordered_map;
@@ -29,7 +32,9 @@ using std::stack;
 using std::greater;
 using std::numeric_limits;
 
-Digraph::Digraph() : num_edges(0), num_nodes(0), weighted(0), weight(0) {}
+Digraph::Digraph() : num_edges(0), num_nodes(0), weighted(0), weight(0)
+{
+}
 
 //**********************************************************************//
 
@@ -450,13 +455,19 @@ bool Digraph::dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle,
         DigraphNode *tree_j = tree.get_node(j->tag);
 
         // look for j in every ancestor of i in the arborescence
+        DigraphNode *i_ancestor = tree_i;
         cycle.clear();
-        for (DigraphNode* p = tree_i; p->inedges->Length() > 0; p = ancestor(p)) {
-            cycle.push_back(p->tag);
-            if (p == tree_j) {
+        while (true) {
+            cycle.push_back(i_ancestor->tag);
+            if (i_ancestor == tree_j) {
                 cycle_len = -dl;
+                reverse(cycle.begin(), cycle.end());
                 return false;
             }
+            if (i_ancestor->inedges->Length() > 0)
+                i_ancestor = ancestor(i_ancestor);
+            else
+                break;
         }
 
         // replace edge
@@ -468,10 +479,16 @@ bool Digraph::dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle,
 
         // update every descendant
         DigraphNode *p = tree_j;
-        while (p->outedges->Length() > 0) {
-            // take first outgoing node
-            p = descendant(p);
+        queue<DigraphNode*> nodes_to_update;
+        nodes_to_update.push(p);
+        while (!nodes_to_update.empty()) {
+            p = nodes_to_update.front();
+            // insert every descendant
+            for (DigraphEdge &e : *(p->outedges)) {
+                nodes_to_update.push(e.dest);
+            }
             label[p->tag].accumulated_weight -= dl;
+            nodes_to_update.pop();
         }
     }
     return true;
@@ -489,7 +506,7 @@ void Digraph::Graph2Mat(Matrix<DijkstraAux> &Floyd, unordered_map<string, int> &
 
     for (DigraphNode& row: nodes) {
         for(DigraphNode& col: nodes){
-            aux.set(nullptr, &row, numeric_limits<float>::infinity(), numeric_limits<float>::infinity());
+            aux.set(&row, nullptr, numeric_limits<float>::infinity(), numeric_limits<float>::infinity());
             Floyd[aux_map[row.tag]][aux_map[col.tag]] = aux;
         }
     }
@@ -506,26 +523,45 @@ void Digraph::Graph2Mat(Matrix<DijkstraAux> &Floyd, unordered_map<string, int> &
 
 //**********************************************************************//
 
-bool Digraph::floyd() {
-    Matrix<DijkstraAux> Floyd(num_nodes, num_nodes);
+bool Digraph::floyd(Matrix<DijkstraAux> &Floyd, vector<string> &cycle, float &cycle_len) {
     unordered_map<string, int> tag_to_index;
+    vector<string> index_to_tag;
+
+    Floyd.init(num_nodes, num_nodes);
     Graph2Mat(Floyd, tag_to_index);
+
+    for (DigraphNode &n : nodes)
+        index_to_tag.push_back(n.tag);
 
     for (int k = 0; k < num_nodes; ++k) {
         for (int i = 0; i < num_nodes; ++i) {
-            for (int j= 0; j < num_nodes; ++j) {
+            for (int j = 0; j < num_nodes; ++j) {
                 if (Floyd[i][j].accumulated_weight > Floyd[i][k].accumulated_weight +
                                                      Floyd[k][j].accumulated_weight) {
-
-                    Floyd[i][j].accumulated_weight = Floyd[i][k].accumulated_weight +
-                                                     Floyd[k][j].accumulated_weight;
-                    Floyd[i][j].predecessor = Floyd[k][j].predecessor;
-                    Floyd[i][j].edge_tag = Floyd[k][j].edge_tag;
-                    Floyd[i][j].edge_weight = Floyd[k][j].edge_weight;
+                    if (i != j) {
+                        Floyd[i][j].accumulated_weight = Floyd[i][k].accumulated_weight +
+                                                                     Floyd[k][j].accumulated_weight;
+                        
+                        Floyd[i][j].predecessor = Floyd[k][j].predecessor;
+                        Floyd[i][j].edge_tag = Floyd[k][j].edge_tag;
+                        Floyd[i][j].edge_weight = Floyd[k][j].edge_weight;
+                    } else {
+                        // Obtain cycle
+                        cycle_len = Floyd[i][k].accumulated_weight + Floyd[k][j].accumulated_weight;
+                        cycle.clear();
+                        cycle.push_back(index_to_tag[j]);
+                        for (int i_node = tag_to_index[Floyd[k][i].predecessor->tag];
+                             i_node != i;
+                             i_node = tag_to_index[Floyd[i][i_node].predecessor->tag])
+                            cycle.push_back(index_to_tag[i_node]);
+                        reverse(cycle.begin(), cycle.end());
+                        return false;
+                    }
                 }
             }
         }
     }
+    return true;
 }
 
 //**********************************************************************//
@@ -540,7 +576,7 @@ void Digraph::printMatrix(Matrix<DijkstraAux> F){
     for(DigraphNode& node: nodes){
        cout << endl << "*" << node << "* |\t"; 
        for(int j=0; j<num_nodes; j++){
-           if(F[i][j].node){
+           if(F[i][j].predecessor){
             cout << " (" << F[i][j] << ") |\t";
            }else{
               cout << " (-, ∞) |\t"; 
