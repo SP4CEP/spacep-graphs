@@ -9,6 +9,7 @@ Description: Functions of the implementetion of a Network
 
 #include <iostream>
 #include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 
 #include "graphstructs.h"
@@ -20,6 +21,7 @@ using std::endl;
 using std::reverse;
 using std::string;
 using std::unordered_set;
+using std::unordered_map;
 
 Network::Network() : num_edges(0), num_nodes(0) {
 }
@@ -319,4 +321,14 @@ inline NetworkNode* ancestor(NetworkNode *p) {
 
 inline NetworkNode* descendant(NetworkNode *p) {
     return (*(p->outedges->begin())).dest;
+}
+
+void Network::update_flow(unordered_map<string, float> edge_flow) {
+    for (NetworkNode node: nodes) {
+        for (NetworkEdge& edge : *(node.outedges)) 
+            edge.flow = edge_flow[edge.tag];
+        
+        for (NetworkEdge& edge : *(node.inedges)) 
+            edge.flow = edge_flow[edge.tag];
+    }
 }

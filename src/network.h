@@ -2,11 +2,12 @@
 #define NETWORK_H_INCLUDED
 
 #include <limits>
+#include <unordered_map>
 #include "linkedlist.h"
 #include "graphstructs.h"
 
 using std::numeric_limits;
-
+using std::unordered_map;
 using std::string;
 
 class Network {
@@ -150,6 +151,8 @@ public:
     * @brief Overload for = operator
     **/
     Network& operator=(const Network &);
+
+    void update_flow(unordered_map<string, float> edge_flow);
 
 };
 
