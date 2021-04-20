@@ -164,8 +164,12 @@ public:
     
     void set_terminus(string tag);
 
-    void update_flow(unordered_map<string, float> &edge_flow);
+    void remove_source(string tag);
+    
+    void remove_terminus(string tag);
 
+    void update_flow(unordered_map<string, float> &edge_flow);
+    
 };
 
 #endif // DIGRAPH_H_INCLUDED
