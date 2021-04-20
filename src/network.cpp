@@ -297,14 +297,14 @@ void Network::clear() {
 void Network::print() {
     cout << endl << "*****  NETWORK *****" << endl;
     for (NetworkNode& node: nodes) {
-        cout << node << " IN: ";
+        cout << node << " (" << node.restriction << ", " << node.capacity << ") " << " IN: ";
         for (NetworkEdge& edge: *(node.inedges)) {
-            cout << edge << " " << *(edge.origin);
+            cout << edge << " " << *(edge.origin) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ")";
             cout << " | ";
         }
-        cout << endl << node << " OUT: ";
+        cout << endl << node << " (" << node.restriction << ", " << node.capacity << ") " << " OUT: ";
         for (NetworkEdge& edge: *(node.outedges)) {
-            cout << edge << " " << *(edge.dest);
+            cout << edge << " " << *(edge.dest) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ")";
             cout << " | " ;
         }
         cout << endl << "-------------------------------------" << endl;
