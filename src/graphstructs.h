@@ -264,6 +264,12 @@ inline ostream& operator<<(ostream& os, const NetworkNode& node) {
 struct FordFulkersonTag {
     NetworkNode *predecessor;
     float flow;
+    bool reverse;
+    FordFulkersonTag(NetworkNode *prev_node, float flow, bool reverse) {
+        this->predecessor = prev_node;
+        this->flow = flow;
+        this->reverse = reverse;
+    };
 };
 
 #endif

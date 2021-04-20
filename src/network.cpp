@@ -323,6 +323,37 @@ inline NetworkNode* descendant(NetworkNode *p) {
     return (p->outedges->Length() > 0 ? (*(p->outedges->begin())).dest : nullptr);
 }
 
+
+//**********************************************************************//
+
+void Network::set_source(string tag){
+    sources.push_back(tag);
+}
+
+void Network::set_terminus(string tag){
+    terminuses.push_back(tag);
+}
+
+//**********************************************************************//
+
+
 void Network::ford_fulkerson() {
-    unordered_map
+    unordered_map<string, FordFulkersonTag> tag;
+    unordered_map<string, float> edge_flow;
+
+    // Flujo inicial en ceros
+    for (NetworkNode node : nodes) {
+        for (NetworkEdge edge : *(node.outedges)) {
+            edge_flow.insert({edge.tag, 0});
+        }
+    }
+
+    while (true) {
+        // Encontrar un flujo factible
+        // Establece el primero
+        ;
+    }
+    
+
+
 }

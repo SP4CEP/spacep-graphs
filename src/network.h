@@ -2,11 +2,13 @@
 #define NETWORK_H_INCLUDED
 
 #include <limits>
+#include <vector>
+
 #include "linkedlist.h"
 #include "graphstructs.h"
 
 using std::numeric_limits;
-
+using std::vector;
 using std::string;
 
 class Network {
@@ -14,6 +16,9 @@ class Network {
     int num_nodes;
 
     LinkedList<NetworkNode> nodes;
+
+    vector<string> sources;
+    vector<string> terminuses;
 
 public:
 
@@ -150,6 +155,12 @@ public:
     * @brief Overload for = operator
     **/
     Network& operator=(const Network &);
+
+    void ford_fulkerson();
+
+    void set_source(string tag);
+    
+    void set_terminus(string tag);
 
 };
 
