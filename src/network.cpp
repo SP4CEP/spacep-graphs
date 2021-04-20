@@ -357,3 +357,13 @@ void Network::ford_fulkerson() {
 
 
 }
+
+void Network::update_flow(unordered_map<string, float> edge_flow) {
+    for (NetworkNode node: nodes) {
+        for (NetworkEdge& edge : *(node.outedges)) 
+            edge.flow = edge_flow[edge.tag];
+        
+        for (NetworkEdge& edge : *(node.inedges)) 
+            edge.flow = edge_flow[edge.tag];
+    }
+}

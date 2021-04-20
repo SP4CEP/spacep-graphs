@@ -3,12 +3,14 @@
 
 #include <limits>
 #include <vector>
+#include <unordered_map>
 
 #include "linkedlist.h"
 #include "graphstructs.h"
 
 using std::numeric_limits;
 using std::vector;
+using std::unordered_map;
 using std::string;
 
 class Network {
@@ -161,6 +163,8 @@ public:
     void set_source(string tag);
     
     void set_terminus(string tag);
+    
+    void update_flow(unordered_map<string, float> edge_flow);
 
 };
 
