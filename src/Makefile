@@ -1,3 +1,5 @@
+network.out: main.cpp network.cpp linkedlist.cpp
+	g++ main.cpp network.cpp linkedlist.cpp -o network.out
 digraph.out: main.cpp digraph.cpp linkedlist.cpp
 	g++ main.cpp digraph.cpp linkedlist.cpp -o digraph.out
 graph.out: main_graph.cpp graph.cpp linkedlist.cpp
