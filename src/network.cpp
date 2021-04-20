@@ -11,6 +11,8 @@ Description: Functions of the implementetion of a Network
 #include <unordered_set>
 #include <unordered_map>
 #include <algorithm>
+#include <queue>
+#include <limits>
 
 #include "graphstructs.h"
 #include "linkedlist.h"
@@ -19,9 +21,12 @@ Description: Functions of the implementetion of a Network
 using std::cout;
 using std::endl;
 using std::reverse;
+using std::min;
 using std::string;
 using std::unordered_set;
 using std::unordered_map;
+using std::queue;
+using std::numeric_limits;
 
 Network::Network() : num_edges(0), num_nodes(0) {
 }
@@ -60,6 +65,8 @@ Network& Network::operator=(const Network &G) {
             }
         }
     }
+    this->sources = G.sources;
+    this->terminuses = G.terminuses;
     return *this;
 }
 
@@ -337,11 +344,20 @@ void Network::set_terminus(string tag){
 //**********************************************************************//
 
 
-void Network::ford_fulkerson() {
+bool Network::ford_fulkerson() {
     unordered_map<string, FordFulkersonTag> tag;
     unordered_map<string, float> edge_flow;
+    queue<NetworkNode*> examine_q;
+    NetworkNode* source;
+    NetworkNode* terminus;
 
-    // Flujo inicial en ceros
+    if (sources.size() != 1 || terminuses.size() != 1)
+        return false;
+    
+    source = get_node(sources[0]);
+    terminus = get_node(terminuses[0]);
+
+    // Initial flow to zero
     for (NetworkNode node : nodes) {
         for (NetworkEdge edge : *(node.outedges)) {
             edge_flow.insert({edge.tag, 0});
@@ -349,16 +365,76 @@ void Network::ford_fulkerson() {
     }
 
     while (true) {
-        // Encontrar un flujo factible
-        // Establece el primero
-        ;
+        // flag to see if terminus node was reached
+        bool found_terminus = false;
+
+        // Find factible flow. Set source
+        FordFulkersonTag aux(source, numeric_limits<float>::infinity(), false, "");
+        tag.insert({source->tag, aux});
+        examine_q.push(source);
+
+        while (!found_terminus && !examine_q.empty()) {
+            // Select a node to examine
+            NetworkNode *j = examine_q.front();
+            examine_q.pop();
+
+            // Positive incident edges
+            for (NetworkEdge e : *(j->outedges)) {
+                // If node not tagged yet and flow < capacity
+                if (tag.find(e.dest->tag) == tag.end() && edge_flow[e.tag] < e.capacity) {
+                    FordFulkersonTag new_tag(j, min(tag[j->tag].flow, 
+                                                    e.capacity - edge_flow[e.tag]), false, e.tag);
+                    tag.insert({e.dest->tag, new_tag});
+                    examine_q.push(e.dest);
+                    if (e.dest == terminus) {
+                        found_terminus = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (found_terminus) break;
+
+            // Negative incident edges
+            for (NetworkEdge e : *(j->inedges)) {
+                // If node not tagged yet and flow > 0
+                if (tag.find(e.origin->tag) == tag.end() && edge_flow[e.tag] > 0) {
+                    FordFulkersonTag new_tag(j, min(tag[j->tag].flow, 
+                                                    edge_flow[e.tag]), true, e.tag);
+                    tag.insert({e.origin->tag, new_tag});
+                    examine_q.push(e.origin);
+                    if (e.dest == terminus) {
+                        found_terminus = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!found_terminus) {
+            // Optimal flow already found. Return.
+            break;
+        }
+
+        // Update optimal flow. 
+        float delta = tag[terminus->tag].flow;
+
+        // update flow in every single edge. Begin in terminus, end at source.
+        for (NetworkNode *x = terminus; x != tag[x->tag].predecessor; x = tag[x->tag].predecessor) {
+            if (x->tag == "d") cout << "a";
+            // if reversed substract, else, add
+            edge_flow[tag[x->tag].edge_tag] += delta * (tag[x->tag].reverse ? -1 : 1);
+        }
+
+        // clear node tags to find another flow
+        tag.clear();
     }
-    
 
-
+    update_flow(edge_flow);
+    return true;
 }
 
-void Network::update_flow(unordered_map<string, float> edge_flow) {
+void Network::update_flow(unordered_map<string, float> &edge_flow) {
     for (NetworkNode node: nodes) {
         for (NetworkEdge& edge : *(node.outedges)) 
             edge.flow = edge_flow[edge.tag];

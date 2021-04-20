@@ -23,13 +23,32 @@ using std::ifstream;
 int main(int argc, char *argv[]) {
     Network N;
 
-    N.add_node("a", 20, 10);
+    N.add_node("a");
     N.add_node("b");
+    N.add_node("c");
+    N.add_node("d");
+    N.add_node("e");
+    N.add_node("f");
+    N.add_node("g");
 
-    N.add_edge("a", "b", "e1");
-    N.print();
+    N.add_edge("a", "b", "e1", 5);
+    N.add_edge("a", "c", "e2", 7);
+    N.add_edge("a", "d", "e3", 12);
+    N.add_edge("b", "e", "e4", 15);
+    N.add_edge("c", "e", "e5", 8);
+    N.add_edge("d", "c", "e6", 9);
+    N.add_edge("d", "f", "e7", 10);
+    N.add_edge("e", "f", "e8", 9);
+    N.add_edge("e", "g", "e9", 10);
+    N.add_edge("f", "g", "e10", 12);
 
-    N.clear();
+    N.set_source("a");
+    N.set_terminus("g");
+
+    if (!N.ford_fulkerson()) {
+        cout << "Something missing... Hmmmm... 🤔" << endl;
+    }
+
     N.print();
 
     return 0;

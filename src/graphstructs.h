@@ -265,11 +265,24 @@ struct FordFulkersonTag {
     NetworkNode *predecessor;
     float flow;
     bool reverse;
-    FordFulkersonTag(NetworkNode *prev_node, float flow, bool reverse) {
+    string edge_tag;
+    
+    FordFulkersonTag(){};
+
+    FordFulkersonTag(NetworkNode *prev_node, float flow, bool reverse, string edge_tag) {
         this->predecessor = prev_node;
         this->flow = flow;
         this->reverse = reverse;
+        this->edge_tag = edge_tag;
     };
+
+    FordFulkersonTag &operator=(const FordFulkersonTag& other) {
+        this->predecessor = other.predecessor;
+        this->flow = other.flow;
+        this->reverse = other.reverse;
+        this->edge_tag = other.edge_tag;
+        return *this;
+    }
 };
 
 #endif

@@ -158,13 +158,13 @@ public:
     **/
     Network& operator=(const Network &);
 
-    void ford_fulkerson();
+    bool ford_fulkerson();
 
     void set_source(string tag);
     
     void set_terminus(string tag);
-    
-    void update_flow(unordered_map<string, float> edge_flow);
+
+    void update_flow(unordered_map<string, float> &edge_flow);
 
 };
 
