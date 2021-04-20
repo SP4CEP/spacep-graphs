@@ -334,6 +334,24 @@ void Network::set_terminus(string tag){
     terminuses.push_back(tag);
 }
 
+void Network::remove_source(string tag){
+    int position;
+    for (position = 0; position < tag.length(); position++) {
+        if (sources[position] == tag)
+            break;
+    }
+    sources.erase(sources.begin() + position);
+}
+
+void Network::remove_terminus(string tag){
+    int position;
+    for (position = 0; position < tag.length(); position++) {
+        if (sources[position] == tag)
+            break;
+    }
+    terminuses.erase(terminuses.begin() + position);
+}
+
 //**********************************************************************//
 
 
