@@ -18,6 +18,9 @@ template class LinkedList<GraphNode*>;
 template class LinkedList<DigraphEdge>;
 template class LinkedList<DigraphNode>;
 template class LinkedList<DigraphNode*>;
+template class LinkedList<NetworkEdge>;
+template class LinkedList<NetworkNode>;
+template class LinkedList<NetworkNode*>;
 
 
 using std::cout;

@@ -9,6 +9,7 @@ Description: Main file
 #include <iostream>
 #include <fstream>
 #include "digraph.h"
+#include "network.h"
 #include "graphstructs.h"
 #include "matrix.h"
 
@@ -96,4 +97,37 @@ int main(int argc, char *argv[]) {
 
 
     return 0;
+}
+
+void read_network(string path, Network &N) {
+    ifstream file;
+    N.clear();
+    std::string v="", v1, v2, tag;
+    int type;
+    file.open(path);
+
+    if(file.fail()){
+        cout << "Error Opening File... \n";
+        exit(1);
+    }
+
+    file >> type;
+    
+    file >> v;
+    while(v != "<TOKEN>"){
+       G.add_node(v);
+       file >> v;
+    }
+    if(type == 0){
+       while(file.eof() == false){
+       file >> v1 >> v2 >> tag;
+       G.add_edge(v1, v2, tag);
+       }
+    }else{
+       float w;
+       while(file.eof() == false){
+       file >> v1 >> v2 >> tag >> w;
+       G.add_edge(v1, v2, tag, w);
+       } 
+    }
 }

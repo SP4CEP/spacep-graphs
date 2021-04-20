@@ -11,6 +11,8 @@ struct GraphNode;
 struct AuxEdge;
 struct DigraphEdge;
 struct DigraphNode;
+struct NetworkEdge;
+struct NetworkNode;
 
 struct GraphEdge {
     string tag;
@@ -200,5 +202,64 @@ struct DijkstraAux {
 inline ostream& operator<<(ostream& os, const DijkstraAux& a) {
     return os << a.predecessor->tag << ", " << a.accumulated_weight;
 }
+
+struct NetworkEdge{
+    string tag;
+    NetworkNode* origin;
+    NetworkNode* dest;
+    float capacity, restriction, flow;
+
+    bool operator==(const NetworkEdge &other) const {
+        return tag == other.tag;
+    };
+    bool operator<(const NetworkEdge &other) const {
+        return tag < other.tag;
+    };
+    bool operator>(const NetworkEdge &other) const {
+        return tag > other.tag;
+    };
+    bool operator!=(const NetworkEdge &other) const {
+        return !(*this == other);
+    };
+    bool operator<=(const NetworkEdge &other) const {
+        return *this < other || *this == other;
+    };
+    bool operator>=(const NetworkEdge &other) const {
+        return *this > other || *this == other;
+    };
+};
+
+inline ostream& operator<<(ostream& os, const NetworkEdge& edge) {
+    return os << edge.tag;
+}
+struct NetworkNode {
+    string tag;
+    LinkedList<NetworkEdge>* inedges; 
+    LinkedList<NetworkEdge>* outedges;
+    float capacity, restriction;
+    bool operator==(const NetworkNode& other) const {
+        return tag == other.tag;
+    };
+    bool operator<(const NetworkNode& other) const {
+        return tag < other.tag;
+    };
+    bool operator>(const NetworkNode& other) const {
+        return tag > other.tag;
+    };
+    bool operator!=(const NetworkNode &other) const {
+        return !(*this == other);
+    };
+    bool operator<=(const NetworkNode &other) const {
+        return *this < other || *this == other;
+    };
+    bool operator>=(const NetworkNode &other) const {
+        return *this > other || *this == other;
+    };
+};
+
+inline ostream& operator<<(ostream& os, const NetworkNode& node) {
+    return os << node.tag;
+}
+
 
 #endif
