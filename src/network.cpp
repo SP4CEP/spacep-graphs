@@ -9,6 +9,7 @@ Description: Functions of the implementetion of a Network
 
 #include <iostream>
 #include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 
 #include "graphstructs.h"
@@ -20,6 +21,7 @@ using std::endl;
 using std::reverse;
 using std::string;
 using std::unordered_set;
+using std::unordered_map;
 
 Network::Network() : num_edges(0), num_nodes(0) {
 }
@@ -314,9 +316,13 @@ void Network::print() {
 //**********************************************************************//
 
 inline NetworkNode* ancestor(NetworkNode *p) {
-    return (*(p->inedges->begin())).origin;
+    return (p->inedges->Length() > 0 ? (*(p->inedges->begin())).origin : nullptr);
 }
 
 inline NetworkNode* descendant(NetworkNode *p) {
-    return (*(p->outedges->begin())).dest;
+    return (p->outedges->Length() > 0 ? (*(p->outedges->begin())).dest : nullptr);
+}
+
+void Network::ford_fulkerson() {
+    unordered_map
 }

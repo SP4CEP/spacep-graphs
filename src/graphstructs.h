@@ -261,5 +261,9 @@ inline ostream& operator<<(ostream& os, const NetworkNode& node) {
     return os << node.tag;
 }
 
+struct FordFulkersonTag {
+    NetworkNode *predecessor;
+    float flow;
+};
 
 #endif
