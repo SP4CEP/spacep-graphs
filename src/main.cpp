@@ -22,7 +22,7 @@ using std::ifstream;
 
 int main(int argc, char *argv[]) {
     Network N;
-
+/*
     N.add_node("a");
     N.add_node("b");
     N.add_node("c");
@@ -30,26 +30,77 @@ int main(int argc, char *argv[]) {
     N.add_node("e");
     N.add_node("f");
     N.add_node("g");
+    N.add_node("h");
+    N.add_node("i");
+    N.add_node("j");
+    N.add_node("k");
 
-    N.add_edge("a", "b", "e1", 5);
-    N.add_edge("a", "c", "e2", 7);
-    N.add_edge("a", "d", "e3", 12);
-    N.add_edge("b", "e", "e4", 15);
-    N.add_edge("c", "e", "e5", 8);
-    N.add_edge("d", "c", "e6", 9);
-    N.add_edge("d", "f", "e7", 10);
-    N.add_edge("e", "f", "e8", 9);
-    N.add_edge("e", "g", "e9", 10);
-    N.add_edge("f", "g", "e10", 12);
+    N.add_edge("a", "b", "e1", 19);
+    N.add_edge("a", "c", "e2", 5);
+    N.add_edge("a", "d", "e3", 74);
+    N.add_edge("a", "f", "e4", 10);
+    N.add_edge("b", "c", "e5", 1);
+    N.add_edge("b", "g", "e6", 28);
+    N.add_edge("c", "e", "e7", 10);
+    N.add_edge("c", "f", "e8", 12);
+    N.add_edge("d", "f", "e9", 2);
+    N.add_edge("d", "i", "e10", 11);
+    N.add_edge("e", "b", "e11", 6);
+    N.add_edge("e", "f", "e12", 3);
+    N.add_edge("e", "h", "e13", 8);
+    N.add_edge("f", "h", "e14", 16);
+    N.add_edge("f", "i", "e15", 18);
+    N.add_edge("g", "e", "e16", 4);
+    N.add_edge("g", "h", "e17", 6);
+    N.add_edge("g", "j", "e18", 25);
+    N.add_edge("h", "j", "e19", 46);
+    N.add_edge("h", "k", "e20", 38);
+    N.add_edge("i", "e", "e21", 15);
+    N.add_edge("i", "h", "e22", 14);
+    N.add_edge("i", "k", "e23", 12);
+    N.add_edge("k", "j", "e24", 20);
 
     N.set_source("a");
-    N.set_terminus("g");
+    N.set_terminus("j");
 
-    if (!N.ford_fulkerson()) {
+    float flow;
+
+    if (!N.ford_fulkerson(flow)) {
         cout << "Something missing... Hmmmm... 🤔" << endl;
     }
 
+*/
+
+    N.add_node("a");
+    N.add_node("b");
+    N.add_node("c");
+    N.add_node("d");
+    N.add_node("e");
+    N.add_node("f");
+
+    N.add_edge("a", "d", "e1", 7);
+    N.add_edge("b", "d", "e2", 8);
+    N.add_edge("c", "d", "e3", 2);
+    N.add_edge("d", "e", "e4", 9);
+    N.add_edge("d", "f", "e5", 10);
+
+    N.set_source("a");
+    N.set_source("b");
+    N.set_source("c");
+
+    N.set_terminus("e");
+    N.set_terminus("f");
+
     N.print();
+
+    float f;
+
+    if (N.general_ford_fulkerson(f)) {
+        cout << "Se encontró solución" << endl;
+        N.print();
+    } else {
+        cout << "No se encontró solución :(((" << endl;
+    }
 
     return 0;
 }
