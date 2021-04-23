@@ -367,6 +367,7 @@ bool Network::ford_fulkerson(float &total_flow) {
     unordered_map<string, float> edge_flow;
     NetworkNode* source;
     NetworkNode* terminus;
+    
 
     if (sources.size() != 1 || terminuses.size() != 1)
         return false;
@@ -375,6 +376,7 @@ bool Network::ford_fulkerson(float &total_flow) {
     terminus = get_node(terminuses[0]);
     
     // Set initial total flow as the flow from source
+    total_flow = 0;
     for (NetworkEdge &e : *(source->outedges)) {
         total_flow += e.flow;
     }
@@ -542,8 +544,6 @@ bool Network::general_ford_fulkerson(float &total_flow) {
     string super_terminus_tag = "super_terminus";
     string super_source_tag = "super_source";
 
-    N_aux.print();
-
     // Resolve multiple sources
     if (sources.size() > 1) {
         multiple_sources = true;
@@ -566,7 +566,8 @@ bool Network::general_ford_fulkerson(float &total_flow) {
         }
     }
 
-    N_aux.print();
+    //cout << "Aquí se pusieron super source y super terminus" << endl;
+    //N_aux.print();
 
     // Resolve nodes with restrictions
     for (NetworkNode &n : nodes) {
@@ -592,7 +593,8 @@ bool Network::general_ford_fulkerson(float &total_flow) {
         }
     }
     
-    N_aux.print();
+    //cout << "Aquí se ponen nodos partidos a la mitad xD" << endl;
+    //N_aux.print();
 
     // Resolve remaining edges with minimum restriction
     string prev_source, prev_terminus;
@@ -644,7 +646,8 @@ bool Network::general_ford_fulkerson(float &total_flow) {
         // Find a factible flow
         N_aux.ford_fulkerson(total_flow);
 
-        N_aux.print();
+        //cout << "Aquí se resuleven aristas con mínimos y se encuentra flujo factible de: " << total_flow << endl;
+        //N_aux.print();
 
         // Restore edge with minimum restrictions
         NetworkNode* temp_terminus = N_aux.get_node(N_aux.terminuses[0]);
@@ -690,9 +693,13 @@ bool Network::general_ford_fulkerson(float &total_flow) {
 
     }
 
+    //cout << "Aquí el flujo factible se ha repartido entre las aristas restringidas" << endl;
+    //N_aux.print();
+
     N_aux.ford_fulkerson(total_flow);
 
-    N_aux.print();
+    //cout << "Aquí el flujo factible se ha encontrado el flujo óptimo de: " << total_flow << endl;
+    //N_aux.print();
 
     // Restore nodes with restrictions
     if (node_restrictions) {
@@ -722,7 +729,8 @@ bool Network::general_ford_fulkerson(float &total_flow) {
         }
     }
 
-    N_aux.print();
+    //cout << "Aquí se han restaurado los nodos con restricciones" << endl;
+    //N_aux.print();
 
     // Restore multiple sources
     if (multiple_sources){
@@ -741,6 +749,8 @@ bool Network::general_ford_fulkerson(float &total_flow) {
             N_aux.set_terminus(term);
         }
     }
+
+    //cout << "Aquí se han restaurado multiples sumideros y fuentes" << endl;
 
     // Set auxiliar as current graph
     *this = N_aux;

@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 
     N.add_edge("a", "b", "e1", 10);
     N.add_edge("a", "c", "e2", 5);
-    N.add_edge("a", "d", "e3", 4);
+    N.add_edge("a", "d", "e3", 5);
     N.add_edge("a", "j", "e4", 20);
     N.add_edge("b", "c", "e5", 4);
     N.add_edge("b", "e", "e6", 10, 5);
@@ -54,21 +54,21 @@ int main(int argc, char *argv[]) {
     N.add_edge("j", "g", "e18", 10);
 
     N.set_source("a");
-    N.set_source("b");
-    N.set_source("c");
+    N.set_source("j");
 
-    N.set_terminus("e");
-    N.set_terminus("f");
+    N.set_terminus("h");
+    N.set_terminus("i");
 
     N.print();
 
     float f;
 
     if (N.general_ford_fulkerson(f)) {
-        cout << "Se encontró solución" << endl;
+        cout << "Solution found! :)" << endl;
         N.print();
+        cout << "Optimal flow : " << f << endl;
     } else {
-        cout << "No se encontró solución :(((" << endl;
+        cout << "Solution not found :(((" << endl;
     }
 
     return 0;
