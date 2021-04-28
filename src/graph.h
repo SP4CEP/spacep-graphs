@@ -149,6 +149,11 @@ public:
     void print();
 
     /**
+     *@brief Function to get nodes list
+     **/ 
+    LinkedList<GraphNode> get_nodes();
+
+    /**
     * @brief Overload for = operator
     **/
     Graph& operator=(const Graph &);

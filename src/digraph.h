@@ -155,6 +155,11 @@ public:
     void print();
 
     /**
+     * @brief Return the node list
+     * */
+    LinkedList<DigraphNode> get_nodes();
+
+    /**
     * @brief Overload for = operator
     **/
     Digraph& operator=(const Digraph &);

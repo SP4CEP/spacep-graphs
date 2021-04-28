@@ -77,6 +77,24 @@ Network::~Network() {
 }
 
 //**********************************************************************//
+vector<string> Network::get_sources(){
+    vector<string> s = sources;
+    return s;
+}
+
+//**********************************************************************//
+
+vector<string> Network::get_terminuses(){
+    vector<string> t = terminuses;
+    return t;
+}
+//**********************************************************************//
+
+LinkedList<NetworkNode> Network::get_nodes(){
+    return nodes;
+}
+
+//**********************************************************************//
 
 bool Network::add_node(string tag, float capacity, float restriction) {
     if (!find_node(tag)) { // If tag found

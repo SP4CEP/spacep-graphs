@@ -1,0 +1,18 @@
+{
+    "edges": [
+        {
+            "dest": "b",
+            "origin": "a",
+            "weight": 63.0
+        }
+    ],
+    "nodes": [
+        {
+            "tag": "a"
+        },
+        {
+            "tag": "b"
+        }
+    ],
+    "type": "graph"
+}

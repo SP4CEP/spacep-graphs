@@ -169,6 +169,12 @@ public:
     void remove_terminus(string tag);
 
     void update_flow(unordered_map<string, float> &edge_flow);
+
+    vector<string> get_sources();
+
+    vector<string> get_terminuses();
+
+    LinkedList<NetworkNode> get_nodes();
     
 };
 
