@@ -381,7 +381,7 @@ bool Network::ford_fulkerson(float &total_flow) {
         total_flow += e.flow;
     }
 
-    // Initial flow to zero
+    // Initial flow
     for (NetworkNode node : nodes) {
         for (NetworkEdge edge : *(node.outedges)) {
             edge_flow.insert({edge.tag, edge.flow});
@@ -423,9 +423,10 @@ bool Network::ford_fulkerson(float &total_flow) {
             // Negative incident edges
             for (NetworkEdge e : *(j->inedges)) {
                 // If node not tagged yet and flow > 0
-                if (tag.find(e.origin->tag) == tag.end() && edge_flow[e.tag] > 0) {
+                if (tag.find(e.origin->tag) == tag.end() && edge_flow[e.tag] - e.restriction > 0)
+                {
                     FordFulkersonTag new_tag(j, min(tag[j->tag].flow, 
-                                                    edge_flow[e.tag]), true, e.tag);
+                                                    edge_flow[e.tag] - e.restriction), true, e.tag);
                     tag.insert({e.origin->tag, new_tag});
                     examine_q.push(e.origin);
                     if (e.origin == terminus) {
@@ -444,6 +445,13 @@ bool Network::ford_fulkerson(float &total_flow) {
         // Update optimal flow. 
         float delta = tag[terminus->tag].flow;
         total_flow += delta;
+
+        // print info
+        //cout << "Cadena aumentante encontrada con delta " << delta << ": " << endl;
+        //for (NetworkNode *x = terminus; x != source; x = tag[x->tag].predecessor) {
+        //    cout << x->tag << " ";
+        //}
+        //cout << source->tag << endl;
 
         // update flow in every single edge. Begin in terminus, end at source.
         for (NetworkNode *x = terminus; x != tag[x->tag].predecessor; x = tag[x->tag].predecessor) {
@@ -646,7 +654,7 @@ bool Network::general_ford_fulkerson(float &total_flow) {
         // Find a factible flow
         N_aux.ford_fulkerson(total_flow);
 
-        //cout << "Aquí se resuleven aristas con mínimos y se encuentra flujo factible de: " << total_flow << endl;
+        //cout << "Aquí se resuleven aristas con mínimos." << endl;
         //N_aux.print();
 
         // Restore edge with minimum restrictions
@@ -693,7 +701,7 @@ bool Network::general_ford_fulkerson(float &total_flow) {
 
     }
 
-    //cout << "Aquí el flujo factible se ha repartido entre las aristas restringidas" << endl;
+    //cout << "Aquí el flujo factible de " << N_aux.current_flow() << " se ha repartido entre las aristas restringidas" << endl;
     //N_aux.print();
 
     N_aux.ford_fulkerson(total_flow);
@@ -768,4 +776,18 @@ void Network::update_flow(unordered_map<string, float> &edge_flow) {
         for (NetworkEdge& edge : *(node.inedges)) 
             edge.flow = edge_flow[edge.tag];
     }
+}
+
+float Network::current_flow() {
+    if (sources.size() != 1) return - numeric_limits<float>::infinity();
+    
+    float total_flow = 0;
+    NetworkNode *source = get_node(sources[0]);
+    
+    // Set initial total flow as the flow from source
+    for (NetworkEdge &e : *(source->outedges)) {
+        total_flow += e.flow;
+    }
+
+    return total_flow;
 }

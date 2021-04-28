@@ -177,6 +177,8 @@ public:
     bool get_edge(string node1_tag, string node2_tag, NetworkEdge &edge);
 
     bool set_edge(string node1_tag, string node2_tag, float new_capacity, float new_restriction, float new_flow);
+    
+    float current_flow();
 };
 
 #endif // DIGRAPH_H_INCLUDED
