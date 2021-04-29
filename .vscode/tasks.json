@@ -6,13 +6,13 @@
             "command": "/usr/bin/g++",
             "args": [
                 "-g",
-                "${workspaceFolder}/src/main.cpp",
+                "${workspaceFolder}/src/main_testing.cpp",
                 "${workspaceFolder}/src/digraph.cpp",
                 "${workspaceFolder}/src/linkedlist.cpp",
                 "${workspaceFolder}/src/graph.cpp",
                 "${workspaceFolder}/src/network.cpp",
                 "-o",
-                "${workspaceFolder}/src/digraph.out"
+                "${workspaceFolder}/src/testing.out"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

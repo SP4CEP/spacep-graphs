@@ -870,7 +870,7 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
     if (!general_ford_fulkerson(flow, target_flow)) {
         return false;
     }
-    print();
+    //print();
 
     Digraph d;
     d.set_type(1);
@@ -879,7 +879,7 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
     vector<string> cycle;
 
     marginal_network(d);
-    d.print();
+    //d.print();
 
     total_cost = current_cost();
 

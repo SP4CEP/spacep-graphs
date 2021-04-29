@@ -464,6 +464,7 @@ bool Digraph::dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle,
             if (i_ancestor == tree_j) {
                 cycle_len = -dl;
                 reverse(cycle.begin(), cycle.end());
+                cycle.push_back(cycle[0]);
                 return false;
             }
             if (i_ancestor->inedges->Length() > 0)
@@ -557,6 +558,7 @@ bool Digraph::floyd(Matrix<DijkstraAux> &Floyd, vector<string> &cycle, float &cy
                              i_node = tag_to_index[Floyd[i][i_node].predecessor->tag])
                             cycle.push_back(index_to_tag[i_node]);
                         reverse(cycle.begin(), cycle.end());
+                        cycle.push_back(cycle[0]);
                         return false;
                     }
                 }

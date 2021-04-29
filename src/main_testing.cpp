@@ -25,6 +25,7 @@ using std::ofstream;
 using json = nlohmann::json;
 
 int main(int argc, char *argv[]){
+    /*
     Network N;
 
     N.add_node("a");
@@ -68,6 +69,56 @@ int main(int argc, char *argv[]){
     }
 
     return 0;
+
+    */
+
+    Digraph D;
+
+    D.add_node("a");
+    D.add_node("b");
+    D.add_node("c");
+    D.add_node("d");
+    D.add_node("e");
+    D.add_node("f");
+    D.add_node("g");
+
+    D.add_edge("a", "b", "e1", 15);
+    D.add_edge("a", "c", "e2", 9);
+    D.add_edge("a", "d", "e3", 7);
+    D.add_edge("b", "c", "e4", -3);
+    D.add_edge("b", "e", "e5", 7);
+    D.add_edge("c", "a", "e6", -9);
+    D.add_edge("c", "b", "e7", 3);
+    D.add_edge("c", "d", "e8", 8);
+    D.add_edge("c", "e", "e9", 20);
+    D.add_edge("d", "a", "e10", -7);
+    D.add_edge("d", "f", "e11", 3);
+    D.add_edge("e", "b", "e12", -7);
+    D.add_edge("e", "c", "e13", 2);
+    D.add_edge("e", "g", "e14", 20);
+    D.add_edge("f", "d", "e15", -3);
+    D.add_edge("f", "e", "e21", 7);
+    D.add_edge("f", "g", "e17", 13);
+    D.add_edge("g", "e", "e18", -20);
+    D.add_edge("g", "f", "e19", -13);
+
+    D.print();
+
+    Digraph T;
+    vector<string> cycle;
+    float cycle_len;
+
+    if (D.dijkstra("a", T, cycle, cycle_len)) {
+        cout << "Se encontró solución";
+        T.print();
+    } else {
+        cout << "Se encontró un ciclo de longitud: " << cycle_len << endl;
+        for (string n : cycle)
+            cout << n << " ";
+        cout << endl;
+        
+    }
+
     /*
     string filename = "digrafasdf.json";
     ifstream i("examples/digraph.json");

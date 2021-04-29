@@ -8,7 +8,7 @@
             "name": "g++ - Build and debug project",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/digraph.out",
+            "program": "${workspaceFolder}/src/testing.out",
             "args": [
                 "${workspaceFolder}/src/examples/dijkstra_neg1.txt"
             ],
