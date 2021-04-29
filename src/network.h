@@ -7,6 +7,7 @@
 
 #include "linkedlist.h"
 #include "graphstructs.h"
+#include "digraph.h"
 
 using std::numeric_limits;
 using std::vector;
@@ -57,7 +58,7 @@ public:
     * @param restriction Minimum flow that can pass through the edge
     * @return Whether the edge was inserted.
     **/
-    bool add_edge(string node1_tag, string node2_tag, string edge_tag, float capacity=numeric_limits<float>::infinity(), float restriction=0, float flow=0);
+    bool add_edge(string node1_tag, string node2_tag, string edge_tag, float capacity=numeric_limits<float>::infinity(), float restriction=0, float flow=0, float cost=0);
 
     /**
     * @brief Function that removes a node.
@@ -158,7 +159,7 @@ public:
     **/
     Network& operator=(const Network &);
 
-    bool ford_fulkerson(float &total_flow);
+    bool ford_fulkerson(float &total_flow, float target_flow = numeric_limits<float>::infinity());
 
     void set_source(string tag);
     
@@ -170,8 +171,8 @@ public:
 
     void update_flow(unordered_map<string, float> &edge_flow);
 
-    bool general_ford_fulkerson(float &total_flow);
-    
+    bool general_ford_fulkerson(float &total_flow, float target_flow=numeric_limits<float>::infinity());
+
     void sum_edge_capacity(string &node1_tag, string &node2_tag, float restriction);
 
     bool get_edge(string node1_tag, string node2_tag, NetworkEdge &edge);
@@ -179,6 +180,10 @@ public:
     bool set_edge(string node1_tag, string node2_tag, float new_capacity, float new_restriction, float new_flow);
     
     float current_flow();
+
+    bool primal_minimum_cost_flow(float target_flow);
+
+    void marginal_network(Digraph &n);
 };
 
 #endif // DIGRAPH_H_INCLUDED

@@ -207,7 +207,7 @@ struct NetworkEdge{
     string tag;
     NetworkNode* origin;
     NetworkNode* dest;
-    float capacity, restriction, flow;
+    float capacity, restriction, flow, cost;
 
     bool operator==(const NetworkEdge &other) const {
         return tag == other.tag;

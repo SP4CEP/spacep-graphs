@@ -13,6 +13,7 @@ Description: Functions of the implementetion of a Network
 #include <algorithm>
 #include <queue>
 #include <limits>
+#include <cassert>
 
 #include "graphstructs.h"
 #include "linkedlist.h"
@@ -97,7 +98,7 @@ bool Network::add_node(string tag, float capacity, float restriction) {
 
 //**********************************************************************//
 
-bool Network::add_edge(string node1_tag, string node2_tag, string edge_tag, float capacity, float restriction, float flow) {
+bool Network::add_edge(string node1_tag, string node2_tag, string edge_tag, float capacity, float restriction, float flow, float cost) {
     //find both nodes
     NetworkNode* p1 = get_node(node1_tag); //origin node
     NetworkNode* p2 = get_node(node2_tag); // destination node
@@ -108,7 +109,8 @@ bool Network::add_edge(string node1_tag, string node2_tag, string edge_tag, floa
             .dest = p2,
             .capacity = capacity,
             .restriction = restriction,
-            .flow = flow
+            .flow = flow,
+            .cost = cost
         };
         p1->outedges->add(new_edge);
         p2->inedges->add(new_edge);
@@ -295,11 +297,15 @@ bool Network::remove_edges(string tag) {
 //**********************************************************************//
 
 void Network::clear() {
-    for (NetworkNode node: nodes) {
-        delete node.inedges;
-        delete node.outedges;
-    }
+    //for (NetworkNode node: nodes) {
+    //    delete node.inedges;
+    //    delete node.outedges;
+    //}
     nodes.clear();
+    num_edges = 0;
+    num_nodes = 0;
+    sources.clear();
+    terminuses.clear();
 }
 
 //**********************************************************************//
@@ -362,15 +368,13 @@ void Network::remove_terminus(string tag){
 
 //**********************************************************************//
 
-bool Network::ford_fulkerson(float &total_flow) {
+bool Network::ford_fulkerson(float &total_flow, float target_flow) {
     unordered_map<string, FordFulkersonTag> tag;
     unordered_map<string, float> edge_flow;
     NetworkNode* source;
     NetworkNode* terminus;
     
-
-    if (sources.size() != 1 || terminuses.size() != 1)
-        return false;
+    assert(sources.size() != 1 || terminuses.size() != 1);
     
     source = get_node(sources[0]);
     terminus = get_node(terminuses[0]);
@@ -380,6 +384,8 @@ bool Network::ford_fulkerson(float &total_flow) {
     for (NetworkEdge &e : *(source->outedges)) {
         total_flow += e.flow;
     }
+    // if target flow already reached, return false, nothing was done
+    if (total_flow > target_flow) return false;
 
     // Initial flow
     for (NetworkNode node : nodes) {
@@ -443,7 +449,11 @@ bool Network::ford_fulkerson(float &total_flow) {
         }
 
         // Update optimal flow. 
-        float delta = tag[terminus->tag].flow;
+        float max_delta = tag[terminus->tag].flow;
+        float delta;
+        
+        delta = min(max_delta, target_flow - total_flow);
+
         total_flow += delta;
 
         // print info
@@ -461,10 +471,21 @@ bool Network::ford_fulkerson(float &total_flow) {
 
         // clear node tags to find another flow
         tag.clear();
+
+        // if target flow reached, break loop
+        // substract an epsilon to avoid floating point infinite loops
+        if (total_flow >= target_flow - numeric_limits<float>::epsilon())
+            break;
     }
 
     update_flow(edge_flow);
-    return true;
+
+    // if target flow is infinity (default) return true
+    if (target_flow == numeric_limits<float>::infinity())
+        return true;
+    
+    // return if target flow was reached
+    return total_flow >= target_flow - numeric_limits<float>::epsilon();
 }
 
 //***************************************************************//
@@ -537,7 +558,7 @@ bool Network::set_edge(string node1_tag, string node2_tag, float new_capacity, f
 
 /***********************************************************/
 
-bool Network::general_ford_fulkerson(float &total_flow) {
+bool Network::general_ford_fulkerson(float &total_flow, float target_flow) {
     bool multiple_sources=false, multiple_terminuses=false, node_restrictions=false, edge_restrictions=false;
     Network N_aux = *this;
     vector<string> restricted_nodes;
@@ -704,7 +725,9 @@ bool Network::general_ford_fulkerson(float &total_flow) {
     //cout << "Aquí el flujo factible de " << N_aux.current_flow() << " se ha repartido entre las aristas restringidas" << endl;
     //N_aux.print();
 
-    N_aux.ford_fulkerson(total_flow);
+    // If target flow was not reached or initial (factible) flow surpased it
+    if (!N_aux.ford_fulkerson(total_flow, target_flow))
+        return false;
 
     //cout << "Aquí el flujo factible se ha encontrado el flujo óptimo de: " << total_flow << endl;
     //N_aux.print();
@@ -790,4 +813,65 @@ float Network::current_flow() {
     }
 
     return total_flow;
+}
+
+void Network::marginal_network(Digraph &g) {
+    g.clear();
+
+    for (NetworkNode &node : nodes) {
+        g.add_node(node.tag);
+    }
+
+    for (NetworkNode &node : nodes) {
+        for (NetworkEdge &edge : *(node.outedges)) {
+
+            if (edge.flow > 0)
+                g.add_edge(edge.origin->tag, edge.dest->tag, edge.tag, edge.cost);
+            
+            if (edge.flow < edge.capacity)
+                g.add_edge(edge.origin->tag, edge.dest->tag, edge.tag+"'", -edge.cost);
+        }
+    }
+}
+
+NetworkNode *get_sucessor(NetworkNode *p, string tag) {
+    for (NetworkEdge &e : *(p->outedges))
+        if (e.dest->tag == tag)
+            return e.dest;
+    return nullptr;
+}
+
+NetworkNode *get_predecessor(NetworkNode *p, string tag) {
+    for (NetworkEdge &e : *(p->inedges))
+        if (e.origin->tag == tag)
+            return e.origin;
+    return nullptr;
+}
+
+bool Network::primal_minimum_cost_flow(float target_flow) {
+    float flow;
+    if (!general_ford_fulkerson(flow, target_flow)) {
+        return false;
+    }
+
+    Digraph d;
+    Matrix<DijkstraAux> mat(0,0);
+    float cycle_len, total_cost=0;
+    vector<string> cycle;
+    marginal_network(d);
+
+    for (NetworkNode &node : nodes) {
+        for (NetworkEdge &edge : *(node.outedges)) {
+            total_cost += edge.flow * edge.cost;
+        }
+    }
+
+    while(!d.floyd(mat, cycle, cycle_len)) {
+        float min;
+        for (string node : cycle) {
+            NetworkNode *p = get_node(node);
+
+        }
+    }
+
 }
