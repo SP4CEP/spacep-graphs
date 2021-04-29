@@ -1,0 +1,19 @@
+{
+    "edges": [
+        {
+            "dest": "b",
+            "origin": "a",
+            "tag": "e1",
+            "weight": 63.0
+        }
+    ],
+    "nodes": [
+        {
+            "tag": "a"
+        },
+        {
+            "tag": "b"
+        }
+    ],
+    "type": "digraph"
+}

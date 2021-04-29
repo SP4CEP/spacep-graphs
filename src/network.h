@@ -171,8 +171,14 @@ public:
 
     void update_flow(unordered_map<string, float> &edge_flow);
 
-    bool general_ford_fulkerson(float &total_flow, float target_flow=numeric_limits<float>::infinity());
+    vector<string> get_sources();
 
+    vector<string> get_terminuses();
+
+    LinkedList<NetworkNode> get_nodes();
+
+    bool general_ford_fulkerson(float &total_flow, float target_flow=numeric_limits<float>::infinity());
+    
     void sum_edge_capacity(string &node1_tag, string &node2_tag, float restriction);
 
     bool get_edge(string node1_tag, string node2_tag, NetworkEdge &edge);

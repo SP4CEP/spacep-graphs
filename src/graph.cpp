@@ -287,6 +287,12 @@ void Graph::print() {
 
 //**********************************************************************//
 
+LinkedList<GraphNode> Graph::get_nodes(){
+    return nodes;
+}
+
+//**********************************************************************//
+
 bool Graph::is_bipartite(LinkedList<string> *P1, LinkedList<string> *P2) {
     LinkedList<GraphNode*> frontier;
     GraphNode *p;

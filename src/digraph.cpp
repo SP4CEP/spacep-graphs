@@ -586,3 +586,7 @@ void Digraph::printMatrix(Matrix<DijkstraAux> F){
     }
     cout << endl;
 }
+
+LinkedList<DigraphNode> Digraph::get_nodes(){
+    return nodes;
+}
