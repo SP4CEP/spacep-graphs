@@ -500,7 +500,7 @@ void Digraph::Graph2Mat(Matrix<DijkstraAux> &Floyd, unordered_map<string, int> &
     int ix = 0;
 
     for(DigraphNode& node: nodes){
-        aux_map.insert({node.tag,ix});
+        aux_map.insert({node.tag, ix});
         ix++;
     }
 
@@ -589,4 +589,44 @@ void Digraph::printMatrix(Matrix<DijkstraAux> F){
 
 LinkedList<DigraphNode> Digraph::get_nodes(){
     return nodes;
+}
+
+bool Digraph::get_edge(string node1_tag, string node2_tag, DigraphEdge &edge) {
+    DigraphNode* node1_ptr = get_node(node1_tag);
+    DigraphNode* node2_ptr = get_node(node2_tag);
+    if (node1_ptr && node2_ptr) {
+        for (DigraphEdge &e: *(node1_ptr->outedges)) {
+            if (e.dest == node2_ptr) {
+                edge = e;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**********************************************************/
+
+bool Digraph::set_edge(string node1_tag, string node2_tag, float weight) {
+    DigraphNode *node1_ptr = get_node(node1_tag);
+    DigraphNode *node2_ptr = get_node(node2_tag);
+    if (node1_ptr && node2_ptr) {
+        for (DigraphEdge &e: *(node1_ptr->outedges)) {
+            if (e.dest == node2_ptr) {
+                e.weight = weight;
+                break;
+            }
+        }
+
+        for (DigraphEdge &e: *(node2_ptr->inedges)) {
+            if (e.origin == node1_ptr) {
+                e.weight = weight;
+                break;
+            }
+
+        }
+    } else {
+        return false;
+    }
+    return true;
 }

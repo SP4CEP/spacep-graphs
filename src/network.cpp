@@ -852,17 +852,17 @@ void Network::marginal_network(Digraph &g) {
     }
 }
 
-NetworkNode *get_sucessor(NetworkNode *p, string tag) {
+NetworkEdge *get_sucessor(NetworkNode *p, string tag) {
     for (NetworkEdge &e : *(p->outedges))
         if (e.dest->tag == tag)
-            return e.dest;
+            return &e;
     return nullptr;
 }
 
-NetworkNode *get_predecessor(NetworkNode *p, string tag) {
+NetworkEdge *get_predecessor(NetworkNode *p, string tag) {
     for (NetworkEdge &e : *(p->inedges))
         if (e.origin->tag == tag)
-            return e.origin;
+            return &e;
     return nullptr;
 }
 
@@ -885,11 +885,62 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
     }
 
     while(!d.floyd(mat, cycle, cycle_len)) {
-        float min;
-        for (string node : cycle) {
-            NetworkNode *p = get_node(node);
+        float delta = numeric_limits<float>::infinity();
+        NetworkEdge *e = nullptr;
+        NetworkNode *p = get_node(cycle[0]);
 
+        // get delta
+        for (int i = 0; i < cycle.size(); i++) {
+            
+            // check if next node is sucessor
+            e = get_sucessor(p, cycle[(i + 1) % cycle.size()]);
+            if (e == nullptr) {
+                // then next node is predecessor (opposite direction)
+                e = get_predecessor(p, cycle[(i + 1) % cycle.size()]);
+                delta = min(delta, e->flow);
+                p = e->dest;
+            } else {
+                delta = min(delta, e->capacity - e->flow);
+                p = e->origin;
+            }
+        }
+
+        e = nullptr;
+        p = get_node(cycle[0]);
+        
+        // update according to delta
+        for (int i = 0; i < cycle.size(); i++) {
+            
+            // check if next node is sucessor
+            e = get_sucessor(p, cycle[(i + 1) % cycle.size()]);
+            if (e == nullptr) {
+                // then next node is predecessor (opposite direction)
+                e = get_predecessor(p, cycle[(i + 1) % cycle.size()]);
+                // If edge flow will become 0 delete from marginal net
+                if (e->flow - delta == 0) {
+                    d.remove_edge(e->tag + "\'");
+                } 
+                // if edge had flow at full capacity before substracting delta, the edge needs to be added again
+                if (e->flow == e->capacity) {
+                    d.add_edge(e->origin->tag, e->dest->tag, e->tag, e->cost);
+                }
+                
+                set_edge(e->origin->tag, e->dest->tag, e->capacity, e->restriction, e->flow - delta);
+                p = e->dest;
+            } else {
+                // If edge flow reaches capacity, delete from marginal net
+                if (e->flow + delta == e->capacity) {
+                    d.remove_edge(e->tag);
+                }
+                // if edge had flow 0 before adding delta, the opposite edge needs to be added again
+                if (e->flow == 0) {
+                    d.add_edge(e->dest->tag, e->origin->tag, e->tag + "'", e->cost);
+                }
+                set_edge(e->origin->tag, e->dest->tag, e->capacity, e->restriction, e->flow + delta);
+                // from origin to dest (direction is right)
+                p = e->origin;
+            }
         }
     }
-
+    return true;
 }

@@ -183,6 +183,10 @@ public:
     * @brief Floyd-Warshall Algorithm
     **/
     bool floyd(Matrix<DijkstraAux> &Floyd, vector<string> &cycle, float &cycle_len);
+
+    bool get_edge(string node1_tag, string node2_tag, DigraphEdge &edge);
+
+    bool set_edge(string node1_tag, string node2_tag, float weight);
 };
 
 #endif // DIGRAPH_H_INCLUDED
