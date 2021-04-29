@@ -187,6 +187,8 @@ public:
     
     float current_flow();
 
+    float current_cost();
+
     bool primal_minimum_cost_flow(float target_flow);
 
     void marginal_network(Digraph &n);

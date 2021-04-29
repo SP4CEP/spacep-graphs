@@ -311,6 +311,8 @@ void Digraph::clear() {
         delete node.outedges;
     }
     nodes.clear();
+    num_edges = 0;
+    num_nodes = 0;
 }
 
 //**********************************************************************//

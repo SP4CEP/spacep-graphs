@@ -55,14 +55,14 @@ Network& Network::operator=(const Network &G) {
         for (ListNode<NetworkEdge> *q = (p->value).inedges->start; q; q=q->next) {
             if (added_edges.find((q->value).tag) == added_edges.end()) {
                 // if tag not already added
-                add_edge((q->value).origin->tag, (p->value).tag, (q->value).tag, (q->value).capacity, (q->value).restriction, (q->value).flow);
+                add_edge((q->value).origin->tag, (p->value).tag, (q->value).tag, (q->value).capacity, (q->value).restriction, (q->value).flow, (q->value).cost);
                 added_edges.insert((q->value).tag);
             }
         }
         for (ListNode<NetworkEdge> *q = (p->value).outedges->start; q; q=q->next) {
             if (added_edges.find((q->value).tag) == added_edges.end()) {
                 // if tag not already added
-                add_edge((p->value).tag, (q->value).dest->tag, (q->value).tag, (q->value).capacity, (q->value).restriction, (q->value).flow);
+                add_edge((p->value).tag, (q->value).dest->tag, (q->value).tag, (q->value).capacity, (q->value).restriction, (q->value).flow, (q->value).cost);
                 added_edges.insert((q->value).tag);
             }
         }
@@ -333,12 +333,12 @@ void Network::print() {
     for (NetworkNode& node: nodes) {
         cout << node << " (" << node.restriction << ", " << node.capacity << ") " << " IN: ";
         for (NetworkEdge& edge: *(node.inedges)) {
-            cout << edge << " " << *(edge.origin) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ")";
+            cout << edge << " " << *(edge.origin) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ", " << edge.cost << ")";
             cout << " | ";
         }
         cout << endl << node << " (" << node.restriction << ", " << node.capacity << ") " << " OUT: ";
         for (NetworkEdge& edge: *(node.outedges)) {
-            cout << edge << " " << *(edge.dest) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ")";
+            cout << edge << " " << *(edge.dest) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ", " << edge.cost << ")";
             cout << " | " ;
         }
         cout << endl << "-------------------------------------" << endl;
@@ -392,18 +392,17 @@ bool Network::ford_fulkerson(float &total_flow, float target_flow) {
     NetworkNode* source;
     NetworkNode* terminus;
     
-    assert(sources.size() != 1 || terminuses.size() != 1);
+    assert(sources.size() == 1 && terminuses.size() == 1);
     
     source = get_node(sources[0]);
     terminus = get_node(terminuses[0]);
     
-    // Set initial total flow as the flow from source
-    total_flow = 0;
-    for (NetworkEdge &e : *(source->outedges)) {
-        total_flow += e.flow;
-    }
+    // Set initial total flow as the current flow from source
+    total_flow = current_flow();
+
     // if target flow already reached, return false, nothing was done
     if (total_flow > target_flow) return false;
+    else if (total_flow == target_flow) true;
 
     // Initial flow
     for (NetworkNode node : nodes) {
@@ -843,11 +842,11 @@ void Network::marginal_network(Digraph &g) {
     for (NetworkNode &node : nodes) {
         for (NetworkEdge &edge : *(node.outedges)) {
 
-            if (edge.flow > 0)
+            if (edge.flow < edge.capacity)
                 g.add_edge(edge.origin->tag, edge.dest->tag, edge.tag, edge.cost);
             
-            if (edge.flow < edge.capacity)
-                g.add_edge(edge.origin->tag, edge.dest->tag, edge.tag+"'", -edge.cost);
+            if (edge.flow > edge.restriction)
+                g.add_edge(edge.dest->tag, edge.origin->tag, edge.tag+"'", -edge.cost);
         }
     }
 }
@@ -871,54 +870,53 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
     if (!general_ford_fulkerson(flow, target_flow)) {
         return false;
     }
+    print();
 
     Digraph d;
+    d.set_type(1);
     Matrix<DijkstraAux> mat(0,0);
     float cycle_len, total_cost=0;
     vector<string> cycle;
+
     marginal_network(d);
+    d.print();
 
-    for (NetworkNode &node : nodes) {
-        for (NetworkEdge &edge : *(node.outedges)) {
-            total_cost += edge.flow * edge.cost;
-        }
-    }
+    total_cost = current_cost();
 
+    // until no cycle found
     while(!d.floyd(mat, cycle, cycle_len)) {
         float delta = numeric_limits<float>::infinity();
         NetworkEdge *e = nullptr;
-        NetworkNode *p = get_node(cycle[0]);
-
-        // get delta
+        NetworkNode *p;
+        
+        p = get_node(cycle[0]);
+        // get delta calculating flow capacity in each edge
         for (int i = 0; i < cycle.size(); i++) {
-            
             // check if next node is sucessor
             e = get_sucessor(p, cycle[(i + 1) % cycle.size()]);
             if (e == nullptr) {
                 // then next node is predecessor (opposite direction)
                 e = get_predecessor(p, cycle[(i + 1) % cycle.size()]);
-                delta = min(delta, e->flow);
-                p = e->dest;
+                delta = min(delta, e->flow - e->restriction);
+                p = e->origin;
             } else {
                 delta = min(delta, e->capacity - e->flow);
-                p = e->origin;
+                p = e->dest;
             }
         }
 
-        e = nullptr;
-        p = get_node(cycle[0]);
         
-        // update according to delta
+        p = get_node(cycle[0]);
+        // update according to delta and marginal network
         for (int i = 0; i < cycle.size(); i++) {
-            
             // check if next node is sucessor
             e = get_sucessor(p, cycle[(i + 1) % cycle.size()]);
             if (e == nullptr) {
-                // then next node is predecessor (opposite direction)
+                // then next node is predecessor (is in opposite direction)
                 e = get_predecessor(p, cycle[(i + 1) % cycle.size()]);
-                // If edge flow will become 0 delete from marginal net
-                if (e->flow - delta == 0) {
-                    d.remove_edge(e->tag + "\'");
+                // If edge flow will become the minimum value delete from marginal net
+                if (e->flow - delta == e->restriction) {
+                    d.remove_edge(e->dest->tag, e->origin->tag);
                 } 
                 // if edge had flow at full capacity before substracting delta, the edge needs to be added again
                 if (e->flow == e->capacity) {
@@ -926,21 +924,31 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
                 }
                 
                 set_edge(e->origin->tag, e->dest->tag, e->capacity, e->restriction, e->flow - delta);
-                p = e->dest;
+                p = e->origin;
             } else {
                 // If edge flow reaches capacity, delete from marginal net
                 if (e->flow + delta == e->capacity) {
-                    d.remove_edge(e->tag);
+                    d.remove_edge(e->origin->tag, e->dest->tag);
                 }
-                // if edge had flow 0 before adding delta, the opposite edge needs to be added again
-                if (e->flow == 0) {
-                    d.add_edge(e->dest->tag, e->origin->tag, e->tag + "'", e->cost);
+                // if edge had minimum flow before adding delta, the opposite edge needs to be added again
+                if (e->flow == e->restriction) {
+                    d.add_edge(e->dest->tag, e->origin->tag, e->tag + "'", -e->cost);
                 }
                 set_edge(e->origin->tag, e->dest->tag, e->capacity, e->restriction, e->flow + delta);
                 // from origin to dest (direction is right)
-                p = e->origin;
+                p = e->dest;
             }
         }
     }
     return true;
+}
+
+float Network::current_cost() {
+    float total_cost = 0;
+    for (NetworkNode &node : nodes) {
+        for (NetworkEdge &edge : *(node.outedges)) {
+            total_cost += edge.cost * edge.flow;
+        }
+    }
+    return total_cost;
 }
