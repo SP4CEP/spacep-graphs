@@ -6,6 +6,7 @@
             "command": "/usr/bin/g++",
             "args": [
                 "-g",
+                "-lmcheck",
                 "${workspaceFolder}/src/main_testing.cpp",
                 "${workspaceFolder}/src/digraph.cpp",
                 "${workspaceFolder}/src/linkedlist.cpp",

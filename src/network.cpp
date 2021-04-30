@@ -634,7 +634,7 @@ bool Network::general_ford_fulkerson(float &total_flow, float target_flow) {
             // add every outedge to the new created node, and delete from original node
             for (NetworkEdge &e : *(n.outedges)) {
                 N_aux.remove_edge(n.tag, e.dest->tag);
-                N_aux.add_edge(aux_node_tag, e.dest->tag, e.tag+"'", e.capacity, e.restriction);
+                N_aux.add_edge(aux_node_tag, e.dest->tag, e.tag+"'", e.capacity, e.restriction, e.flow, e.cost);
             }
         }
     }
@@ -762,7 +762,7 @@ bool Network::general_ford_fulkerson(float &total_flow, float target_flow) {
                 // remove last char
                 string original_tag = e.tag.substr(0, e.tag.length()-1);
                 // add edge
-                N_aux.add_edge(node_tag, e.dest->tag, original_tag, e.capacity, e.restriction, e.flow);
+                N_aux.add_edge(node_tag, e.dest->tag, original_tag, e.capacity, e.restriction, e.flow, e.cost);
             }
 
             // get the edge that joins both parts of the node

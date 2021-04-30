@@ -9,30 +9,55 @@ Description: Main file
 
 #include <iostream>
 #include <fstream>
+#include <mcheck.h>
 #include "digraph.h"
 #include "network.h"
 #include "graph.h"
 #include "graphstructs.h"
 #include "matrix.h"
-#include "json.hpp"
-#include "graphio.h"
+//#include "json.hpp"
+//#include "graphio.h"
 
 using std::cout;
 using std::endl;
 using std::string;
 using std::ifstream;
 using std::ofstream;
-using json = nlohmann::json;
+//using json = nlohmann::json;
+
+void trigger_abort(mcheck_status st) {
+    switch (st) {
+        case MCHECK_DISABLED:
+        cout << "Disabled" << endl;
+        break;
+        case MCHECK_FREE:
+        cout << "Free" << endl;
+        break;
+        case MCHECK_HEAD:
+        cout << "Head" << endl;
+        break;
+        case MCHECK_OK:
+        cout << "Ok" << endl;
+        break;
+        case MCHECK_TAIL:
+        cout << "Tail" << endl;
+        break;
+        default:
+        cout << "Ninguno" << endl;
+        break;
+    }
+    cout << "a" << endl;
+}
 
 int main(int argc, char *argv[]){
-    /*
+    
     Network N;
 
     N.add_node("a");
     N.add_node("b");
     N.add_node("c");
-    N.add_node("d");
-    N.add_node("e");
+    N.add_node("d", 20, 10);
+    //N.add_node("e");
     N.add_node("f");
     N.add_node("g");
 
@@ -46,9 +71,9 @@ int main(int argc, char *argv[]){
     N.add_edge("c", "d", "e5", 30, 5, 0, -7);
     N.add_edge("c", "g", "e6", 40, 4, 0, 8);
     
-    N.add_edge("d", "e", "e7", 20, 10, 0, 0);
+    //N.add_edge("d", "e", "e7", 20, 10, 0, 0);
 
-    N.add_edge("e", "f", "e8", 25, 0, 0, 5);
+    N.add_edge("d", "f", "e8", 25, 0, 0, 5);
 
     N.add_edge("g", "f", "e9", 10, 0, 0, 3);
 
@@ -60,7 +85,7 @@ int main(int argc, char *argv[]){
 
     //float f;
 
-    if (N.primal_minimum_cost_flow(14)) {
+    if (N.primal_minimum_cost_flow(16)) {
         cout << "Solution found! :)" << endl;
         N.print();
         cout << "Optimal cost : " << N.current_cost() << endl;
@@ -70,7 +95,32 @@ int main(int argc, char *argv[]){
 
     return 0;
 
-    */
+    
+
+
+    /*
+    if (mcheck(*trigger_abort) != 0) {
+        fprintf(stderr, "mcheck() failed\n");
+
+        exit(EXIT_FAILURE);
+    }
+
+    cout << "ima bout to ask for mem" << endl;
+    int * a = (int*) malloc (sizeof(int) * 4);
+
+    mprobe(a);
+
+    cout << "ima bout to do some nasty stuff" << endl;
+
+    mprobe(a+4);
+
+    cout << "ima bout to delete dis" << endl;
+
+    free(a);
+
+    mprobe(a);
+
+    return 0;
 
     Digraph D;
 
@@ -105,6 +155,7 @@ int main(int argc, char *argv[]){
     D.print();
 
     Digraph T;
+    T.set_type(1);
     vector<string> cycle;
     float cycle_len;
 
@@ -118,6 +169,7 @@ int main(int argc, char *argv[]){
         cout << endl;
         
     }
+    */
 
     /*
     string filename = "digrafasdf.json";

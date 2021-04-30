@@ -1,5 +1,5 @@
-digraph.out: main.cpp digraph.cpp linkedlist.cpp graph.cpp network.cpp
-	g++ main.cpp digraph.cpp linkedlist.cpp graph.cpp network.cpp -o digraph.out
+digraph.out: main_testing.cpp digraph.cpp linkedlist.cpp graph.cpp network.cpp
+	g++ -lmcheck main_testing.cpp digraph.cpp linkedlist.cpp graph.cpp network.cpp -o digraph.out
 network.out: main.cpp network.cpp linkedlist.cpp
 	g++ main.cpp network.cpp linkedlist.cpp -o network.out
 graph.out: main_graph.cpp graph.cpp linkedlist.cpp
