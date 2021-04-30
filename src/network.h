@@ -185,11 +185,17 @@ public:
 
     bool set_edge(string node1_tag, string node2_tag, float new_capacity, float new_restriction, float new_flow);
     
+    float node_flow_in(NetworkNode* p);
+
     float current_flow();
 
     float current_cost();
 
     bool primal_minimum_cost_flow(float target_flow);
+
+    vector<string> expand_restricted_nodes();
+
+    void restore_restricted_nodes(vector<string> &restricted_nodes);
 
     void marginal_network(Digraph &n);
 };
