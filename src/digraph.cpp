@@ -635,18 +635,17 @@ void Digraph::Graph2Mat(Matrix<DijkstraAux> &Floyd, unordered_map<string, int> &
 
     for (DigraphNode& node: nodes) {
         for (DigraphEdge& edge: *(node.outedges)) {
-            aux.set(edge.dest, edge.origin, edge.weight, edge.weight);
+            aux.set(*(edge.dest), *(edge.origin), edge.weight, edge.weight, edge.tag);
             Floyd[aux_map[node.tag]][aux_map[edge.dest->tag]] = aux;
         }
-        aux.set(&node, &node, 0, 0);
+        aux.set(node, node, 0, 0, "");
         Floyd[aux_map[node.tag]][aux_map[node.tag]] = aux;
     }
 }
 
 //**********************************************************************//
 
-bool Digraph::floyd(Matrix<DijkstraAux> &Floyd, vector<string> &cycle, float &cycle_len) {
-    unordered_map<string, int> tag_to_index;
+bool Digraph::floyd(Matrix<DijkstraAux> &Floyd, vector<string> &cycle, float &cycle_len, unordered_map<string, int> &tag_to_index) {
     vector<string> index_to_tag;
 
     Floyd.init(num_nodes, num_nodes);
@@ -752,4 +751,31 @@ bool Digraph::set_edge(string node1_tag, string node2_tag, float weight) {
         return false;
     }
     return true;
+}
+
+bool Digraph::get_route(Matrix<DijkstraAux> &Floyd, unordered_map<string, int> tag_to_index, vector<string> &path, string node1_tag, string node2_tag) { 
+    if (Floyd[tag_to_index[node1_tag]][tag_to_index[node2_tag]].predecessor) {
+        int current = tag_to_index[node2_tag];
+        path.clear();
+        path.push_back(node2_tag);
+        while(current != tag_to_index[node1_tag]) {
+            
+            if (Floyd[tag_to_index[node1_tag]][current].predecessor) {
+
+                string current_edge, current_node;
+                current_edge = Floyd[tag_to_index[node1_tag]][current].edge_tag;
+                current_node = Floyd[tag_to_index[node1_tag]][current].predecessor->tag;
+                
+                path.push_back(current_edge);
+                path.push_back(current_node);
+                
+                current = tag_to_index[current_node];
+            
+            }
+        }
+        reverse(path.begin(), path.end());
+        return true;
+    } else {
+        return false;
+    }
 }
