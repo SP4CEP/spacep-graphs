@@ -169,6 +169,8 @@ public:
     **/
     bool dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle, float &cycle_len, string destination_tag = "", bool optimize = true);
 
+    bool optimize_dijkstra(Digraph &tree, vector<string> &cycle, float &cycle_len, unordered_map<string, DijkstraAux> &label);
+
     /**
      *@brief Function to generate matrix of the graph
      **/
