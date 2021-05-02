@@ -353,15 +353,13 @@ DigraphNode* ancestor(DigraphNode *p) {
 }
 
 DigraphNode* descendant(DigraphNode *p) {
-    return (*(p->outedges->begin())).dest;
+    if (p->outedges->begin() != nullptr)
+        return (*(p->outedges->begin())).dest;
+    else 
+        return nullptr;
 }
 
 //**********************************************************************//
-
-int do_nothing(string a, string b) {
-    return 1;
-}
-
 
 bool Digraph::dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle, float &cycle_len, string destination_tag, bool optimize) {
     enum {non_visited, visited, permanent};

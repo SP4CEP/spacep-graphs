@@ -942,6 +942,7 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
     Matrix<DijkstraAux> mat(0,0);
     float cycle_len, total_cost=0;
     vector<string> cycle;
+    unordered_map<string, int> tag_to_index;
 
     restricted_nodes = expand_restricted_nodes();
 
@@ -951,7 +952,7 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
     total_cost = current_cost();
 
     // until no cycle found
-    while(!d.floyd(mat, cycle, cycle_len)) {
+    while(!d.floyd(mat, cycle, cycle_len, tag_to_index)) {
         float delta = numeric_limits<float>::infinity();
         NetworkEdge *e = nullptr;
         NetworkNode *p;
