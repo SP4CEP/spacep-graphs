@@ -346,7 +346,10 @@ void Digraph::print() {
 //**********************************************************************//
 
 DigraphNode* ancestor(DigraphNode *p) {
-    return (*(p->inedges->begin())).origin;
+    if (p->inedges->begin() != nullptr)
+        return (*(p->inedges->begin())).origin;
+    else 
+        return nullptr;
 }
 
 DigraphNode* descendant(DigraphNode *p) {
@@ -754,9 +757,9 @@ bool Digraph::set_edge(string node1_tag, string node2_tag, float weight) {
 }
 
 bool Digraph::get_route(Matrix<DijkstraAux> &Floyd, unordered_map<string, int> tag_to_index, vector<string> &path, string node1_tag, string node2_tag) { 
+    path.clear();
     if (Floyd[tag_to_index[node1_tag]][tag_to_index[node2_tag]].predecessor) {
         int current = tag_to_index[node2_tag];
-        path.clear();
         path.push_back(node2_tag);
         while(current != tag_to_index[node1_tag]) {
             
@@ -779,3 +782,64 @@ bool Digraph::get_route(Matrix<DijkstraAux> &Floyd, unordered_map<string, int> t
         return false;
     }
 }
+bool Digraph::get_route(string node1_tag, string node2_tag, vector<string> &path) {
+    path.clear();
+    DigraphNode *current_node; 
+    current_node = get_node(node2_tag);
+    // Make sure the nodes are in the digraph
+    if (get_node(node1_tag) && get_node(node2_tag)) {
+        path.push_back(current_node->tag);
+        DigraphEdge current_edge;
+        while (current_node->tag != node1_tag) {
+            DigraphNode *aux = ancestor(current_node);
+            //get_edge(ancestor(current_node)->tag, current_node->tag, current_edge);
+            if(ancestor(current_node) == nullptr || !get_edge(ancestor(current_node)->tag, current_node->tag, current_edge)) {
+                path.clear();
+                return false;
+            }
+            cout << "hola" << endl;
+            current_node = ancestor(current_node);
+
+            cout << "current_node = " << current_node->tag << endl;
+            cout << "current_edge = " << current_edge.tag << endl;
+            
+            if (!current_node) {
+                path.clear();
+                return false;
+            }
+
+            path.push_back(current_edge.tag);
+            path.push_back(current_node->tag);
+        }
+        reverse(path.begin(), path.end());
+        return true;
+    } else {
+        return false;
+    }
+    
+}
+
+
+bool Digraph::find_shortest_path(string node1_tag, string node2_tag, string algorithm, vector<string> &path) {
+    if (algorithm == "Dijkstra") { 
+        Digraph tree;
+        vector<string> cycle;
+        float cycle_len;
+        bool found_path;
+        found_path = dijkstra(node1_tag, tree, cycle, cycle_len, node2_tag, true);
+        get_route(node1_tag, node2_tag, path);
+        return found_path;
+    } else if (algorithm == "Floyd") {
+        Matrix<DijkstraAux> matrix(0, 0);
+        vector<string> cycle;
+        unordered_map<string, int> tag_to_index;
+        float cycle_len;
+        bool found_path;
+        found_path = floyd(matrix, cycle, cycle_len, tag_to_index);
+        get_route(matrix, tag_to_index, path, node1_tag, node2_tag);
+        return found_path;
+    } else {
+        return false;
+    }
+}
+

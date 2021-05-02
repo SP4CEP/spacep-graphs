@@ -191,6 +191,13 @@ public:
     bool set_edge(string node1_tag, string node2_tag, float weight);
 
     bool get_route(Matrix<DijkstraAux> &Floyd, unordered_map<string, int> tag_to_index, vector<string> &path, string node1_tag, string node2_tag);
+
+    bool get_route(string node1_tag, string node2_tag, vector<string> &path);
+
+    bool find_shortest_path(string node1_tag, string node2_tag, string algorithm, vector<string> &path);
+
+
+
 };
 
 #endif // DIGRAPH_H_INCLUDED
