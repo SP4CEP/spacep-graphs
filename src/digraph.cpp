@@ -529,14 +529,11 @@ bool Digraph::optimize_dijkstra(Digraph &tree, vector<string> &cycle, float &cyc
         string aux_tag;
 
         bool found_improv = false; // flag
-        for (DigraphNode n : nodes) {
-            for (DigraphEdge e : *(n.outedges))
-            {
+        for (DigraphNode &n : nodes) {
+            for (DigraphEdge &e : *(n.outedges)) {
                 // Every edge not in arborescence
-                if (!tree.find_edge(n.tag, e.dest->tag))
-                {
-                    if (label[n.tag].accumulated_weight + e.weight < label[e.dest->tag].accumulated_weight)
-                    {
+                if (!tree.find_edge(n.tag, e.dest->tag)) {
+                    if (label[n.tag].accumulated_weight + e.weight < label[e.dest->tag].accumulated_weight) {
                         i = &n;
                         j = e.dest;
                         aux_tag = e.tag;
@@ -564,11 +561,9 @@ bool Digraph::optimize_dijkstra(Digraph &tree, vector<string> &cycle, float &cyc
         // look for j in every ancestor of i in the arborescence
         DigraphNode *i_ancestor = tree_i;
         cycle.clear();
-        while (true)
-        {
+        while (true) {
             cycle.push_back(i_ancestor->tag);
-            if (i_ancestor == tree_j)
-            {
+            if (i_ancestor == tree_j) {
                 cycle_len = -dl;
                 reverse(cycle.begin(), cycle.end());
                 cycle.push_back(cycle[0]);
@@ -580,7 +575,7 @@ bool Digraph::optimize_dijkstra(Digraph &tree, vector<string> &cycle, float &cyc
                 break;
         }
 
-        mprobe(i);
+        //mprobe(i);
 
         // replace edge
         DigraphNode *tree_j_parent = ancestor(tree_j);
@@ -593,7 +588,7 @@ bool Digraph::optimize_dijkstra(Digraph &tree, vector<string> &cycle, float &cyc
         tree_i = tree.get_node(i->tag);
         tree_j = tree.get_node(j->tag);
 
-        tree.print();
+        //tree.print();
 
         // update j label
         label[j->tag].set(*j, *i, label[j->tag].accumulated_weight - dl, aux_weight, aux_tag);
@@ -602,12 +597,10 @@ bool Digraph::optimize_dijkstra(Digraph &tree, vector<string> &cycle, float &cyc
         DigraphNode *desc = tree_j;
         queue<DigraphNode *> nodes_to_update;
         nodes_to_update.push(desc);
-        while (!nodes_to_update.empty())
-        {
+        while (!nodes_to_update.empty()) {
             desc = nodes_to_update.front();
             // insert every descendant
-            for (DigraphEdge &e : *(desc->outedges))
-            {
+            for (DigraphEdge &e : *(desc->outedges)) {
                 nodes_to_update.push(e.dest);
             }
             label[desc->tag].accumulated_weight -= dl;
@@ -795,12 +788,9 @@ bool Digraph::get_route(string node1_tag, string node2_tag, vector<string> &path
                 path.clear();
                 return false;
             }
-            cout << "hola" << endl;
+
             current_node = ancestor(current_node);
 
-            cout << "current_node = " << current_node->tag << endl;
-            cout << "current_edge = " << current_edge.tag << endl;
-            
             if (!current_node) {
                 path.clear();
                 return false;
@@ -818,15 +808,15 @@ bool Digraph::get_route(string node1_tag, string node2_tag, vector<string> &path
 }
 
 
-bool Digraph::find_shortest_path(string node1_tag, string node2_tag, string algorithm, vector<string> &path) {
-    if (algorithm == "Dijkstra") { 
+ vector<string> Digraph::find_shortest_path(string node1_tag, string node2_tag, string algorithm) {
+    vector<string> path;
+    if (algorithm == "Dijkstra") {
         Digraph tree;
         vector<string> cycle;
         float cycle_len;
         bool found_path;
-        found_path = dijkstra(node1_tag, tree, cycle, cycle_len, node2_tag, true);
-        get_route(node1_tag, node2_tag, path);
-        return found_path;
+        found_path = dijkstra(node1_tag, tree, cycle, cycle_len);
+        tree.get_route(node1_tag, node2_tag, path);
     } else if (algorithm == "Floyd") {
         Matrix<DijkstraAux> matrix(0, 0);
         vector<string> cycle;
@@ -835,9 +825,8 @@ bool Digraph::find_shortest_path(string node1_tag, string node2_tag, string algo
         bool found_path;
         found_path = floyd(matrix, cycle, cycle_len, tag_to_index);
         get_route(matrix, tag_to_index, path, node1_tag, node2_tag);
-        return found_path;
-    } else {
-        return false;
     }
+    
+    return path;
 }
 

@@ -9,9 +9,9 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/testing.out",
-            "args": [
-                "${workspaceFolder}/src/examples/dijkstra_neg1.txt"
-            ],
+            //"args": [
+            //    "${workspaceFolder}/src/examples/dijkstra_neg1.txt"
+            //],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

@@ -194,7 +194,7 @@ public:
 
     bool get_route(string node1_tag, string node2_tag, vector<string> &path);
 
-    bool find_shortest_path(string node1_tag, string node2_tag, string algorithm, vector<string> &path);
+    vector<string> find_shortest_path(string node1_tag, string node2_tag, string algorithm="Floyd");
 
 
 
