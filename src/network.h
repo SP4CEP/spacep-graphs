@@ -181,9 +181,9 @@ public:
     
     void sum_edge_capacity(string &node1_tag, string &node2_tag, float restriction);
 
-    bool get_edge(string node1_tag, string node2_tag, NetworkEdge &edge);
+    bool get_edge(string node1_tag, string node2_tag, string edge_tag, NetworkEdge &edge);
 
-    bool set_edge(string node1_tag, string node2_tag, float new_capacity, float new_restriction, float new_flow);
+    bool set_edge(string node1_tag, string node2_tag, string edge_tag, float new_capacity, float new_restriction, float new_flow);
     
     float node_flow_in(NetworkNode* p);
 
@@ -198,6 +198,16 @@ public:
     void restore_restricted_nodes(vector<string> &restricted_nodes);
 
     void marginal_network(Digraph &n);
+
+    float get_factible_flow(bool replace_network=true);
+
+    bool add_super_nodes(vector<string> &sources, vector<string> &terminuses);
+
+    void remove_super_nodes(vector<string> &sources, vector<string> &terminuses);
+
+    void to_digraph_cost(Digraph &D);
+
+    bool dual_minimum_cost_flow(float target_flow);
 };
 
 #endif // DIGRAPH_H_INCLUDED

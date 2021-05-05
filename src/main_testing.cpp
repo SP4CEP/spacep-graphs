@@ -9,7 +9,6 @@ Description: Main file
 
 #include <iostream>
 #include <fstream>
-#include <mcheck.h>
 #include "digraph.h"
 #include "network.h"
 #include "graph.h"
@@ -24,30 +23,6 @@ using std::string;
 using std::ifstream;
 using std::ofstream;
 //using json = nlohmann::json;
-
-void trigger_abort(mcheck_status st) {
-    switch (st) {
-        case MCHECK_DISABLED:
-        cout << "Disabled" << endl;
-        break;
-        case MCHECK_FREE:
-        cout << "Free" << endl;
-        break;
-        case MCHECK_HEAD:
-        cout << "Head" << endl;
-        break;
-        case MCHECK_OK:
-        cout << "Ok" << endl;
-        break;
-        case MCHECK_TAIL:
-        cout << "Tail" << endl;
-        break;
-        default:
-        cout << "Ninguno" << endl;
-        break;
-    }
-    cout << "a" << endl;
-}
 
 int main(int argc, char *argv[]){
     
@@ -76,8 +51,10 @@ int main(int argc, char *argv[]){
     N.add_edge("d", "f", "e8", 25, 0, 0, 5);
 
     N.add_edge("g", "f", "e9", 10, 0, 0, 3);
+    //N.add_edge("g", "f", "e10", 100, 0, 0, 333);
 
     N.set_source("a");
+    N.set_source("b");
 
     N.set_terminus("f");
 
@@ -85,7 +62,7 @@ int main(int argc, char *argv[]){
 
     //float f;
 
-    if (N.primal_minimum_cost_flow(16)) {
+    if (N.dual_minimum_cost_flow(14)) {
         cout << "Solution found! :)" << endl;
         N.print();
         cout << "Optimal cost : " << N.current_cost() << endl;
@@ -95,34 +72,17 @@ int main(int argc, char *argv[]){
 
     return 0;
 
+
     
-
-
-    /*
+/*
+    Digraph D;
+    
+    
     if (mcheck(*trigger_abort) != 0) {
         fprintf(stderr, "mcheck() failed\n");
 
         exit(EXIT_FAILURE);
     }
-
-    cout << "ima bout to ask for mem" << endl;
-    int * a = (int*) malloc (sizeof(int) * 4);
-
-    mprobe(a);
-
-    cout << "ima bout to do some nasty stuff" << endl;
-
-    mprobe(a+4);
-
-    cout << "ima bout to delete dis" << endl;
-
-    free(a);
-
-    mprobe(a);
-
-    return 0;
-
-    Digraph D;
 
     D.add_node("a");
     D.add_node("b");
@@ -166,11 +126,10 @@ int main(int argc, char *argv[]){
         cout << "Se encontró un ciclo de longitud: " << cycle_len << endl;
         for (string n : cycle)
             cout << n << " ";
-        cout << endl;
-        
+        cout << endl;    
     }
-    */
-
+    
+*/
     /*
     string filename = "digrafasdf.json";
     ifstream i("examples/digraph.json");

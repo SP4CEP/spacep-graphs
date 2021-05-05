@@ -529,12 +529,12 @@ void Network::sum_edge_capacity(string &node1_tag, string &node2_tag, float rest
 
 //***************************************************************//
 
-bool Network::get_edge(string node1_tag, string node2_tag, NetworkEdge &edge) {
+bool Network::get_edge(string node1_tag, string node2_tag, string edge_tag, NetworkEdge &edge) {
     NetworkNode* node1_ptr = get_node(node1_tag);
     NetworkNode* node2_ptr = get_node(node2_tag);
     if (node1_ptr && node2_ptr) {
         for (NetworkEdge &e: *(node1_ptr->outedges)) {
-            if (e.dest == node2_ptr) {
+            if (e.dest == node2_ptr && e.tag == edge_tag) {
                 edge = e;
                 return true;
             }
@@ -545,32 +545,38 @@ bool Network::get_edge(string node1_tag, string node2_tag, NetworkEdge &edge) {
 
 /**********************************************************/
 
-bool Network::set_edge(string node1_tag, string node2_tag, float new_capacity, float new_restriction, float new_flow) {
+bool Network::set_edge(string node1_tag, string node2_tag, string edge_tag, float new_capacity, float new_restriction, float new_flow) {
     NetworkNode *node1_ptr = get_node(node1_tag);
     NetworkNode *node2_ptr = get_node(node2_tag);
+    bool modified = false;
     if (node1_ptr && node2_ptr) {
+        // find edge in outedges of origin
         for (NetworkEdge &e: *(node1_ptr->outedges)) {
             if (e.dest == node2_ptr) {
-                e.capacity = new_capacity;
-                e.restriction = new_restriction;
-                e.flow = new_flow;
-                break;
+                if (e.tag == edge_tag) {
+                    modified = true;
+                    e.capacity = new_capacity;
+                    e.restriction = new_restriction;
+                    e.flow = new_flow;
+                    break;
+                }
             }
         }
 
+        // find edge in inedges of dest
         for (NetworkEdge &e: *(node2_ptr->inedges)) {
             if (e.origin == node1_ptr) {
-                e.capacity = new_capacity;
-                e.restriction = new_restriction;
-                e.flow = new_flow;
-                break;
+                if (e.tag == edge_tag) {
+                    e.capacity = new_capacity;
+                    e.restriction = new_restriction;
+                    e.flow = new_flow;
+                    break;
+                }
             }
 
         }
-    } else {
-        return false;
-    }
-    return true;
+    } 
+    return modified;
 }
 
 /***********************************************************/
@@ -681,7 +687,7 @@ bool Network::general_ford_fulkerson(float &total_flow, float target_flow) {
                     N_aux.sum_edge_capacity(e.origin->tag, N_aux.terminuses[0], e.restriction);
                 }
 
-                N_aux.set_edge(e.origin->tag, e.dest->tag, e.capacity - e.restriction, 0, e.flow);
+                N_aux.set_edge(e.origin->tag, e.dest->tag, e.tag, e.capacity - e.restriction, 0, e.flow);
             }
         }
     }
@@ -716,7 +722,7 @@ bool Network::general_ford_fulkerson(float &total_flow, float target_flow) {
                     // get restored flow
                     restored_flow = e.flow + restored_rest;
                     //update values
-                    N_aux.set_edge(e.origin->tag, e.dest->tag, restored_cap, restored_rest, restored_flow);
+                    N_aux.set_edge(e.origin->tag, e.dest->tag, e.tag, restored_cap, restored_rest, restored_flow);
                     // discount to the remaining available flow
                     available_flow -= restored_rest;
                 }
@@ -766,7 +772,7 @@ bool Network::general_ford_fulkerson(float &total_flow, float target_flow) {
             }
 
             // get the edge that joins both parts of the node
-            N_aux.get_edge(node->tag, node_out->tag, joining_edge);
+            N_aux.get_edge(node->tag, node_out->tag, node_out->tag + "_node_restriction_edge", joining_edge);
 
             // set the original values for the node's capacity and restriction
             node->capacity = joining_edge.capacity;
@@ -866,6 +872,20 @@ NetworkEdge *get_predecessor(NetworkNode *p, string tag) {
     return nullptr;
 }
 
+NetworkEdge *get_edge_sucessor(NetworkNode *p, string tag) {
+    for (NetworkEdge &e : *(p->outedges))
+        if (e.tag == tag)
+            return &e;
+    return nullptr;
+}
+
+NetworkEdge *get_edge_predecessor(NetworkNode *p, string tag) {
+    for (NetworkEdge &e : *(p->inedges))
+        if (e.tag == tag)
+            return &e;
+    return nullptr;
+}
+
 
 vector<string> Network::expand_restricted_nodes() {
     vector<string> restricted_nodes;
@@ -919,7 +939,7 @@ void Network::restore_restricted_nodes(vector<string> &restricted_nodes) {
         }
 
         // get the edge that joins both parts of the node
-        get_edge(node->tag, node_out->tag, joining_edge);
+        get_edge(node->tag, node_out->tag, node_out->tag + "_node_restriction_edge", joining_edge);
 
         // set the original values for the node's capacity and restriction
         node->capacity = joining_edge.capacity;
@@ -929,6 +949,65 @@ void Network::restore_restricted_nodes(vector<string> &restricted_nodes) {
         remove_node(node_out->tag);
     }
 }
+
+
+bool Network::add_super_nodes(vector<string> &original_sources, vector<string> &original_terminuses) {
+    string super_terminus_tag = "super_terminus";
+    string super_source_tag = "super_source";
+    bool multiple_sources = false, multiple_terminuses = false;
+    
+    original_sources = sources;
+    original_terminuses = terminuses;
+
+    // Resolve multiple sources
+    if (sources.size() > 1) {
+        multiple_sources = true;
+        add_node(super_source_tag);
+        set_source(super_source_tag);
+        for (string s : original_sources) {
+            // remove as source
+            remove_source(s);
+            // link it to super source
+            add_edge(super_source_tag, s, super_source_tag + "_to_" + s);
+        }
+    }
+    
+    // Resolve multiple terminuses
+    if (terminuses.size() > 1) {
+        multiple_terminuses = true;
+        add_node(super_terminus_tag);
+        set_terminus(super_terminus_tag);
+        for (string t : original_terminuses) {
+            // remove as terminus
+            remove_terminus(t);
+            // link it to super terminus
+            add_edge(t, super_terminus_tag, t + "_to_" + super_terminus_tag);
+        }
+    }
+
+    return multiple_terminuses || multiple_sources;
+}
+
+void Network::remove_super_nodes(vector<string> &original_sources, vector<string> &original_terminuses) {
+    // if super source existed before, remove it and restore original sources
+    if (original_sources.size() > 1) {
+        remove_node("super_source");
+        remove_source("super_source");
+            
+        for (string src : original_sources)
+            set_source(src);
+    }
+
+    // if super terminus existed before, remove it and restore original sources
+    if (original_terminuses.size() > 1) {
+        remove_node("super_terminus");
+        remove_terminus("super_terminus");
+        
+        for (string term : terminuses)
+           set_terminus(term);
+    }
+}
+
 
 bool Network::primal_minimum_cost_flow(float target_flow) {
     float flow;
@@ -990,8 +1069,8 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
                 if (e->flow == e->capacity) {
                     d.add_edge(e->origin->tag, e->dest->tag, e->tag, e->cost);
                 }
-                
-                set_edge(e->origin->tag, e->dest->tag, e->capacity, e->restriction, e->flow - delta);
+
+                set_edge(e->origin->tag, e->dest->tag, e->tag, e->capacity, e->restriction, e->flow - delta);
                 p = e->origin;
             } else {
                 // If edge flow reaches capacity, delete from marginal net
@@ -1002,7 +1081,7 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
                 if (e->flow == e->restriction) {
                     d.add_edge(e->dest->tag, e->origin->tag, e->tag + "'", -e->cost);
                 }
-                set_edge(e->origin->tag, e->dest->tag, e->capacity, e->restriction, e->flow + delta);
+                set_edge(e->origin->tag, e->dest->tag, e->tag, e->capacity, e->restriction, e->flow + delta);
                 // from origin to dest (direction is right)
                 p = e->dest;
             }
@@ -1022,4 +1101,223 @@ float Network::current_cost() {
         }
     }
     return total_cost;
+}
+
+float Network::get_factible_flow(bool replace_network) {
+    // Make sure network has one source and one terminus
+    assert(sources.size() == 1);
+    assert(terminuses.size() == 1);
+    // Make sure network has no restrictions on nodes
+    for (NetworkNode &node : nodes) {
+        assert(node.capacity == numeric_limits<float>::infinity());
+        assert(node.restriction == 0);
+    }
+    
+    Network N_aux = *this;
+    bool edge_restrictions = false;
+    float factible_flow;
+
+    // Resolve edges with minimum restriction
+    string prev_source, prev_terminus;
+    unordered_map<string, float> edges_with_restrictions;
+    int i = 0;
+    for (NetworkNode &n : N_aux.nodes) {
+        for (NetworkEdge &e : *(n.outedges)) {
+            if (e.restriction > 0) {
+                edges_with_restrictions.insert({e.tag, e.restriction});
+                if (!edge_restrictions) {
+                    // Create new source and terminus for edges with restrictions
+                    N_aux.add_node(N_aux.sources[0] + "'");
+                    N_aux.add_node(N_aux.terminuses[0] + "'");
+                    // Connect source to terminus and backwards
+                    N_aux.add_edge(N_aux.sources[0], N_aux.terminuses[0], "source_to_terminus");
+                    N_aux.add_edge(N_aux.terminuses[0], N_aux.sources[0], "terminus_to_source");
+                    // Save previous values of source and terminus
+                    prev_source = N_aux.sources[0];
+                    prev_terminus = N_aux.terminuses[0];
+                    // Remove current source and terminus
+                    N_aux.remove_source(prev_source);
+                    N_aux.remove_terminus(prev_terminus);
+                    // Set new source and terminus
+                    N_aux.set_source(prev_source + "'");
+                    N_aux.set_terminus(prev_terminus + "'");
+                    // indicate there exist edge restrictions
+                    edge_restrictions = true;
+                }
+                // If edge not added yet (source' to dest)
+                if (!N_aux.add_edge(N_aux.sources[0], e.dest->tag, "source'_to_" + e.dest->tag, e.restriction, 0)) {
+                    // Edge already exists
+                    N_aux.sum_edge_capacity(N_aux.sources[0], e.dest->tag, e.restriction);
+                }
+                
+                // If edge not added yet (origin to terminus')
+                if (!N_aux.add_edge(e.origin->tag, N_aux.terminuses[0], e.origin->tag + "_to_terminus'", e.restriction, 0)) {
+                    // Edge already exists
+                    N_aux.sum_edge_capacity(e.origin->tag, N_aux.terminuses[0], e.restriction);
+                }
+
+                N_aux.set_edge(e.origin->tag, e.dest->tag, e.tag, e.capacity - e.restriction, 0, e.flow);
+            }
+        }
+    }
+
+
+    if (edge_restrictions) {
+
+        N_aux.print();
+        
+        // Find a factible flow
+        N_aux.ford_fulkerson(factible_flow);
+
+        //cout << "Aquí se resuleven aristas con mínimos." << endl;
+        N_aux.print();
+
+        // Restore edge with minimum restrictions
+        NetworkNode* temp_terminus = N_aux.get_node(N_aux.terminuses[0]);
+        // For every entrant node
+        for (NetworkEdge &entrant : *(temp_terminus->inedges)) {
+            // distribute flow among 
+            float available_flow = entrant.flow;
+            NetworkNode* p = entrant.origin;
+            // for every outedge of the node that enters in temp terminus
+            for (NetworkEdge &e : *(p->outedges)) {
+                // If edge had restrictions before
+                if (edges_with_restrictions.find(e.tag) != edges_with_restrictions.end()) {
+                    float restored_cap, restored_rest, restored_flow;
+                    // get restores capacity and restriction values
+                    restored_rest = edges_with_restrictions[e.tag];
+                    restored_cap = e.capacity + restored_rest;
+                    // if not enough available flow return
+                    if (restored_rest > available_flow)
+                        return false;
+                    // get restored flow
+                    restored_flow = e.flow + restored_rest;
+                    //update values
+                    N_aux.set_edge(e.origin->tag, e.dest->tag, e.tag, restored_cap, restored_rest, restored_flow);
+                    // discount to the remaining available flow
+                    available_flow -= restored_rest;
+                }
+            }
+        }
+
+        // remove temp terminus and source
+        N_aux.remove_node(N_aux.sources[0]);
+        N_aux.remove_node(N_aux.terminuses[0]);
+        N_aux.remove_source(N_aux.sources[0]);
+        N_aux.remove_terminus(N_aux.terminuses[0]);
+
+        // add original term and src
+        N_aux.set_source(prev_source);
+        N_aux.set_terminus(prev_terminus);
+
+        // remove connection from original source to terminus and viceversa
+        N_aux.remove_edge("source_to_terminus");
+        N_aux.remove_edge("terminus_to_source");
+
+    }
+
+    //cout << "Aquí el flujo factible de " << N_aux.current_flow() << " se ha repartido entre las aristas restringidas" << endl;
+    //N_aux.print();
+
+    if (replace_network)
+        *this = N_aux;
+    
+    return factible_flow;
+
+
+}
+
+void Network::to_digraph_cost(Digraph &D) {
+    D.clear();
+
+    for (NetworkNode n : nodes)
+        D.add_node(n.tag);
+
+    for (NetworkNode n : nodes) {
+        for (NetworkEdge e : *(n.outedges)) {
+            if (e.flow < e.capacity)
+                D.add_edge(n.tag, e.dest->tag, e.tag, e.cost);
+        }
+    }
+}
+
+bool Network::dual_minimum_cost_flow(float target_flow) {
+    vector<string> restricted_nodes, original_sources, original_terminuses, path;
+    float total_flow, delta;
+    Digraph D_aux;
+    NetworkNode *p;
+    NetworkEdge *e;
+    // Resolve multiple sources and terminuses
+    add_super_nodes(original_sources, original_terminuses);
+
+    // Resolve nodes with restrictions
+    restricted_nodes = expand_restricted_nodes();
+
+    // Resolve edges with minimum restriciones and finds factible flow
+    get_factible_flow(true);
+    
+    total_flow = current_flow();
+
+    cout << "Found factible flow" << endl;
+    print();
+    cout << "Current factible flow: " << total_flow << endl;
+
+    if (total_flow > target_flow) {
+        // Reset nodes w/ restrictions
+        restore_restricted_nodes(restricted_nodes);
+
+        // Reset multiple sources and terminuses
+        remove_super_nodes(original_sources, original_terminuses);
+
+        return false;
+    }
+
+    // Initialize digraph
+    to_digraph_cost(D_aux);
+
+    // Apply dual algorithm
+    // while target flow is not reached
+    while (total_flow < target_flow - numeric_limits<float>::epsilon()) {
+        // 1. Apply shortest path
+        path = D_aux.find_shortest_path(sources[0], terminuses[0]);
+
+        // if path not found
+        if (path.empty())
+            break;
+
+        // 2. Find delta in route
+        // Delta's maximum value is the remaining to reach target
+        delta = target_flow - total_flow;
+        p = get_node(sources[0]);
+        for (int i = 1; i < path.size()-1; i += 2) {
+            e = get_edge_sucessor(p, path[i]);
+            assert(e!=nullptr);
+            delta = min(delta, e->capacity - e->flow);
+            p = e->dest;
+        }
+
+        // 3. Apply delta in path and remove edge from D_aux
+        p = get_node(sources[0]);
+        for (int i = 1; i < path.size()-1; i += 2) {
+            e = get_edge_sucessor(p, path[i]);
+            assert(e!=nullptr);
+            set_edge(e->origin->tag, e->dest->tag, e->tag, e->capacity, e->restriction, e->flow + delta);
+            // if reaches its maximum, delete edge from D_aux
+            if (e->flow >= e->capacity - numeric_limits<float>::epsilon()) {
+                D_aux.remove_edge(e->tag);
+            }
+            p = e->dest;
+        }
+
+        total_flow += delta;
+    }
+
+    // Reset nodes w/ restrictions
+    restore_restricted_nodes(restricted_nodes);
+    
+    // Reset multiple sources and terminuses
+    remove_super_nodes(original_sources, original_terminuses);
+
+    // Return wether the target flow was reached
+    return total_flow >= target_flow - numeric_limits<float>::epsilon();
 }
