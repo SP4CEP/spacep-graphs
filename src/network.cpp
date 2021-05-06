@@ -333,12 +333,12 @@ void Network::print() {
     for (NetworkNode& node: nodes) {
         cout << node << " (" << node.restriction << ", " << node.capacity << ") " << " IN: ";
         for (NetworkEdge& edge: *(node.inedges)) {
-            cout << edge << " " << *(edge.origin) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ", " << edge.cost << ")";
+            cout << edge << " " << *(edge.origin) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ", $" << edge.cost << ")";
             cout << " | ";
         }
         cout << endl << node << " (" << node.restriction << ", " << node.capacity << ") " << " OUT: ";
         for (NetworkEdge& edge: *(node.outedges)) {
-            cout << edge << " " << *(edge.dest) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ", " << edge.cost << ")";
+            cout << edge << " " << *(edge.dest) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ", $" << edge.cost << ")";
             cout << " | " ;
         }
         cout << endl << "-------------------------------------" << endl;
@@ -858,20 +858,6 @@ void Network::marginal_network(Digraph &g) {
     }
 }
 
-NetworkEdge *get_sucessor(NetworkNode *p, string tag) {
-    for (NetworkEdge &e : *(p->outedges))
-        if (e.dest->tag == tag)
-            return &e;
-    return nullptr;
-}
-
-NetworkEdge *get_predecessor(NetworkNode *p, string tag) {
-    for (NetworkEdge &e : *(p->inedges))
-        if (e.origin->tag == tag)
-            return &e;
-    return nullptr;
-}
-
 NetworkEdge *get_edge_sucessor(NetworkNode *p, string tag) {
     for (NetworkEdge &e : *(p->outedges))
         if (e.tag == tag)
@@ -890,7 +876,6 @@ NetworkEdge *get_edge_predecessor(NetworkNode *p, string tag) {
 vector<string> Network::expand_restricted_nodes() {
     vector<string> restricted_nodes;
     string aux_node_tag;
-    NetworkNode *p;
 
     // Resolve nodes with restrictions
     for (NetworkNode &n : nodes) {
@@ -903,9 +888,6 @@ vector<string> Network::expand_restricted_nodes() {
             // add the new node and connect with n
             add_node(aux_node_tag);
             // update node capacity and restriction in auxiliar net
-            p = &n;
-            p->restriction = 0;
-            p->capacity = numeric_limits<float>::infinity();
             // add every outedge to the new created node, and delete from original node
             vector<string> edges_to_delete;
             for (NetworkEdge &e : *(n.outedges)) {
@@ -916,7 +898,9 @@ vector<string> Network::expand_restricted_nodes() {
             for (string del_e : edges_to_delete) {
                 remove_edge(del_e);
             }
-            add_edge(n.tag, aux_node_tag, aux_node_tag + "_node_restriction_edge", n.capacity, n.restriction, node_flow_in(p));
+            add_edge(n.tag, aux_node_tag, aux_node_tag + "_node_restriction_edge", n.capacity, n.restriction, node_flow_in(&n));
+            n.restriction = 0;
+            n.capacity = numeric_limits<float>::infinity();
         }
     }
 
@@ -1010,10 +994,15 @@ void Network::remove_super_nodes(vector<string> &original_sources, vector<string
 
 
 bool Network::primal_minimum_cost_flow(float target_flow) {
-    float flow;
-    if (!general_ford_fulkerson(flow, target_flow)) {
-        return false;
+    float flow = current_flow();
+
+    if (flow > target_flow) return false; // target flow already surpased
+    else if (flow < target_flow) { // only run ford fulkerson if target not reached yet
+        if(!general_ford_fulkerson(flow, target_flow)) { // if target flow was not reached
+            return false;
+        }
     }
+    
     //print();
     vector<string> restricted_nodes;
     Digraph d;
@@ -1034,16 +1023,16 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
     while(!d.floyd(mat, cycle, cycle_len, tag_to_index)) {
         float delta = numeric_limits<float>::infinity();
         NetworkEdge *e = nullptr;
-        NetworkNode *p;
-        
+        NetworkNode *p = nullptr;
+
         p = get_node(cycle[0]);
         // get delta calculating flow capacity in each edge
-        for (int i = 0; i < cycle.size() - 1; i++) {
+        for (int i = 0; i < cycle.size() - 1; i+=2) {
             // check if next node is sucessor
-            e = get_sucessor(p, cycle[i + 1]);
+            e = get_edge_sucessor(p, cycle[i+1]);
             if (e == nullptr) {
                 // then next node is predecessor (opposite direction)
-                e = get_predecessor(p, cycle[i + 1]);
+                e = get_edge_predecessor(p, cycle[i+1].substr(0, cycle[i+1].size()-1));
                 delta = min(delta, e->flow - e->restriction);
                 p = e->origin;
             } else {
@@ -1055,15 +1044,15 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
         
         p = get_node(cycle[0]);
         // update according to delta and marginal network
-        for (int i = 0; i < cycle.size() - 1; i++) {
+        for (int i = 0; i < cycle.size() - 1; i+=2) {
             // check if next node is sucessor
-            e = get_sucessor(p, cycle[i + 1]);
+            e = get_edge_sucessor(p, cycle[i + 1]);
             if (e == nullptr) {
                 // then next node is predecessor (is in opposite direction)
-                e = get_predecessor(p, cycle[i + 1]);
+                e = get_edge_predecessor(p, cycle[i+1].substr(0, cycle[i+1].size()-1));
                 // If edge flow will become the minimum value delete from marginal net
                 if (e->flow - delta == e->restriction) {
-                    d.remove_edge(e->dest->tag, e->origin->tag);
+                    d.remove_edge(e->tag + "'");
                 } 
                 // if edge had flow at full capacity before substracting delta, the edge needs to be added again
                 if (e->flow == e->capacity) {
@@ -1075,7 +1064,7 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
             } else {
                 // If edge flow reaches capacity, delete from marginal net
                 if (e->flow + delta == e->capacity) {
-                    d.remove_edge(e->origin->tag, e->dest->tag);
+                    d.remove_edge(e->tag);
                 }
                 // if edge had minimum flow before adding delta, the opposite edge needs to be added again
                 if (e->flow == e->restriction) {
@@ -1103,7 +1092,7 @@ float Network::current_cost() {
     return total_cost;
 }
 
-float Network::get_factible_flow(bool replace_network) {
+bool Network::get_factible_flow(bool replace_network) {
     // Make sure network has one source and one terminus
     assert(sources.size() == 1);
     assert(terminuses.size() == 1);
@@ -1164,13 +1153,13 @@ float Network::get_factible_flow(bool replace_network) {
 
     if (edge_restrictions) {
 
-        N_aux.print();
+        //N_aux.print();
         
         // Find a factible flow
         N_aux.ford_fulkerson(factible_flow);
 
         //cout << "Aquí se resuleven aristas con mínimos." << endl;
-        N_aux.print();
+        //N_aux.print();
 
         // Restore edge with minimum restrictions
         NetworkNode* temp_terminus = N_aux.get_node(N_aux.terminuses[0]);
@@ -1222,7 +1211,7 @@ float Network::get_factible_flow(bool replace_network) {
     if (replace_network)
         *this = N_aux;
     
-    return factible_flow;
+    return edge_restrictions;
 
 
 }
@@ -1243,25 +1232,25 @@ void Network::to_digraph_cost(Digraph &D) {
 
 bool Network::dual_minimum_cost_flow(float target_flow) {
     vector<string> restricted_nodes, original_sources, original_terminuses, path;
-    float total_flow, delta;
+    float total_flow = current_flow(), delta;
+    bool has_edge_restrictions;
     Digraph D_aux;
     NetworkNode *p;
     NetworkEdge *e;
     // Resolve multiple sources and terminuses
     add_super_nodes(original_sources, original_terminuses);
+    //print();
 
     // Resolve nodes with restrictions
     restricted_nodes = expand_restricted_nodes();
+    //print();
 
     // Resolve edges with minimum restriciones and finds factible flow
-    get_factible_flow(true);
-    
+    has_edge_restrictions = get_factible_flow(true);
     total_flow = current_flow();
+    //print();
 
-    cout << "Found factible flow" << endl;
-    print();
-    cout << "Current factible flow: " << total_flow << endl;
-
+    // If factible flow exceeds the target
     if (total_flow > target_flow) {
         // Reset nodes w/ restrictions
         restore_restricted_nodes(restricted_nodes);
@@ -1271,6 +1260,14 @@ bool Network::dual_minimum_cost_flow(float target_flow) {
 
         return false;
     }
+
+    if (has_edge_restrictions) {
+        primal_minimum_cost_flow(total_flow);
+        //cout << "Found factible optimal flow" << endl;
+        //print();
+        //cout << "Current factible flow: " << total_flow << endl;
+        //cout << "Current factible optimal flow cost: " << current_cost() << endl;
+    } 
 
     // Initialize digraph
     to_digraph_cost(D_aux);

@@ -27,7 +27,7 @@ using std::ofstream;
 int main(int argc, char *argv[]){
     
     Network N;
-
+/*
     N.add_node("a");
     N.add_node("b");
     N.add_node("c");
@@ -51,10 +51,33 @@ int main(int argc, char *argv[]){
     N.add_edge("d", "f", "e8", 25, 0, 0, 5);
 
     N.add_edge("g", "f", "e9", 10, 0, 0, 3);
-    //N.add_edge("g", "f", "e10", 100, 0, 0, 333);
+    N.add_edge("g", "f", "e10", 100, 0, 0, 333);
 
     N.set_source("a");
     N.set_source("b");
+
+    N.set_terminus("f");
+*/
+/*
+    N.add_node("a");
+    N.add_node("b");
+    N.add_node("c");
+    N.add_node("d");
+    N.add_node("e");
+    N.add_node("f");
+    N.add_node("g");
+
+    N.add_edge("a", "b", "e1", 5, 0, 0, 1);
+    N.add_edge("a", "c", "e2", 15, 0, 0, 3);
+    N.add_edge("a", "d", "e3", 20, 0, 0, 2);
+    N.add_edge("b", "f", "e4", 18, 2, 0, 2);
+    N.add_edge("c", "d", "e5", 30, 3, 0, 1);
+    N.add_edge("c", "g", "e6", 40, 5, 0, -3);
+    N.add_edge("d", "e", "e7", 20, 10, 0, 0);
+    N.add_edge("e", "f", "e8", 25, 8, 0, 10);
+    N.add_edge("g", "f", "e9", 10, 0, 0, 2);
+
+    N.set_source("a");
 
     N.set_terminus("f");
 
@@ -62,7 +85,7 @@ int main(int argc, char *argv[]){
 
     //float f;
 
-    if (N.dual_minimum_cost_flow(14)) {
+    if (N.dual_minimum_cost_flow(25)) {
         cout << "Solution found! :)" << endl;
         N.print();
         cout << "Optimal cost : " << N.current_cost() << endl;
@@ -73,16 +96,11 @@ int main(int argc, char *argv[]){
     return 0;
 
 
-    
-/*
-    Digraph D;
-    
-    
-    if (mcheck(*trigger_abort) != 0) {
-        fprintf(stderr, "mcheck() failed\n");
+*/
 
-        exit(EXIT_FAILURE);
-    }
+    Digraph D;
+    D.set_type(1);
+    
 
     D.add_node("a");
     D.add_node("b");
@@ -129,7 +147,7 @@ int main(int argc, char *argv[]){
         cout << endl;    
     }
     
-*/
+
     /*
     string filename = "digrafasdf.json";
     ifstream i("examples/digraph.json");

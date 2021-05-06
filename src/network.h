@@ -199,7 +199,7 @@ public:
 
     void marginal_network(Digraph &n);
 
-    float get_factible_flow(bool replace_network=true);
+    bool get_factible_flow(bool replace_network=true);
 
     bool add_super_nodes(vector<string> &sources, vector<string> &terminuses);
 
