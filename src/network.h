@@ -47,7 +47,7 @@ public:
      * @param restriction Minimum flow that can pass through the node
      * @return Whether the node was inserted.
      **/
-    bool add_node(string tag, float capacity=numeric_limits<float>::infinity(), float restriction=0);
+    bool add_node(string tag, float capacity=numeric_limits<float>::infinity(), float restriction=0, float production=0);
 
     /**
     * @brief Function that adds an edge.
@@ -205,9 +205,21 @@ public:
 
     void remove_super_nodes(vector<string> &sources, vector<string> &terminuses);
 
-    void to_digraph_cost(Digraph &D);
+    void to_digraph(Digraph &D);
 
     bool dual_minimum_cost_flow(float target_flow);
+
+    bool simplex(float &cost);
+
+    void to_digraph_simplex(Digraph &D);
+    
+    bool general_simplex(float &cost);
+
+    float get_big_m();
+    
+    float in_flow(NetworkNode *n);
+    
+    float out_flow(NetworkNode *n);    
 };
 
 #endif // DIGRAPH_H_INCLUDED

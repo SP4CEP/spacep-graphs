@@ -14,6 +14,7 @@ Description: Functions of the implementetion of a Network
 #include <queue>
 #include <limits>
 #include <cassert>
+#include <utility>
 
 #include "graphstructs.h"
 #include "linkedlist.h"
@@ -29,6 +30,7 @@ using std::unordered_set;
 using std::unordered_map;
 using std::queue;
 using std::numeric_limits;
+using std::pair;
 
 Network::Network() : num_edges(0), num_nodes(0) {
 }
@@ -48,7 +50,7 @@ Network& Network::operator=(const Network &G) {
     clear();
     // add each node
     for (ListNode<NetworkNode> *p=G.nodes.start; p; p=p->next) {
-        add_node((p->value).tag, (p->value).capacity, (p->value).restriction);
+        add_node((p->value).tag, (p->value).capacity, (p->value).restriction, (p->value).production);
     }
     // iterate edges for each node
     for (ListNode<NetworkNode> *p=G.nodes.start; p; p=p->next) {
@@ -98,7 +100,7 @@ LinkedList<NetworkNode> Network::get_nodes(){
 
 //**********************************************************************//
 
-bool Network::add_node(string tag, float capacity, float restriction) {
+bool Network::add_node(string tag, float capacity, float restriction, float production) {
     if (!find_node(tag)) { // If tag found
         NetworkNode new_node = {
             .tag = tag,
@@ -106,6 +108,7 @@ bool Network::add_node(string tag, float capacity, float restriction) {
             .outedges = new LinkedList<NetworkEdge>,
             .capacity = capacity,
             .restriction = restriction,
+            .production = production
         };
         nodes.add(new_node);
         num_nodes++;
@@ -331,7 +334,7 @@ void Network::clear() {
 void Network::print() {
     cout << endl << "*****  NETWORK *****" << endl;
     for (NetworkNode& node: nodes) {
-        cout << node << " (" << node.restriction << ", " << node.capacity << ") " << " IN: ";
+        cout << node << " (" << node.restriction << ", " << node.capacity << "), b = " << node.production << " IN: ";
         for (NetworkEdge& edge: *(node.inedges)) {
             cout << edge << " " << *(edge.origin) << " (" << edge.flow << ", " << edge.restriction << ", " << edge.capacity << ", $" << edge.cost << ")";
             cout << " | ";
@@ -824,6 +827,8 @@ void Network::update_flow(unordered_map<string, float> &edge_flow) {
     }
 }
 
+//***************************************************************//
+
 float Network::node_flow_in(NetworkNode *p) {
     float total_flow = 0;
     
@@ -833,11 +838,15 @@ float Network::node_flow_in(NetworkNode *p) {
     return total_flow;
 }
 
+//***************************************************************//
+
 float Network::current_flow() {
     if (terminuses.size() != 1) return -numeric_limits<float>::infinity();
     // Set total flow as the flow into terminus
     return node_flow_in(get_node(terminuses[0]));
 }
+
+//***************************************************************//
 
 void Network::marginal_network(Digraph &g) {
     g.clear();
@@ -858,12 +867,16 @@ void Network::marginal_network(Digraph &g) {
     }
 }
 
+//***************************************************************//
+
 NetworkEdge *get_edge_sucessor(NetworkNode *p, string tag) {
     for (NetworkEdge &e : *(p->outedges))
         if (e.tag == tag)
             return &e;
     return nullptr;
 }
+
+//***************************************************************//
 
 NetworkEdge *get_edge_predecessor(NetworkNode *p, string tag) {
     for (NetworkEdge &e : *(p->inedges))
@@ -872,6 +885,7 @@ NetworkEdge *get_edge_predecessor(NetworkNode *p, string tag) {
     return nullptr;
 }
 
+//***************************************************************//
 
 vector<string> Network::expand_restricted_nodes() {
     vector<string> restricted_nodes;
@@ -907,6 +921,8 @@ vector<string> Network::expand_restricted_nodes() {
     return restricted_nodes;
 }
 
+//***************************************************************//
+
 void Network::restore_restricted_nodes(vector<string> &restricted_nodes) {
     for (string node_tag : restricted_nodes) {
         // original node
@@ -934,6 +950,7 @@ void Network::restore_restricted_nodes(vector<string> &restricted_nodes) {
     }
 }
 
+//***************************************************************//
 
 bool Network::add_super_nodes(vector<string> &original_sources, vector<string> &original_terminuses) {
     string super_terminus_tag = "super_terminus";
@@ -972,6 +989,8 @@ bool Network::add_super_nodes(vector<string> &original_sources, vector<string> &
     return multiple_terminuses || multiple_sources;
 }
 
+//***************************************************************//
+
 void Network::remove_super_nodes(vector<string> &original_sources, vector<string> &original_terminuses) {
     // if super source existed before, remove it and restore original sources
     if (original_sources.size() > 1) {
@@ -992,6 +1011,8 @@ void Network::remove_super_nodes(vector<string> &original_sources, vector<string
     }
 }
 
+
+//***************************************************************//
 
 bool Network::primal_minimum_cost_flow(float target_flow) {
     float flow = current_flow();
@@ -1082,6 +1103,8 @@ bool Network::primal_minimum_cost_flow(float target_flow) {
     return true;
 }
 
+//***************************************************************//
+
 float Network::current_cost() {
     float total_cost = 0;
     for (NetworkNode &node : nodes) {
@@ -1091,6 +1114,8 @@ float Network::current_cost() {
     }
     return total_cost;
 }
+
+//***************************************************************//
 
 bool Network::get_factible_flow(bool replace_network) {
     // Make sure network has one source and one terminus
@@ -1216,7 +1241,9 @@ bool Network::get_factible_flow(bool replace_network) {
 
 }
 
-void Network::to_digraph_cost(Digraph &D) {
+//***************************************************************//
+
+void Network::to_digraph(Digraph &D) {
     D.clear();
 
     for (NetworkNode n : nodes)
@@ -1229,6 +1256,8 @@ void Network::to_digraph_cost(Digraph &D) {
         }
     }
 }
+
+//***************************************************************//
 
 bool Network::dual_minimum_cost_flow(float target_flow) {
     vector<string> restricted_nodes, original_sources, original_terminuses, path;
@@ -1270,7 +1299,7 @@ bool Network::dual_minimum_cost_flow(float target_flow) {
     } 
 
     // Initialize digraph
-    to_digraph_cost(D_aux);
+    to_digraph(D_aux);
 
     // Apply dual algorithm
     // while target flow is not reached
@@ -1317,4 +1346,259 @@ bool Network::dual_minimum_cost_flow(float target_flow) {
 
     // Return wether the target flow was reached
     return total_flow >= target_flow - numeric_limits<float>::epsilon();
+}
+
+//***************************************************************//
+
+void Network::to_digraph_simplex(Digraph &D) {
+    D.clear();
+    D.set_type(1);
+
+    for (NetworkNode n : nodes)
+        D.add_node(n.tag);
+    
+    for (NetworkNode n : nodes) {
+        for (NetworkEdge e : *(n.outedges)) {
+            if (e.flow < e.capacity && e.flow > e.restriction) {
+                D.add_edge(n.tag, e.dest->tag, e.tag, e.cost);
+                D.add_edge(e.dest->tag, n.tag, e.tag + "'", -e.cost);
+            }
+        }
+    }
+
+}
+
+//***************************************************************//
+
+bool Network::simplex(float &cost) {
+    // Having initial flow
+    Digraph D;
+    to_digraph_simplex(D);
+
+    cost = current_cost();
+
+    bool improvement_flag;
+    while (true) {
+        pair<NetworkEdge*, float> improvement;
+        vector<string> cycle, best_cycle;
+        float cycle_len;
+        
+        improvement.first = nullptr;
+        improvement.second = 0;
+        improvement_flag = false;
+        
+        // Trying to find a better cost
+        for (NetworkNode &n : nodes) {
+            for (NetworkEdge &e : *(n.outedges)) {
+                // The edge is already in the basic solution
+                if (D.find_edge(e.tag)) continue;
+
+                // The edge is already at its maximum capacity
+                if (e.flow == e.capacity) continue;
+
+                D.add_edge(e.origin->tag, e.dest->tag, e.tag, e.cost);
+
+                // Looking for negative cycles
+                Matrix<DijkstraAux> Floyd(0, 0);
+                unordered_map<string, int> tag_to_index;
+                if (!D.floyd(Floyd, cycle, cycle_len, tag_to_index)) {
+                //if (!D.dijkstra(e.origin->tag, tree, cycle, cycle_len)) {
+                    if (cycle_len < improvement.second) {
+                        improvement.first = &e;
+                        improvement.second = cycle_len;
+                        improvement_flag = true;
+                        best_cycle = cycle;
+                    }
+                }
+                D.remove_edge(e.tag);
+            }
+        }
+
+        // No improvement was found, nothing to do here
+        if (!improvement_flag) return true;
+
+        // If not, improvement was found, start updating solution
+        // Get delta
+        float delta = numeric_limits<float>::infinity();
+        NetworkNode *p = nullptr;
+        NetworkEdge *e = nullptr;
+
+        p = get_node(best_cycle[0]);
+        // get delta calculating flow capacity in each edge
+        for (int i = 0; i < best_cycle.size() - 1; i+=2) {
+            // check if next node is sucessor
+            e = get_edge_sucessor(p, best_cycle[i+1]);
+            if (e == nullptr) {
+                // then next node is predecessor (opposite direction)
+                e = get_edge_predecessor(p, best_cycle[i+1].substr(0, best_cycle[i+1].size()-1));
+                delta = min(delta, e->flow - e->restriction);
+                p = e->origin;
+            } else {
+                delta = min(delta, e->capacity - e->flow);
+                p = e->dest;
+            }
+        }
+      
+        // Update network flows
+        p = get_node(best_cycle[0]);
+        for (int i = 0; i < best_cycle.size() - 1; i+=2) {
+            // check if next node is sucessor
+            e = get_edge_sucessor(p, best_cycle[i+1]);
+            if (e == nullptr) {
+                // then next node is predecessor (opposite direction)
+                e = get_edge_predecessor(p, best_cycle[i+1].substr(0, best_cycle[i+1].size()-1));
+                set_edge(e->origin->tag, e->dest->tag, e->tag, e->capacity, e->restriction, e->flow-delta);
+                p = e->origin;
+            } else {
+                set_edge(e->origin->tag, e->dest->tag, e->tag, e->capacity, e->restriction, e->flow+delta);
+                p = e->dest;
+            }
+            // Check if edge is still in the basic solution
+            if (e->flow == e->restriction || e->flow == e->capacity) {
+                D.remove_edge(e->tag);
+                D.remove_edge(e->tag + "'");
+            }
+            
+        }
+
+          // Add edge to basic solution
+        D.add_edge(improvement.first->origin->tag, improvement.first->dest->tag, improvement.first->tag, improvement.first->cost);
+        if (improvement.first->flow > improvement.first->restriction)
+            D.add_edge(improvement.first->dest->tag, improvement.first->origin->tag, improvement.first->tag + "'", -improvement.first->cost);
+
+        // Calculate new cost
+        cost += delta * improvement.second;
+    }
+
+    return true;
+}
+
+//***************************************************************//
+
+float Network::get_big_m() {
+    float M = 0;
+    for (NetworkNode n : nodes) {
+        for (NetworkEdge e : *(n.outedges)) {
+            M += abs(e.cost);
+        }
+    }
+    return (10 * M);
+}
+
+//***************************************************************//
+
+bool Network::general_simplex(float &cost) {
+    // 1. Check offer and demand
+    // Calculate production across the network
+    float total_production = 0;
+    for (NetworkNode n : nodes) {
+        total_production += n.production;
+    }
+
+    if (total_production > 0) {
+        add_node("demand_aux_node", numeric_limits<float>::infinity(), 0, -total_production);
+        for (NetworkNode &n : nodes) {
+            if (n.production > 0) {
+                add_edge(n.tag, "demand_aux_node", n.tag + "_to_demand_aux_node", numeric_limits<float>::infinity(), 0, 0, 0);
+            }
+        }
+    } else if (total_production < 0) {
+        add_node("produce_aux_node", numeric_limits<float>::infinity(), 0, -total_production);
+        for (NetworkNode &n : nodes) {
+            if (n.production < 0) {
+                add_edge("produce_aux_node", n.tag, "produce_aux_node_to" + n.tag, numeric_limits<float>::infinity(), 0, 0, 0);
+            }
+        }
+    }
+    //cout << "Despues de arreglar producciones" << endl;
+    //print();
+
+    // 2. Solve node restrictions
+    vector<string> restricted_nodes;
+    restricted_nodes = expand_restricted_nodes();
+
+    // 3. Solve edge restrictions
+    for (NetworkNode &n : nodes) {
+        float available_flow = n.production;
+        //if (available_flow > 0) {
+            for (NetworkEdge &e : *(n.outedges)) {
+                set_edge(n.tag, e.dest->tag, e.tag, e.capacity, e.restriction, e.restriction);
+                available_flow -= e.restriction;
+            }
+            // If there is not enough production, return false
+            /*
+            if (available_flow < 0) {
+                restore_restricted_nodes(restricted_nodes);
+                return false;
+            }
+            */
+        //}
+    }
+    //cout << "Despues de arreglar restricciones de arcos" << endl;
+    //print();
+
+   
+    // 4. Add auxiliar node and redirect remaining flow
+    float M = get_big_m();
+    add_node("simplex_auxiliar_node");
+    for (NetworkNode &n : nodes) {
+        float redirected_flow = n.production + in_flow(&n) - out_flow(&n);
+
+        if (redirected_flow > 0)
+            add_edge(n.tag, "simplex_auxiliar_node", n.tag + "_to_simplex_auxiliar_node", numeric_limits<float>::infinity(), 0, redirected_flow, M);
+        if (redirected_flow < 0)
+            add_edge("simplex_auxiliar_node", n.tag, "simplex_auxiliar_node_to_" + n.tag, numeric_limits<float>::infinity(), 0, -redirected_flow, M);
+    }
+
+    //cout << "Despues de distribuir flujo" << endl;
+    //print();
+
+
+    // Run simplex 
+    simplex(cost);
+
+    // Checking if all auxiliar edges have no flow
+    bool solution = true;
+    NetworkNode *p;
+    p = get_node("simplex_auxiliar_node");
+    for (NetworkEdge e : *(p->inedges)) {
+        if (e.flow != 0){
+            solution = false;
+            break;
+        } 
+    }
+    for (NetworkEdge e : *(p->outedges)) {
+        if (e.flow != 0){
+            solution = false;
+            break;
+        } 
+    }
+
+    // Restore network
+    remove_node("simplex_auxiliar_node");
+    remove_node("demand_aux_node");
+    remove_node("produce_aux_node");
+    restore_restricted_nodes(restricted_nodes);
+    
+    // If auxiliar edges are not empty then the problems has no solution
+    if (!solution) return false;
+    return true;
+}
+
+//***************************************************************//
+
+float Network::in_flow(NetworkNode *n) {
+    float accumulated_flow = 0;
+    for (NetworkEdge e : *(n->inedges)) 
+        accumulated_flow += e.flow;
+    return accumulated_flow;
+}
+
+//***************************************************************//
+
+float Network::out_flow(NetworkNode *n) {
+    float accumulated_flow = 0;
+    for (NetworkEdge e : *(n->outedges)) 
+        accumulated_flow += e.flow;
+    return accumulated_flow;
 }

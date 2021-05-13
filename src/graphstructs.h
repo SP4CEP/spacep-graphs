@@ -236,7 +236,8 @@ struct NetworkNode {
     string tag;
     LinkedList<NetworkEdge>* inedges; 
     LinkedList<NetworkEdge>* outedges;
-    float capacity, restriction;
+    float capacity, restriction, production;
+
     bool operator==(const NetworkNode& other) const {
         return tag == other.tag;
     };

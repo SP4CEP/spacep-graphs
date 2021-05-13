@@ -162,10 +162,12 @@ bool Digraph::remove_edge(const string node1_tag, const string node2_tag) {
     DigraphNode* p2 = get_node(node2_tag); // destination node
     if (!p1 || !p2) return false;
     bool found = false;
+    float tmp_weight;
     for (DigraphEdge& edge: *(p1->outedges)) {
         if (edge.dest == p2) {
             DigraphEdge tmp_edge;
             tmp_edge.tag = edge.tag;
+            tmp_weight  = tmp_edge.weight;
             p1->outedges->remove(tmp_edge);
             p2->inedges->remove(tmp_edge);
             found = true;
@@ -174,6 +176,7 @@ bool Digraph::remove_edge(const string node1_tag, const string node2_tag) {
     }
     if (found) {
         num_edges--;
+        weight -= tmp_weight;
     }
     return found;
 }
@@ -453,7 +456,7 @@ bool Digraph::dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle,
 bool Digraph::optimize_dijkstra(Digraph &tree, vector<string> &cycle, float &cycle_len, unordered_map<string, DijkstraAux> &label) {
     // Optimization step
     while (true) {
-        tree.print();
+        print();
         DigraphNode *i = nullptr, *j = nullptr;
         float aux_weight, dl;
         string aux_tag;
