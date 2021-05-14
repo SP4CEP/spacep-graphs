@@ -1510,9 +1510,7 @@ bool Network::general_simplex(float &cost) {
             }
         }
     }
-    //cout << "Despues de arreglar producciones" << endl;
-    //print();
-
+    
     // 2. Solve node restrictions
     vector<string> restricted_nodes;
     restricted_nodes = expand_restricted_nodes();
@@ -1520,22 +1518,12 @@ bool Network::general_simplex(float &cost) {
     // 3. Solve edge restrictions
     for (NetworkNode &n : nodes) {
         float available_flow = n.production;
-        //if (available_flow > 0) {
-            for (NetworkEdge &e : *(n.outedges)) {
-                set_edge(n.tag, e.dest->tag, e.tag, e.capacity, e.restriction, e.restriction);
-                available_flow -= e.restriction;
-            }
-            // If there is not enough production, return false
-            /*
-            if (available_flow < 0) {
-                restore_restricted_nodes(restricted_nodes);
-                return false;
-            }
-            */
-        //}
+        for (NetworkEdge &e : *(n.outedges)) {
+            set_edge(n.tag, e.dest->tag, e.tag, e.capacity, e.restriction, e.restriction);
+            available_flow -= e.restriction;
+        }
+           
     }
-    //cout << "Despues de arreglar restricciones de arcos" << endl;
-    //print();
 
    
     // 4. Add auxiliar node and redirect remaining flow
@@ -1549,9 +1537,6 @@ bool Network::general_simplex(float &cost) {
         if (redirected_flow < 0)
             add_edge("simplex_auxiliar_node", n.tag, "simplex_auxiliar_node_to_" + n.tag, numeric_limits<float>::infinity(), 0, -redirected_flow, M);
     }
-
-    //cout << "Despues de distribuir flujo" << endl;
-    //print();
 
 
     // Run simplex 
