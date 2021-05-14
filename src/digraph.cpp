@@ -491,24 +491,6 @@ bool Digraph::optimize_dijkstra(Digraph &tree, vector<string> &cycle, float &cyc
         DigraphNode *tree_i = tree.get_node(i->tag);
         DigraphNode *tree_j = tree.get_node(j->tag);
 
-        // look for j in every ancestor of i in the arborescence
-        /*
-        DigraphNode *i_ancestor = tree_i;
-        cycle.clear();
-        while (true) {
-            cycle.push_back(i_ancestor->tag);
-            if (i_ancestor == tree_j) {
-                cycle_len = -dl;
-                reverse(cycle.begin(), cycle.end());
-                cycle.push_back(cycle[0]);
-                return false;
-            }
-            if (i_ancestor->inedges->Length() > 0)
-                i_ancestor = ancestor(i_ancestor);
-            else break;
-        }
-        */
-
         cycle.clear();
         cycle.push_back(tree_i->tag);
         // Iterate over ancestor edges until start is reached (no ancestor edge returns nullptr)
