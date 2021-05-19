@@ -1,0 +1,175 @@
+{
+    "type": "graph",
+    "weighted": false,
+   "nodes":
+   [
+       {
+           "tag": "a"
+       },
+       {
+           "tag": "b"
+       },
+       {
+        "tag": "c"
+       },
+       {
+        "tag": "d"
+       },
+       {
+        "tag": "e"
+       },
+       {
+        "tag": "f"
+       },
+       {
+        "tag": "g"
+       },
+       {
+        "tag": "h"
+       },
+       {
+        "tag": "i"
+       },
+       {
+        "tag": "j"
+       },
+       {
+        "tag": "k"
+       }
+   ],
+   "edges":
+   [
+       {
+           "tag": "e1",
+           "src": "a",
+           "dest": "b"
+           
+       },
+       {
+        "tag": "e2",
+        "src": "a",
+        "dest": "h"
+        
+        },
+        {
+            "tag": "e3",
+            "src": "b",
+            "dest": "g"
+            
+        },
+        {
+            "tag": "e4",
+            "src": "b",
+            "dest": "f"
+            
+        },
+        {
+            "tag": "e5",
+            "src": "b",
+            "dest": "c"
+            
+        },
+        {
+            "tag": "e6",
+            "src": "c",
+            "dest": "i"
+            
+        },
+        {
+            "tag": "e7",
+            "src": "c",
+            "dest": "f"
+            
+        },
+        {
+            "tag": "e8",
+            "src": "c",
+            "dest": "d"
+            
+        },
+        {
+            "tag": "e9",
+            "src": "f",
+            "dest": "h"
+            
+        },
+        {
+            "tag": "e10",
+            "src": "f",
+            "dest": "g"
+            
+        },
+        {
+            "tag": "e11",
+            "src": "f",
+            "dest": "i"
+            
+        },
+        {
+            "tag": "e12",
+            "src": "f",
+            "dest": "j"
+            
+        },
+        {
+            "tag": "e13",
+            "src": "f",
+            "dest": "e"
+            
+        },
+        {
+            "tag": "e14",
+            "src": "f",
+            "dest": "d"
+            
+        },
+        {
+            "tag": "e15",
+            "src": "d",
+            "dest": "e"
+            
+        },
+        {
+            "tag": "e16",
+            "src": "d",
+            "dest": "k"
+            
+        },
+        {
+            "tag": "e17",
+            "src": "e",
+            "dest": "j"
+            
+        },
+        {
+            "tag": "e18",
+            "src": "e",
+            "dest": "g"
+            
+        },
+        {
+            "tag": "e19",
+            "src": "g",
+            "dest": "h"
+            
+        },
+        {
+            "tag": "e20",
+            "src": "h",
+            "dest": "i"
+            
+        },
+        {
+            "tag": "e21",
+            "src": "i",
+            "dest": "j"
+            
+        },
+        {
+            "tag": "e22",
+            "src": "j",
+            "dest": "k"
+            
+        }
+   ]   
+}

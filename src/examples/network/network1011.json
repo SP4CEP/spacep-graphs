@@ -8,19 +8,17 @@
        },
        {
            "tag": "b",
-           "capacity": 10,
-           "restriction": 5
+           "type": "source"
        },
        {
-           "tag": "c"
+           "tag": "c",
+           "type": "source"
        },
        {
            "tag": "d"
        },
        {
-           "tag": "e",
-           "capacity": 20,
-           "restriction": 10
+           "tag": "e"
        },
        {
            "tag": "f"
@@ -30,16 +28,32 @@
        },
        {
            "tag": "h",
-           "type": "terminus"
+           "capacity": 20,
+           "restriction": 7
        },
        {
            "tag": "i",
-           "type":"terminus"
+           "capacity": 21,
+           "restriction": 9
        },
        {
-           "tag": "j",
-           "type": "source"
-       }
+           "tag": "j"
+       },
+       {
+           "tag": "k",
+           "type": "terminus"
+       },
+       {
+           "tag": "l"
+       },
+       {
+           "tag": "m",
+           "type": "terminus"
+        },
+        {
+            "tag": "n",
+            "type": "terminus"
+        }    
    ],
    "edges":
    [

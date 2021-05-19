@@ -20,6 +20,8 @@ using json = nlohmann::json;
 Digraph ReadJsonDigraph(json &digraph){
         Digraph D;
         json nodes = digraph["nodes"];
+        if(digraph["weighted"]) D.set_type(1);
+        else D.set_type(0);
 
         // READ NODES
         for (json::iterator it = nodes.begin(); it != nodes.end(); ++it) {
@@ -31,7 +33,10 @@ Digraph ReadJsonDigraph(json &digraph){
         //READ EDGES
         for (json::iterator it = edges.begin(); it != edges.end(); ++it) {
             json edge = *it;
-            D.add_edge(edge["src"], edge["dest"], edge["tag"], edge["weight"]);
+            if(digraph["weighted"])
+                D.add_edge(edge["src"], edge["dest"], edge["tag"], edge["weight"]);
+            else
+                D.add_edge(edge["src"], edge["dest"], edge["tag"]);
          }
 
         D.print();
@@ -44,6 +49,10 @@ Digraph ReadJsonDigraph(json &digraph){
 Graph ReadJsonGraph(json &graph){
         cout << "is graph" << endl;
         Graph G;
+        float weight = 0;
+        if(graph["weighted"]) G.set_type(1);
+        else G.set_type(0);
+
         json nodes = graph["nodes"];
 
         // READ NODES
@@ -56,10 +65,13 @@ Graph ReadJsonGraph(json &graph){
         //READ EDGES
         for (json::iterator it = edges.begin(); it != edges.end(); ++it) {
             json edge = *it;
-            G.add_edge(edge["src"], edge["dest"], edge["tag"], edge["weight"]);
+            if(graph["weighted"])
+                G.add_edge(edge["src"], edge["dest"], edge["tag"], edge["weight"]);
+            else
+                G.add_edge(edge["src"], edge["dest"], edge["tag"]);    
          }
 
-        G.print();
+        //G.print();
         return G; 
 }
 
@@ -68,6 +80,7 @@ Graph ReadJsonGraph(json &graph){
 Network ReadJsonNetwork(json &network){
         //cout << "is network" << endl;
         Network N;
+        float q = numeric_limits<float>::infinity(),r = 0,f = 0,c = 0;
         json nodes = network["nodes"];
 
         // READ NODES
@@ -90,10 +103,21 @@ Network ReadJsonNetwork(json &network){
         //READ EDGES
         for (json::iterator it = edges.begin(); it != edges.end(); ++it) {
             json edge = *it;
-            if(edge["restriction"].is_null())
-                N.add_edge(edge["src"], edge["dest"], edge["tag"], edge["capacity"]);
-            else
-                N.add_edge(edge["src"], edge["dest"], edge["tag"], edge["capacity"], edge["restriction"]);
+            q = numeric_limits<float>::infinity();
+            r = 0;
+            f = 0;
+            c = 0;
+
+            //capacity
+            if(!edge["capacity"].is_null()) q = edge["capacity"];
+            //restriction
+            if(!edge["restriction"].is_null()) r = edge["restriction"];
+            //flow
+            if(!edge["flow"].is_null()) f = edge["flow"];
+            //cost
+            if(!edge["cost"].is_null()) c = edge["cost"];
+            
+            N.add_edge(edge["src"], edge["dest"], edge["tag"], q, r, f, c);
          }
 
         N.print();
@@ -102,12 +126,17 @@ Network ReadJsonNetwork(json &network){
 
 //************************************************************************************************//
 
-void WriteDigraph(string filename, Digraph D){
-    json write;
+void WriteDigraph(string filename, Digraph D, json &write){
+
     //edges, nodes, type
     write["type"] = "digraph";
     write["nodes"] = json::array({});
     write["edges"] = json::array({});
+
+    if(D.get_weight()){
+        write["weighted"] = true;
+        write["weight"] = D.get_weight();
+    }
 
     //WRITE NODE
     for(DigraphNode& node: D.get_nodes()){
@@ -128,19 +157,28 @@ void WriteDigraph(string filename, Digraph D){
     }
     ofstream o(filename);
     o << setw(4) << write << endl;
+    cout << "file written" << endl;
 }
 
-void WriteGraph(string filename, Graph graph){
+void WriteGraph(string filename, Graph graph, json &write){
     //copy the graph to not modify original
     Graph G = graph;
-    
-    json write;
+    string tag;
+    bool weighted;
+
     //edges, nodes, type
     write["type"] = "graph";
     write["nodes"] = json::array({});
     write["edges"] = json::array({});
 
-    string tag;
+    if(G.get_weight()){
+        weighted = true;
+        write["weighted"] = weighted;
+        write["weight"] = G.get_weight();
+    }else{
+        weighted = false;
+       write["weighted"] = weighted; 
+    }
 
     //WRITE NODE
     for(GraphNode& node: G.get_nodes()){
@@ -151,10 +189,10 @@ void WriteGraph(string filename, Graph graph){
         //WRITE EDGES
         for(GraphEdge& edge: *(node.edges)){
             json e;
-            tag = edge.tag;
+            e["tag"] = edge.tag;
             e["origin"] = node.tag;
             e["dest"] = edge.node->tag;
-            e["weight"] = edge.weight;
+            if(weighted) e["weight"] = edge.weight;
             write["edges"].push_back(e);
 
             //Remove it from copy so we don't write it twice
@@ -163,13 +201,13 @@ void WriteGraph(string filename, Graph graph){
     }
     ofstream o(filename);
     o << setw(4) << write << endl; 
+    cout << "file written" << endl;
 }
 
-void WriteNetwork(string filename, Network N){
-       //copy the graph to not modify original
-    //Network  = N;
+void WriteNetwork(string filename, Network Net, json &write){
+    //copy the network to not modify original
+    Network N = Net;
     
-    json write;
     //edges, nodes, type
     write["type"] = "network";
     write["nodes"] = json::array({});
@@ -205,7 +243,7 @@ void WriteNetwork(string filename, Network N){
         //WRITE EDGES
         for(NetworkEdge& edge: *(node.outedges)){
             json e;
-            tag = edge.tag;
+            e["tag"] = edge.tag;
             e["origin"] = edge.origin->tag;
             e["dest"] = edge.dest->tag;
             e["capacity"] = edge.capacity;
@@ -214,15 +252,19 @@ void WriteNetwork(string filename, Network N){
                 e["restriction"] = edge.restriction;
             if(edge.flow)
                 e["flow"] = edge.flow;
+            if(edge.cost)
+                e["cost"] = edge.cost;
 
             write["edges"].push_back(e);
 
         }
     }
     ofstream o(filename);
-    o << setw(4) << write << endl;  
+    o << setw(4) << write << endl;
+    cout << "file written" << endl;  
 }
 
+//  deprecated read from file
 void read_digraph(string path, Digraph &G) {
     ifstream file;
     G.clear();

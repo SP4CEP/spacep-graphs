@@ -1,0 +1,120 @@
+{
+    "edges": [
+        {
+            "dest": "b",
+            "origin": "a",
+            "tag": "e1",
+            "weight": 3.0
+        },
+        {
+            "dest": "c",
+            "origin": "a",
+            "tag": "e2",
+            "weight": 1.0
+        },
+        {
+            "dest": "d",
+            "origin": "a",
+            "tag": "e3",
+            "weight": 2.0
+        },
+        {
+            "dest": "a",
+            "origin": "b",
+            "tag": "e1",
+            "weight": 3.0
+        },
+        {
+            "dest": "c",
+            "origin": "b",
+            "tag": "e4",
+            "weight": 2.0
+        },
+        {
+            "dest": "d",
+            "origin": "b",
+            "tag": "e5",
+            "weight": 3.0
+        },
+        {
+            "dest": "e",
+            "origin": "b",
+            "tag": "e6",
+            "weight": 10.0
+        },
+        {
+            "dest": "a",
+            "origin": "c",
+            "tag": "e2",
+            "weight": 1.0
+        },
+        {
+            "dest": "b",
+            "origin": "c",
+            "tag": "e4",
+            "weight": 2.0
+        },
+        {
+            "dest": "e",
+            "origin": "c",
+            "tag": "e7",
+            "weight": 1.0
+        },
+        {
+            "dest": "a",
+            "origin": "d",
+            "tag": "e3",
+            "weight": 2.0
+        },
+        {
+            "dest": "b",
+            "origin": "d",
+            "tag": "e5",
+            "weight": 3.0
+        },
+        {
+            "dest": "e",
+            "origin": "d",
+            "tag": "e8",
+            "weight": 2.0
+        },
+        {
+            "dest": "b",
+            "origin": "e",
+            "tag": "e6",
+            "weight": 10.0
+        },
+        {
+            "dest": "c",
+            "origin": "e",
+            "tag": "e7",
+            "weight": 1.0
+        },
+        {
+            "dest": "d",
+            "origin": "e",
+            "tag": "e8",
+            "weight": 2.0
+        }
+    ],
+    "nodes": [
+        {
+            "tag": "a"
+        },
+        {
+            "tag": "b"
+        },
+        {
+            "tag": "c"
+        },
+        {
+            "tag": "d"
+        },
+        {
+            "tag": "e"
+        }
+    ],
+    "type": "graph",
+    "weight": 24.0,
+    "weighted": true
+}
