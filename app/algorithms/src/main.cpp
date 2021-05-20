@@ -89,92 +89,6 @@ int main(int argc, char *argv[]){
     }else{
         cout << "ERROR" << endl;
     }
-/*
-    
-    //              <<NETWORK ALGOS>>              //
-    if (type == "network"){
-        cout << "Reading network..." << endl;
-        Network N = ReadJsonNetwork(j);
-
-        switch (algorithm){
-        
-        case 10:
-        //      **FORD-FULKERSON**      //
-            cout << "Ford-Fulkerson algorithm" << endl;
-            float total_flow;
-            bool flow;
-            //user set a target flow
-            if(j["target_flow"].is_null()){
-                flow = N.ford_fulkerson(total_flow);
-            }else{
-                float target_flow = j["target_flow"];
-                flow = N.ford_fulkerson(total_flow, target_flow);
-            }
-            //output
-            out["total_flow"] = total_flow;
-            WriteNetwork(out_file, N, out);
-            
-            break;
-        
-        case 11: 
-        //      **PRIMAL MINIMUM COST**     //
-        
-        case 12: 
-        //      **DUAL MINIMUM COST**       //
-        case 13:
-       //           **SIMPLEX**             // 
-        
-        default:
-            cout << "Algorithm not valid." << endl;
-            break;
-        }
-    //            <<DIGRAPH ALGOS>>            //
-    }else if(type == "digraph"){
-        cout << "Reading digraph..." << endl;
-        Digraph D = ReadJsonDigraph(j);
-
-        switch (algorithm){
-        //      **DIJKSTRA**        //
-        case 8:
-            Digraph tree;
-            vector<string> cycle;
-            float len_cycle;
-            string initial_tag = j["initial_tag"];
-            //optionals
-            string destination_tag;
-            bool optimize;
-
-            if(j["destination_tag"].is_null()){
-                
-            }else{
-
-            }
-            break;
-        //      **FLOYD**           //
-        case 9:
-
-            break;
-        default:
-            break;
-        }
-
-
-        
-        WriteDigraph(out_file, D, out);
-
-    }else if(type == "graph"){
-        cout << "Reading graph..." << endl;
-        Graph G = ReadJsonGraph(j);
-
-        //      GRAPH ALGOS         //
-
-        WriteGraph(out_file, G);
-
-    }else{
-        cout << "Enter a valid json file." << endl;
-        return 1;
-    }
-*/
     return 0;
 }
 
@@ -279,6 +193,68 @@ void menu_digraph(json &d, int algo, string out_file){
 }
 
 
-void menu_network(json &d, int algo, string out_file){
+void menu_network(json &n, int algo, string out_file){
+    Network N = ReadJsonNetwork(n);
+    
+    // 10: FORD-FULKERSON ALGORITHM
+    if(algo == 10){
+        bool res;
+        float total_flow=0;
+        json write;
 
+        if(n["target_flow"].is_null())
+            res = N.general_ford_fulkerson(total_flow);
+        else
+            res = N.general_ford_fulkerson(total_flow, n["target_flow"]);
+        
+        write["res"] = res;
+        // solution found
+        if(res){
+            write["total_flow"] = total_flow;
+            WriteNetwork(N, write);
+        }
+        dump_file(write, out_file);
+
+    // 11: PRIMAL ALGORITHM
+    }else if(algo == 11){
+        bool res;
+        json write;
+
+        res = N.primal_minimum_cost_flow(n["target_flow"]);
+        write["res"] = res;
+        if(res){
+            write["optimal_cost"] = N.current_cost();
+            WriteNetwork(N, write);
+        }
+        dump_file(write, out_file);
+
+    // 12: DUAL ALGORITHM
+    }else if(algo == 12){
+        bool res;
+        json write;
+
+        res = N.dual_minimum_cost_flow(n["target_flow"]);
+        write["res"] = res;
+        if(res){
+            write["optimal_cost"] = N.current_cost();
+            WriteNetwork(N, write);
+        }
+        dump_file(write, out_file);
+
+    // 13: SIMPLEX ALGORITHM
+    }else if(algo == 13){
+        bool res;
+        json write;
+
+        res = N.simplex(n["target_flow"]);
+        write["res"] = res;
+        if(res){
+            write["optimal_cost"] = N.current_cost();
+            WriteNetwork(N, write);
+        }
+        dump_file(write, out_file);
+
+    }else{
+        cout << "ERROR" << endl;
+    }
 }
