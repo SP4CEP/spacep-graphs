@@ -73,6 +73,7 @@ Digraph& Digraph::operator=(const Digraph &G) {
             }
         }
     }
+    if (G.weighted) this->set_type(1);
     return *this;
 }
 
@@ -794,5 +795,43 @@ bool Digraph::get_route(string node1_tag, string node2_tag, vector<string> &path
     }
     
     return path;
+}
+
+void Digraph::floyd_solutions(vector<Digraph> &digraphs, Matrix<DijkstraAux> floyd, unordered_map<string, int> tag_to_index) {
+    digraphs.clear();
+    
+    // Create an index_to_tag map
+    unordered_map<int, string> index_to_tag;
+    int ix = 0;
+
+    for(DigraphNode& node: nodes){
+        index_to_tag.insert({ix, node.tag});
+        ix++;
+    }
+
+    // Construct a digraph for each node
+    for (DigraphNode &n : nodes) {
+        Digraph d;
+        d.set_type(1);
+        // add nodes that we know there is a path from the initial node
+        for (int i = 0; i < num_nodes; i++) {
+            // Add nodes only if there is a route to that node
+            // You can comment if you want all the nodes in the digraph
+            if (floyd[tag_to_index[n.tag]][i].predecessor)
+                d.add_node(index_to_tag[i]);
+            
+        }
+        // Adding the edges
+        for (int i = 0; i < num_nodes; i++) {
+            if (i == tag_to_index[n.tag]) continue;
+            if (floyd[tag_to_index[n.tag]][i].predecessor == nullptr) continue;
+
+            d.add_edge(floyd[tag_to_index[n.tag]][i].predecessor->tag,
+                       index_to_tag[i], 
+                       floyd[tag_to_index[n.tag]][i].edge_tag, 
+                       floyd[tag_to_index[n.tag]][i].edge_weight);
+        }
+        digraphs.push_back(d);
+    }
 }
 
