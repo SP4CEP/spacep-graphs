@@ -27,7 +27,7 @@ Digraph ReadJsonDigraph(json &digraph){
         for (json::iterator it = nodes.begin(); it != nodes.end(); ++it) {
             json node = *it;
             D.add_node(node["tag"]);
-         }
+        }
 
         json edges = digraph["edges"];
         //READ EDGES
@@ -37,17 +37,15 @@ Digraph ReadJsonDigraph(json &digraph){
                 D.add_edge(edge["src"], edge["dest"], edge["tag"], edge["weight"]);
             else
                 D.add_edge(edge["src"], edge["dest"], edge["tag"]);
-         }
-
-        D.print();
-
+        }
+        //D.print();
         return D;
 }
 
 //************************************************************************************************//
 
 Graph ReadJsonGraph(json &graph){
-        cout << "is graph" << endl;
+        //cout << "is graph" << endl;
         Graph G;
         float weight = 0;
         if(graph["weighted"]) G.set_type(1);
@@ -118,15 +116,14 @@ Network ReadJsonNetwork(json &network){
             if(!edge["cost"].is_null()) c = edge["cost"];
             
             N.add_edge(edge["src"], edge["dest"], edge["tag"], q, r, f, c);
-         }
-
-        N.print();
+        }
+        //N.print();
         return N;  
 }
 
 //************************************************************************************************//
 
-void WriteDigraph(string filename, Digraph D, json &write){
+void WriteDigraph(Digraph D, json &write){
 
     //edges, nodes, type
     write["type"] = "digraph";
@@ -155,12 +152,11 @@ void WriteDigraph(string filename, Digraph D, json &write){
             write["edges"].push_back(e);
         }
     }
-    ofstream o(filename);
-    o << setw(4) << write << endl;
-    cout << "file written" << endl;
 }
 
-void WriteGraph(string filename, Graph graph, json &write){
+//************************************************************************************************//
+
+void WriteGraph(Graph graph, json &write){
     //copy the graph to not modify original
     Graph G = graph;
     string tag;
@@ -199,12 +195,10 @@ void WriteGraph(string filename, Graph graph, json &write){
             G.remove_edge(tag);
         }
     }
-    ofstream o(filename);
-    o << setw(4) << write << endl; 
-    cout << "file written" << endl;
 }
+//************************************************************************************************//
 
-void WriteNetwork(string filename, Network Net, json &write){
+void WriteNetwork(Network Net, json &write){
     //copy the network to not modify original
     Network N = Net;
     
@@ -259,39 +253,11 @@ void WriteNetwork(string filename, Network Net, json &write){
 
         }
     }
-    ofstream o(filename);
-    o << setw(4) << write << endl;
-    cout << "file written" << endl;  
 }
 
-//  deprecated read from file
-void read_digraph(string path, Digraph &G) {
-    ifstream file;
-    G.clear();
-    std::string v="", v1, v2, tag;
-    int type;
-    file.open(path);
-    if(file.fail()){
-        cout << "Error Opening File... \n";
-        exit(1);
-    }
-    file >> type;
-    G.set_type(type);
-    file >> v;
-    while(v != "<TOKEN>"){
-       G.add_node(v);
-       file >> v;
-    }
-    if(type == 0){
-       while(file.eof() == false){
-       file >> v1 >> v2 >> tag;
-       G.add_edge(v1, v2, tag);
-       }
-    }else{
-       float w;
-       while(file.eof() == false){
-       file >> v1 >> v2 >> tag >> w;
-       G.add_edge(v1, v2, tag, w);
-       } 
-    }
+//************************************************************************************************//
+void dump_file(json &write, string out_file){
+    ofstream o(out_file);
+    o << setw(4) << write << endl;
+    cout << "file written" << endl;
 }

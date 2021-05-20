@@ -4,7 +4,6 @@ import json
 from read import read_file
 from write import write_dict
 
-
 path = "../../files/digraph/"
 filename = path + "graph8.json"
 algorithm = 2
