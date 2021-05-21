@@ -195,9 +195,8 @@ public:
     bool get_route(string node1_tag, string node2_tag, vector<string> &path);
 
     vector<string> find_shortest_path(string node1_tag, string node2_tag, string algorithm="Floyd");
-
-
-
+    
+    void floyd_solutions(vector<Digraph> &digraphs, Matrix<DijkstraAux> floyd, unordered_map<string, int> tag_to_index);
 };
 
 #endif // DIGRAPH_H_INCLUDED
