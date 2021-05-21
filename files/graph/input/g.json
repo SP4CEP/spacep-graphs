@@ -1,0 +1,1 @@
+{"type": "graph", "nodes": [{"tag": "a"}, {"tag": "b"}, {"tag": "c"}, {"tag": "d"}], "edges": [{"tag": "e0", "src": "a", "dest": "b", "weight": 4}, {"tag": "e1", "src": "a", "dest": "c", "weight": 3}, {"tag": "e2", "src": "a", "dest": "d", "weight": 1}], "weighted": true}

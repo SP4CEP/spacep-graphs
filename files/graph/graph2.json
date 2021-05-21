@@ -1,0 +1,73 @@
+{
+    "type": "graph",
+    "weighted": false,
+   "nodes":
+   [
+       {
+           "tag": "a"
+       },
+       {
+           "tag": "b"
+       },
+       {
+        "tag": "c"
+       },
+       {
+        "tag": "d"
+       },
+       {
+        "tag": "e"
+       },
+       {
+        "tag": "f"
+       },
+       {
+        "tag": "g"
+       }
+   ],
+   "edges":
+   [
+       {
+           "tag": "e1",
+           "src": "a",
+           "dest": "c"
+           
+       },
+       {
+        "tag": "e2",
+        "src": "a",
+        "dest": "d"
+        
+        },
+        {
+            "tag": "e3",
+            "src": "a",
+            "dest": "g"
+            
+        },
+        {
+            "tag": "e4",
+            "src": "b",
+            "dest": "f"
+            
+        },
+        {
+            "tag": "e5",
+            "src": "c",
+            "dest": "e"
+            
+        },
+        {
+            "tag": "e6",
+            "src": "d",
+            "dest": "e"
+            
+        },
+        {
+            "tag": "e7",
+            "src": "f",
+            "dest": "g"
+            
+        }
+   ]   
+}

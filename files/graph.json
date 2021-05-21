@@ -1,0 +1,51 @@
+{
+    "type": "graph",
+   "nodes":
+   [
+       {
+           "tag": "a"
+       },
+       {
+           "tag": "b"
+       },
+       {
+        "tag": "c"
+       },
+       {
+        "tag": "d"
+       }
+   ],
+   "edges":
+   [
+       {
+           "tag": "e1",
+           "src": "a",
+           "dest": "b"
+           
+       },
+       {
+        "tag": "e2",
+        "src": "a",
+        "dest": "d"
+        
+        },
+        {
+            "tag": "e3",
+            "src": "a",
+            "dest": "c"
+            
+        },
+        {
+            "tag": "e4",
+            "src": "c",
+            "dest": "d"
+            
+        },
+        {
+            "tag": "e5",
+            "src": "b",
+            "dest": "d"
+            
+            }
+   ]   
+}

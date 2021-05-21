@@ -7,12 +7,12 @@ Implementation of a graph and multiple algorithms for the Network Analysis cours
 
 
 ```
-docker build -tag='spacep' .
+docker build --tag='spacep' .
 ```
 
 
 ```
-docker run -it --name graphs -p 5000:5000 -v $PWD:/root/spacep-graphs spacep
+docker run -it --name graphs -p 8050:8050 -v $PWD:/root/spacep-graphs spacep
 ```
 
 

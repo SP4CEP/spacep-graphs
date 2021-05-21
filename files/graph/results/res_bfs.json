@@ -1,0 +1,96 @@
+{
+    "forest": [
+        {
+            "edges": [
+                {
+                    "dest": "c",
+                    "origin": "a",
+                    "tag": "e1"
+                },
+                {
+                    "dest": "d",
+                    "origin": "a",
+                    "tag": "e2"
+                },
+                {
+                    "dest": "g",
+                    "origin": "a",
+                    "tag": "e3"
+                },
+                {
+                    "dest": "f",
+                    "origin": "b",
+                    "tag": "e4"
+                },
+                {
+                    "dest": "a",
+                    "origin": "c",
+                    "tag": "e1"
+                },
+                {
+                    "dest": "e",
+                    "origin": "c",
+                    "tag": "e5"
+                },
+                {
+                    "dest": "a",
+                    "origin": "d",
+                    "tag": "e2"
+                },
+                {
+                    "dest": "c",
+                    "origin": "e",
+                    "tag": "e5"
+                },
+                {
+                    "dest": "b",
+                    "origin": "f",
+                    "tag": "e4"
+                },
+                {
+                    "dest": "g",
+                    "origin": "f",
+                    "tag": "e7"
+                },
+                {
+                    "dest": "a",
+                    "origin": "g",
+                    "tag": "e3"
+                },
+                {
+                    "dest": "f",
+                    "origin": "g",
+                    "tag": "e7"
+                }
+            ],
+            "nodes": [
+                {
+                    "tag": "a"
+                },
+                {
+                    "tag": "b"
+                },
+                {
+                    "tag": "c"
+                },
+                {
+                    "tag": "d"
+                },
+                {
+                    "tag": "e"
+                },
+                {
+                    "tag": "f"
+                },
+                {
+                    "tag": "g"
+                }
+            ],
+            "type": "graph",
+            "weighted": false
+        }
+    ],
+    "no_trees": 1,
+    "res": false,
+    "type": "forest"
+}

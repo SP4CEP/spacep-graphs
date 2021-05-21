@@ -1,0 +1,99 @@
+{
+    "type": "network",
+    "target_flow": 189,
+   "nodes":
+   [
+       {
+           "tag": "a",
+           "type": "source"
+       },
+       {
+           "tag": "b"
+       },
+       {
+           "tag": "c"
+       },
+       {
+           "tag": "d"
+       },
+       {
+           "tag": "e"
+       },
+       {
+           "tag": "f"
+       },
+       {
+           "tag": "g",
+           "type": "terminus"
+       }
+   ],
+   "edges":
+   [
+       {
+           "tag": "e1",
+           "src": "a",
+           "dest": "b",
+           "capacity": 5
+       },
+       {
+        "tag": "e2",
+        "src": "a",
+        "dest": "c",
+        "capacity": 7
+        },
+        {
+            "tag": "e3",
+            "src": "a",
+            "dest": "d",
+            "capacity": 12
+        },
+        {
+            "tag": "e4",
+            "src": "b",
+            "dest": "d",
+            "capacity": 15
+        },
+        {
+            "tag": "e5",
+            "src": "d",
+            "dest": "c",
+            "capacity": 9
+        },
+        {
+            "tag": "e6",
+            "src": "c",
+            "dest": "d",
+            "capacity": 8
+        },
+        {
+            "tag": "e7",
+            "src": "c",
+            "dest": "e",
+            "capacity": 8
+        },
+        {
+            "tag": "e8",
+            "src": "d",
+            "dest": "f",
+            "capacity": 10
+        },
+        {
+            "tag": "e9",
+            "src": "e",
+            "dest": "f",
+            "capacity": 9
+        },
+        {
+            "tag": "e10",
+            "src": "e",
+            "dest": "g",
+            "capacity": 10
+        },
+        {
+            "tag": "e11",
+            "src": "f",
+            "dest": "g",
+            "capacity": 12
+        }
+   ]   
+}

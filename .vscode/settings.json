@@ -48,5 +48,6 @@
         "typeinfo": "cpp",
         "hash_map": "cpp",
         "list": "cpp"
-    }
+    },
+    "python.pythonPath": "/usr/local/bin/python3"
 }
