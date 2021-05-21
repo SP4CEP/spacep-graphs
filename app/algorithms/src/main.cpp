@@ -92,8 +92,10 @@ void menu_graph(json &g, int algo, string out_file){
         LinkedList<string> P1, P2; 
         bool res = G.is_bipartite(&P1,&P2);
         json write;
+        cout << "found partition: " << res << endl;
         if(res) write = partitions(P1,P2);
         else write = result_false("graph");
+        write["type"] = "partition";
         dump_file(write, out_file);
     
     // 3. FLEURY ALGORITHM (EULER PATH)
@@ -101,13 +103,16 @@ void menu_graph(json &g, int algo, string out_file){
         vector<string> p;
         json write;
         bool res = G.find_eulerian_path(&p);
-
+        cout << "fleury: " << res << endl;
         if(res){
-          write["res"] = true;  
+          write["res"] = true; 
+          write["connected"] = true; 
           path(p, write);
         }else{
-            write["res"] = false;  
-            write = result_false("graph");
+            write = result_false("path");
+            write["res"] = false;
+            write["connected"] = false;
+            write["type"] = "path";
         }
         dump_file(write, out_file);
     
@@ -115,31 +120,42 @@ void menu_graph(json &g, int algo, string out_file){
     }else if(algo == 4){
         vector<Graph> forest = G.bfs();
         json write = write_forest(forest);
+        write["res"] = true;
         dump_file(write, out_file);
 
     // 5. DFS FOREST
     }else if(algo == 5){
         vector<Graph> forest = G.dfs();
         json write = write_forest(forest);
+        write["res"] = true;
         dump_file(write, out_file);
 
     // 6. KRUSKAL ALGORITHM (minimum spanning forest)
     }else if(algo == 6){
         Graph r;
         json write;
-        write["res"] = G.kruskal(r);
+        bool res = G.kruskal(r);
         WriteGraph(r, write);
+        if(res){
+            write["res"] = true;
+
+        }else{
+            write["res"] = false;
+
+        }
         dump_file(write, out_file);
     
     // 7. PRIM ALGORITHM (minimum spanning forest)
     }else if(algo == 7){
+
         vector<Graph> forest;
         G.prim(forest);
         json write = write_forest(forest);
+        write["res"] = true;
         dump_file(write, out_file);
 
     }else{
-        cout << "error" << endl;
+        cout << "ALGORITHM NUMBER NOT VALID" << endl;
     }
 }
 
@@ -169,19 +185,43 @@ void menu_digraph(json &d, int algo, string out_file){
         }else{
             write["res"] = false;
             if(cycle_len){
-                write["type"]="cycle";
                 path(cycle, write);
+                write["type"]="cycle";
             }else{
                 write["type"] = "disconnected";
             }
         }
     // 8. FLOYD ALGORITHM (shortest path)
     }else if(algo == 9){
+        cout << "ima run floyd" << endl;
+        Matrix<DijkstraAux> Floyd(1,1);
+        vector<string> cycle;
+        float cycle_len;
+        unordered_map<string,int> tag_to_index;
+
+        bool res;
         json write;
-        // TODO: flata una función Mat2Digraphs jeje 👀
+
+        res = D.floyd(Floyd, cycle, cycle_len, tag_to_index);
+        cout << "vroom vroom to find paths" << endl;
+//bool floyd(Matrix<DijkstraAux> &Floyd, vector<string> &cycle, float &cycle_len, unordered_map<string, int> &tag_to_index); {
+        write["res"] = res;
+        if(res){
+            cout << "ou yea" << endl;
+            vector<Digraph> digraphs;
+            D.floyd_solutions(digraphs, Floyd, tag_to_index);
+            write = digraph_forest(digraphs);
+//floyd_solutions(vector<Digraph> &digraphs, Matrix<DijkstraAux> floyd, unordered_map<string, int> tag_to_index)
+        }else{
+            cout << "chale" << endl;
+            write["cycle_len"] = cycle_len;
+            path(cycle, write);
+            write["type"]="cycle";
+        }
         dump_file(write, out_file);
+
     }else{
-        cout << "error" << endl;
+        cout << "ALGORITHM NUMBER NOT VALID" << endl;
     }
 }
 
@@ -249,6 +289,6 @@ void menu_network(json &n, int algo, string out_file){
         dump_file(write, out_file);
 
     }else{
-        cout << "ERROR" << endl;
+        cout << "ALGORITHM NUMBER NOT VALID" << endl;
     }
 }

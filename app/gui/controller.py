@@ -1,15 +1,15 @@
+#from app.gui.write import write_dict
 import subprocess
 import networkx as nx
 import json
 import read
 import write
 
-path = "../../files/digraph/"
-filename = path + "graph8.json"
-algorithm = 2
-executable = "./../../bin/all.out"
-result = '../../files/digraph/graph8.json'
-outfile = path + "dig_result.json"
+path = "files/"
+infile = path
+outfile = path
+executable = "./bin/all.out"
+
 
 # 1. Get graph and write it
 # 2. Networkx to json
@@ -41,7 +41,6 @@ outfile = path + "dig_result.json"
 #   12: Dual algorithm
 #   13: Simplex algorithm
 
-#bashCommand = f'{executable} {filename} {algorithm}'
 #print(f'executing {bashCommand}')
 
 #process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
@@ -52,15 +51,72 @@ outfile = path + "dig_result.json"
 #print(error)
 
 # 4. Read 
-G = read.read_file(result, algorithm)
+#G = read.read_file(result, algorithm)
 
-write = write.write_dict(G)
-with open(outfile, 'w') as out:
-    json.dump(write, out)
+#write = write.write_dict(G)
+#with open(outfile, 'w') as out:
+#    json.dump(write, out)
         
-#    graph_data = nx.node_link_data(D)
-#    print(graph_data)
 #else:
 #    print("ERROR")
 
+def run_graph(g, algo):
+    global infile
+    global outfile
+
+    infile = "files/graph/input/g.json"
+    outfile = "files/graph/output/g.json"
+
+    g.graph["weighted"] = True
+    g.graph["type"] = "graph"
+    #print(params)
+    
+    # All graph algorithms works same
+    graph = write.write_dict(g)
+    #print(graph)
+    with open(infile, 'w') as out:
+        json.dump(graph, out)
+
+    bashCommand = f'{executable} {infile} {outfile} {algo}'
+    print(f'executing {bashCommand}')
+
+    process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+    output, _ = process.communicate()
+    print(output)
+
+    #read result
+    #g_json = json.load(open(outfile))
+    #print(g_json)
+    gres = nx.Graph()
+    res, info, gres = read.read_graph(outfile,3)
+    print("RESULTS")
+    print(res)
+    print(info)
+    print(gres.nodes())
+    print(gres.edges())
+    return res, info, gres
+
+
+
 # Write
+params = tuple()
+g = nx.Graph()
+g.graph['type']='graph'
+g.add_node("a")
+g.add_node("b")
+g.add_node("c")
+g.add_node("d")
+g.add_edge("a","b", weight=4)
+g.add_edge("a","c", weight=3)
+g.add_edge("a","d", weight=1)
+graph_data = nx.node_link_data(g)
+#print(g.nodes)
+#print(g.edges)
+#print("*")
+#print("*")
+run_graph(g,7)
+
+
+def receive_graph(G):
+    graph_data = nx.node_link_data(G)
+    print(graph_data)

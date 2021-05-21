@@ -74,7 +74,7 @@ Graph ReadJsonGraph(json &graph){
                 G.add_edge(edge["src"], edge["dest"], edge["tag"]);    
          }
 
-        //G.print();
+        G.print();
         return G; 
 }
 
@@ -135,10 +135,10 @@ void WriteDigraph(Digraph D, json &write){
     write["nodes"] = json::array({});
     write["edges"] = json::array({});
 
-    if(D.get_weight()){
+    //if(D.get_weight()){
         write["weighted"] = true;
         write["weight"] = D.get_weight();
-    }
+    //}
 
     //WRITE NODE
     for(DigraphNode& node: D.get_nodes()){
@@ -150,7 +150,7 @@ void WriteDigraph(Digraph D, json &write){
         for(DigraphEdge& edge: *(node.outedges)){
             json e;
             e["tag"] = edge.tag;
-            e["origin"] = edge.origin->tag;
+            e["src"] = edge.origin->tag;
             e["dest"] = edge.dest->tag;
             e["weight"] = edge.weight;
             
@@ -172,14 +172,14 @@ void WriteGraph(Graph graph, json &write){
     write["nodes"] = json::array({});
     write["edges"] = json::array({});
 
-    if(G.get_weight()){
+    //if(G.get_weight()){
         weighted = true;
         write["weighted"] = weighted;
         write["weight"] = G.get_weight();
-    }else{
-        weighted = false;
-       write["weighted"] = weighted; 
-    }
+    //}else{
+    //    weighted = false;
+//       write["weighted"] = weighted; 
+  //  }
 
     //WRITE NODE
     for(GraphNode& node: G.get_nodes()){
@@ -191,9 +191,10 @@ void WriteGraph(Graph graph, json &write){
         for(GraphEdge& edge: *(node.edges)){
             json e;
             e["tag"] = edge.tag;
-            e["origin"] = node.tag;
+            e["src"] = node.tag;
             e["dest"] = edge.node->tag;
-            if(weighted) e["weight"] = edge.weight;
+            //if(weighted) 
+            e["weight"] = edge.weight;
             write["edges"].push_back(e);
 
             //Remove it from copy so we don't write it twice
@@ -243,7 +244,7 @@ void WriteNetwork(Network Net, json &write){
         for(NetworkEdge& edge: *(node.outedges)){
             json e;
             e["tag"] = edge.tag;
-            e["origin"] = edge.origin->tag;
+            e["src"] = edge.origin->tag;
             e["dest"] = edge.dest->tag;
             e["capacity"] = edge.capacity;
 

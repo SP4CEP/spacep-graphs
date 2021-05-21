@@ -1,0 +1,247 @@
+{
+    "forest": [
+        {
+            "edges": [
+                {
+                    "dest": "d",
+                    "origin": "a",
+                    "tag": "e3",
+                    "weight": 3.0
+                },
+                {
+                    "dest": "e",
+                    "origin": "b",
+                    "tag": "e7",
+                    "weight": 4.0
+                },
+                {
+                    "dest": "c",
+                    "origin": "d",
+                    "tag": "e5",
+                    "weight": 1.0
+                },
+                {
+                    "dest": "b",
+                    "origin": "d",
+                    "tag": "e6",
+                    "weight": 1.0
+                }
+            ],
+            "nodes": [
+                {
+                    "tag": "a"
+                },
+                {
+                    "tag": "b"
+                },
+                {
+                    "tag": "c"
+                },
+                {
+                    "tag": "d"
+                },
+                {
+                    "tag": "e"
+                }
+            ],
+            "type": "digraph",
+            "weight": 9.0,
+            "weighted": true
+        },
+        {
+            "edges": [
+                {
+                    "dest": "d",
+                    "origin": "a",
+                    "tag": "e3",
+                    "weight": 3.0
+                },
+                {
+                    "dest": "a",
+                    "origin": "b",
+                    "tag": "e1",
+                    "weight": 3.0
+                },
+                {
+                    "dest": "e",
+                    "origin": "b",
+                    "tag": "e7",
+                    "weight": 4.0
+                },
+                {
+                    "dest": "c",
+                    "origin": "d",
+                    "tag": "e5",
+                    "weight": 1.0
+                }
+            ],
+            "nodes": [
+                {
+                    "tag": "a"
+                },
+                {
+                    "tag": "b"
+                },
+                {
+                    "tag": "c"
+                },
+                {
+                    "tag": "d"
+                },
+                {
+                    "tag": "e"
+                }
+            ],
+            "type": "digraph",
+            "weight": 11.0,
+            "weighted": true
+        },
+        {
+            "edges": [
+                {
+                    "dest": "a",
+                    "origin": "b",
+                    "tag": "e1",
+                    "weight": 3.0
+                },
+                {
+                    "dest": "e",
+                    "origin": "b",
+                    "tag": "e7",
+                    "weight": 4.0
+                },
+                {
+                    "dest": "d",
+                    "origin": "c",
+                    "tag": "e4",
+                    "weight": 2.0
+                },
+                {
+                    "dest": "b",
+                    "origin": "d",
+                    "tag": "e6",
+                    "weight": 1.0
+                }
+            ],
+            "nodes": [
+                {
+                    "tag": "a"
+                },
+                {
+                    "tag": "b"
+                },
+                {
+                    "tag": "c"
+                },
+                {
+                    "tag": "d"
+                },
+                {
+                    "tag": "e"
+                }
+            ],
+            "type": "digraph",
+            "weight": 10.0,
+            "weighted": true
+        },
+        {
+            "edges": [
+                {
+                    "dest": "a",
+                    "origin": "b",
+                    "tag": "e1",
+                    "weight": 3.0
+                },
+                {
+                    "dest": "e",
+                    "origin": "b",
+                    "tag": "e7",
+                    "weight": 4.0
+                },
+                {
+                    "dest": "c",
+                    "origin": "d",
+                    "tag": "e5",
+                    "weight": 1.0
+                },
+                {
+                    "dest": "b",
+                    "origin": "d",
+                    "tag": "e6",
+                    "weight": 1.0
+                }
+            ],
+            "nodes": [
+                {
+                    "tag": "a"
+                },
+                {
+                    "tag": "b"
+                },
+                {
+                    "tag": "c"
+                },
+                {
+                    "tag": "d"
+                },
+                {
+                    "tag": "e"
+                }
+            ],
+            "type": "digraph",
+            "weight": 9.0,
+            "weighted": true
+        },
+        {
+            "edges": [
+                {
+                    "dest": "a",
+                    "origin": "b",
+                    "tag": "e1",
+                    "weight": 3.0
+                },
+                {
+                    "dest": "c",
+                    "origin": "d",
+                    "tag": "e5",
+                    "weight": 1.0
+                },
+                {
+                    "dest": "b",
+                    "origin": "d",
+                    "tag": "e6",
+                    "weight": 1.0
+                },
+                {
+                    "dest": "d",
+                    "origin": "e",
+                    "tag": "e8",
+                    "weight": 2.0
+                }
+            ],
+            "nodes": [
+                {
+                    "tag": "a"
+                },
+                {
+                    "tag": "b"
+                },
+                {
+                    "tag": "c"
+                },
+                {
+                    "tag": "d"
+                },
+                {
+                    "tag": "e"
+                }
+            ],
+            "type": "digraph",
+            "weight": 7.0,
+            "weighted": true
+        }
+    ],
+    "no_digs": 5,
+    "res": true,
+    "type": "short_paths"
+}

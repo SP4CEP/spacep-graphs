@@ -11,27 +11,28 @@ def write_dict(G):
         return write_network(G)
         
 def write_graph(G):
-    #{'type': 'digraph', 'weighted': True}
     nodes = []
     edges =[]
-
+    c = 0
     # Append nodes
-    for n in G.nodes(data=True):
+    for n in G.nodes:
         print(n)
-        nodes.append({"tag": n[0]})
+        nodes.append({"tag": n})
     
     # Append edges
     for e in G.edges(data=True):
         print(e)
         edge = {
-            "tag": e[2]['tag'],
+            "tag": f'e{c}',
             "src": e[0],
             "dest": e[1],
             "weight": e[2]['weight']
         }
         edges.append(edge)
+        c+=1
+
     write = {
-        "type": "digraph",
+        "type": "graph",
         "nodes": nodes,
         "edges": edges,
         "type": G.graph["type"],
@@ -42,22 +43,23 @@ def write_graph(G):
 def write_digraph(D):
     nodes = []
     edges =[]
-
+    c = 0
     # Append nodes
-    for n in D.nodes(data=True):
+    for n in D.nodes:
         print(n)
-        nodes.append({"tag": n[0]})
+        nodes.append({"tag": n})
     
     # Append edges
     for e in D.edges(data=True):
         print(e)
         edge = {
-            "tag": e[2]['tag'],
+            "tag": f'e{c}',
             "src": e[0],
             "dest": e[1],
             "weight": e[2]['weight']
         }
         edges.append(edge)
+        c+=1
     write = {
         "type": "digraph",
         "nodes": nodes,
@@ -70,7 +72,7 @@ def write_digraph(D):
 def write_network(D):
     nodes = []
     edges =[]
-
+    c=0
     # Append nodes
     for n in D.nodes(data=True):
         print(n)

@@ -5,8 +5,16 @@ import networkx as nx
 Read a graph from a json file,
 returns nx.Graph()
 """
-def read_graph(g):
+def graph(g):
+    # bool, info, graph
     G = nx.Graph()
+    res = g["res"]
+    info = ""
+    if res:
+        info = "Graph is connected"
+    else:
+        info = "Graph is disconnected"
+
     G.graph["type"] = g["type"]
     G.graph["weighted"] = g["weighted"]
     for n in g["nodes"]:
@@ -18,9 +26,9 @@ def read_graph(g):
         else:
             G.add_edge(e["src"], e["dest"], tag = e["tag"])
     
-    print(type(G.nodes(data=True)))
-    print(type(G.edges(data=True)))
-    return G
+    #print(type(G.nodes(data=True)))
+    #print(type(G.edges(data=True)))
+    return res, info, G
 """
 Read a digraph from a json file,
 returns nx.DiGraph()
@@ -79,6 +87,82 @@ def read_network(net):
     print(type(D.edges(data=True)))
     return D
 
+def read_partition(p):
+    res = p["res"]
+    info = ""
+    g = nx.Graph()
+    if res:
+        P1=""
+        P2=""
+        for n in p["P1"]:
+            P1 += (n + " ")
+        for n in p["P2"]:
+            P2 += (n+" ")
+        
+        info = "Partitions P1: " + P1 + "    P2: " + P2
+        for n in p["P1"]:
+            g.add_node(n)
+        for n in p["P2"]:
+            g.add_node(n)
+    else:
+        info = "Solution not found"
+    
+    return res, info, g
+
+def read_forest(forest):
+    info ="Graph is "
+    res = forest["res"]
+    master = nx.Graph()
+    if res:
+        info += "connected"
+    else:
+        info += "disconnected"
+    
+    for g in forest["forest"]:
+        for n in g["nodes"]:
+            master.add_node(n["tag"])
+        for e in g["edges"]:
+            master.add_edge(e["src"], e["dest"], weight = e["weight"])
+    
+    return res, info, master
+
+def read_path(p):
+    res = p["res"]
+    info = ""
+    g = nx.Graph()
+
+    if res:
+        path = ""
+        nodes = p["path"]
+        print(nodes)
+        for n in nodes:
+            g.add_node(n)
+            path += (n + " ")
+        
+        info = "Euler's path found: " + path
+
+        for i in range(len(nodes) - 1):
+            g.add_edge(nodes[i], nodes[i+1])
+        g.add_edge(nodes[0], nodes[-1])
+    else:
+        info = "Solution not found"
+
+    return res, info, g
+
+def read_graph(result, algorithm):
+    g = json.load(open(result))
+    if g["type"] == "graph":
+        print(algorithm)
+        return graph(g)
+    elif g["type"] == "partition":
+        return read_partition(g)
+    elif g["type"] == "forest":
+        return read_forest(g)
+    elif g["type"] == "path":
+        return read_path(g)
+    else:
+        return None, None, None
+
 def read_file(result, algorithm):
     g = json.load(open(result))
     if g["type"] == "graph":
@@ -90,6 +174,10 @@ def read_file(result, algorithm):
     elif g["type"] == "network":
         print(algorithm)
         return read_network(g)
+    elif g["type"] == "partition":
+        return read_partition(g)
+    #elif g["type"] == "forest":
+    #elif g["type"] == "path":
     else:
         return None
     

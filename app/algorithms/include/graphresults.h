@@ -73,4 +73,27 @@ json write_forest(vector<Graph> forest){
     }
     return j;
 }
+
+//************************************************************************************************//
+
+json digraph_forest(vector<Digraph> forest){
+    json j, g;
+    int fs = forest.size();
+    if(fs > 1) j["res"] = true;
+    else j["res"] = false;
+    j["type"] = "short_paths";
+    j["no_digs"] = fs;
+    j["paths"] = json::array({});
+
+    for(int i = 0; i < forest.size(); i++){
+        g.clear();
+        WriteDigraph(forest[i], g);
+        j["paths"].push_back(g);
+    }
+    return j;
+}
+
+
+//************************************************************************************************//
+
 #endif // GRAPHRESULTS_H_INCLUDED
