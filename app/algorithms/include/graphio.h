@@ -1,3 +1,7 @@
+#ifndef GRAPHIO_H_INCLUDED
+#define GRAPHIO_H_INCLUDED
+
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -6,6 +10,7 @@
 #include "network.h"
 #include "graph.h"
 #include "graphstructs.h"
+#include "linkedlist.h"
 #include "json.hpp"
 
 using std::cout;
@@ -261,3 +266,4 @@ void dump_file(json &write, string out_file){
     o << setw(4) << write << endl;
     cout << "file written" << endl;
 }
+#endif // GRAPHIO_H_INCLUDED

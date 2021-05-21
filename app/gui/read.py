@@ -1,6 +1,10 @@
 import json
 import networkx as nx
 
+"""
+Read a graph from a json file,
+returns nx.Graph()
+"""
 def read_graph(g):
     G = nx.Graph()
     G.graph["type"] = g["type"]
@@ -17,7 +21,10 @@ def read_graph(g):
     print(type(G.nodes(data=True)))
     print(type(G.edges(data=True)))
     return G
-
+"""
+Read a digraph from a json file,
+returns nx.DiGraph()
+"""
 def read_digraph(d):
     D = nx.DiGraph()
     D.graph["type"] = d["type"]
@@ -34,7 +41,10 @@ def read_digraph(d):
     print(type(D.nodes(data=True)))
     print(type(D.edges(data=True)))
     return D
-
+"""
+Read a network from a json file,
+returns nx.DiGraph()
+"""
 def read_network(net):
     D = nx.DiGraph()
     D.graph["type"] = net["type"]

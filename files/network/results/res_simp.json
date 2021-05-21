@@ -1,0 +1,169 @@
+{
+    "cost": 0.0,
+    "edges": [
+        {
+            "capacity": 10.0,
+            "dest": "b",
+            "origin": "a",
+            "tag": "e1"
+        },
+        {
+            "capacity": 5.0,
+            "dest": "c",
+            "origin": "a",
+            "tag": "e2"
+        },
+        {
+            "capacity": 5.0,
+            "dest": "d",
+            "origin": "a",
+            "tag": "e3"
+        },
+        {
+            "capacity": 20.0,
+            "dest": "j",
+            "origin": "a",
+            "tag": "e4"
+        },
+        {
+            "capacity": 4.0,
+            "dest": "c",
+            "origin": "b",
+            "tag": "e5"
+        },
+        {
+            "capacity": 10.0,
+            "dest": "c",
+            "origin": "b",
+            "restriction": 5.0,
+            "tag": "e6"
+        },
+        {
+            "capacity": 9.0,
+            "dest": "e",
+            "origin": "c",
+            "restriction": 3.0,
+            "tag": "e7"
+        },
+        {
+            "capacity": 8.0,
+            "dest": "d",
+            "origin": "c",
+            "tag": "e8"
+        },
+        {
+            "capacity": 5.0,
+            "dest": "e",
+            "origin": "d",
+            "tag": "e9"
+        },
+        {
+            "capacity": 20.0,
+            "dest": "f",
+            "origin": "e",
+            "tag": "e10"
+        },
+        {
+            "capacity": 7.0,
+            "dest": "g",
+            "origin": "e",
+            "tag": "e11"
+        },
+        {
+            "capacity": 9.0,
+            "dest": "h",
+            "origin": "f",
+            "tag": "e12"
+        },
+        {
+            "capacity": 10.0,
+            "dest": "i",
+            "origin": "f",
+            "tag": "e13"
+        },
+        {
+            "capacity": 10.0,
+            "dest": "f",
+            "origin": "g",
+            "tag": "e14"
+        },
+        {
+            "capacity": 7.0,
+            "dest": "i",
+            "origin": "g",
+            "tag": "e15"
+        },
+        {
+            "capacity": 20.0,
+            "dest": "h",
+            "origin": "i",
+            "tag": "e16"
+        },
+        {
+            "capacity": 5.0,
+            "dest": "d",
+            "origin": "j",
+            "tag": "e17"
+        },
+        {
+            "capacity": 10.0,
+            "dest": "g",
+            "origin": "j",
+            "tag": "e18"
+        }
+    ],
+    "nodes": [
+        {
+            "tag": "a",
+            "type": "source"
+        },
+        {
+            "tag": "b",
+            "type": "source"
+        },
+        {
+            "tag": "c",
+            "type": "source"
+        },
+        {
+            "tag": "d"
+        },
+        {
+            "tag": "e"
+        },
+        {
+            "tag": "f"
+        },
+        {
+            "tag": "g"
+        },
+        {
+            "capacity": 20.0,
+            "tag": "h"
+        },
+        {
+            "capacity": 21.0,
+            "tag": "i"
+        },
+        {
+            "tag": "j"
+        },
+        {
+            "tag": "k",
+            "type": "terminus"
+        },
+        {
+            "tag": "l"
+        },
+        {
+            "tag": "m",
+            "type": "terminus"
+        },
+        {
+            "tag": "n",
+            "type": "terminus"
+        }
+    ],
+    "res": true,
+    "type": "network"
+}

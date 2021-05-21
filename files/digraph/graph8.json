@@ -1,6 +1,8 @@
 {
     "type": "digraph",
     "weighted": true,
+    "initial_tag": "a",
+    "destination_tag": "c",
    "nodes":
    [
        {

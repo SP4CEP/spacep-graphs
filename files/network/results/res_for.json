@@ -1,0 +1,105 @@
+{
+    "edges": [
+        {
+            "capacity": 5.0,
+            "dest": "b",
+            "origin": "a",
+            "tag": "e1"
+        },
+        {
+            "capacity": 7.0,
+            "dest": "c",
+            "flow": 7.0,
+            "origin": "a",
+            "tag": "e2"
+        },
+        {
+            "capacity": 12.0,
+            "dest": "d",
+            "flow": 11.0,
+            "origin": "a",
+            "tag": "e3"
+        },
+        {
+            "capacity": 15.0,
+            "dest": "d",
+            "origin": "b",
+            "tag": "e4"
+        },
+        {
+            "capacity": 8.0,
+            "dest": "d",
+            "origin": "c",
+            "tag": "e6"
+        },
+        {
+            "capacity": 8.0,
+            "dest": "e",
+            "flow": 8.0,
+            "origin": "c",
+            "tag": "e7"
+        },
+        {
+            "capacity": 9.0,
+            "dest": "c",
+            "flow": 1.0,
+            "origin": "d",
+            "tag": "e5"
+        },
+        {
+            "capacity": 10.0,
+            "dest": "f",
+            "flow": 10.0,
+            "origin": "d",
+            "tag": "e8"
+        },
+        {
+            "capacity": 10.0,
+            "dest": "g",
+            "flow": 8.0,
+            "origin": "e",
+            "tag": "e10"
+        },
+        {
+            "capacity": 9.0,
+            "dest": "f",
+            "origin": "e",
+            "tag": "e9"
+        },
+        {
+            "capacity": 12.0,
+            "dest": "g",
+            "flow": 10.0,
+            "origin": "f",
+            "tag": "e11"
+        }
+    ],
+    "nodes": [
+        {
+            "tag": "a",
+            "type": "source"
+        },
+        {
+            "tag": "b"
+        },
+        {
+            "tag": "c"
+        },
+        {
+            "tag": "d"
+        },
+        {
+            "tag": "e"
+        },
+        {
+            "tag": "f"
+        },
+        {
+            "tag": "g",
+            "type": "terminus"
+        }
+    ],
+    "res": true,
+    "total_flow": 18.0,
+    "type": "network"
+}

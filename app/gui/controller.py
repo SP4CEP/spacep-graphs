@@ -1,8 +1,8 @@
 import subprocess
 import networkx as nx
 import json
-from read import read_file
-from write import write_dict
+import read
+import write
 
 path = "../../files/digraph/"
 filename = path + "graph8.json"
@@ -52,9 +52,9 @@ outfile = path + "dig_result.json"
 #print(error)
 
 # 4. Read 
-G = read_file(result, algorithm)
+G = read.read_file(result, algorithm)
 
-write = write_dict(G)
+write = write.write_dict(G)
 with open(outfile, 'w') as out:
     json.dump(write, out)
         

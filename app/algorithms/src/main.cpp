@@ -16,7 +16,8 @@ Description: Main file
 #include "matrix.h"
 #include "json.hpp"
 #include "graphio.h"
-#include "graph_results.h"
+#include "graphresults.h"
+#include "linkedlist.h"
 
 using std::cout;
 using std::endl;
@@ -34,8 +35,8 @@ int main(int argc, char *argv[]){
     //  argv[2]:    <output_file.json>
     //  argv[3]:    <no. of algoritmo>
 
-    if(argc < 5){
-        cout << "Usage: ./bin <input_file.json> <output_file.json <no. algoritmo>" << endl << endl << "Algorithms:" <<endl;
+    if(argc < 4){
+        cout << "Usage: ./bin <input_file.json> <output_file.json> <no. algoritmo>" << endl << endl << "Algorithms:" <<endl;
         // GRAPH 
         cout << "1: Graph operations" << endl;
         cout << "2: Calculate if graph is bipartite & partitions" << endl;
@@ -52,40 +53,30 @@ int main(int argc, char *argv[]){
         cout << "11: Primal algorithm" << endl;
         cout << "12: Dual algorithm" << endl;
         cout << "13: Simplex algorithm" << endl;
+        return 1;
     }
 
     string in_file = argv[1];
-    string out_file = argv[3];
-    int algorithm = (atoi)(argv[2]);
+    string out_file = argv[2];
+    int algorithm = (atoi)(argv[3]);
 
+    cout << "input file: " << in_file << endl;
+    cout << "output file: " << out_file << endl;
+    cout << "algo no: " << algorithm << endl;
     ifstream i(in_file);
-    //cout << "file opened" << endl;
-    json j, out;
+    json j;
     i >> j;
-    //cout << "json file read" << endl;
     string type = j["type"];
 
     if(type == "network"){
-        //cout << "network" << endl;
-        Network N = ReadJsonNetwork(j);
-        json out;
-        //WriteNetwork(N, out);
-        dump_file(out, out_file);
-
+        menu_network(j,algorithm, out_file);        
     }else if(type == "digraph"){
-        //cout << "digraph" << endl;
-        Digraph D = ReadJsonDigraph(j);
-        json out;
-        //WriteDigraph(out_file, D, out);
-        dump_file(out, out_file);
+        cout << "is a digraph" << endl;
+        menu_digraph(j,algorithm,out_file);
 
     }else if(type == "graph"){
-        //cout << "graph" << endl;
-        Graph G = ReadJsonGraph(j);
-        json out;
-        //WriteGraph(G, out);
-        dump_file(out, out_file);
-    
+        cout << "is a graph" << endl;
+        menu_graph(j,algorithm,out_file);
     }else{
         cout << "ERROR" << endl;
     }
@@ -94,9 +85,10 @@ int main(int argc, char *argv[]){
 
 void menu_graph(json &g, int algo, string out_file){
     Graph G = ReadJsonGraph(g);
-
+    cout << "graph read" << endl;
     // 2. IS GRAPH BIPARTITE
-    if(algo ==2){
+    if(algo == 2){
+        cout << "ima check if bip" << endl;
         LinkedList<string> P1, P2; 
         bool res = G.is_bipartite(&P1,&P2);
         json write;
@@ -153,9 +145,10 @@ void menu_graph(json &g, int algo, string out_file){
 
 void menu_digraph(json &d, int algo, string out_file){
     Digraph D = ReadJsonDigraph(d);
-
+    cout << "digraph read" << endl;
     // 8. DIJKSTRA ALGORITHM (shortest path)
     if(algo == 8){
+        cout << "ima run dijkstra" << endl;
         //dijkstra(string initial_tag, Digraph &tree, vector<string> &cycle, float &cycle_len, string destination_tag = "", bool optimize = true);
         // initial_tag, destination_tag(optional)
         bool res;
@@ -195,7 +188,7 @@ void menu_digraph(json &d, int algo, string out_file){
 
 void menu_network(json &n, int algo, string out_file){
     Network N = ReadJsonNetwork(n);
-    
+    N.print();
     // 10: FORD-FULKERSON ALGORITHM
     if(algo == 10){
         bool res;
@@ -245,11 +238,12 @@ void menu_network(json &n, int algo, string out_file){
     }else if(algo == 13){
         bool res;
         json write;
+        float cost = 0;
 
-        res = N.simplex(n["target_flow"]);
+        res = N.simplex(cost);
         write["res"] = res;
         if(res){
-            write["optimal_cost"] = N.current_cost();
+            write["cost"] = cost;
             WriteNetwork(N, write);
         }
         dump_file(write, out_file);

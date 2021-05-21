@@ -1,3 +1,6 @@
+#ifndef GRAPHRESULTS_H_INCLUDED
+#define GRAPHRESULTS_H_INCLUDED
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -34,7 +37,7 @@ json partitions(LinkedList<string> P1, LinkedList<string> P2){
         j["P1"].push_back(node);
     }
 
-    for(string &node: P1){
+    for(string &node: P2){
         j["P2"].push_back(node);
     
     }
@@ -70,3 +73,4 @@ json write_forest(vector<Graph> forest){
     }
     return j;
 }
+#endif // GRAPHRESULTS_H_INCLUDED

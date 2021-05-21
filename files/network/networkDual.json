@@ -1,5 +1,7 @@
 {
     "type": "network",
+    "cost": 25,
+    "target_flow": 25,
    "nodes":
    [
        {
