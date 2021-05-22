@@ -585,6 +585,7 @@ bool Network::set_edge(string node1_tag, string node2_tag, string edge_tag, floa
 /***********************************************************/
 
 bool Network::general_ford_fulkerson(float &total_flow, float target_flow) {
+    if (sources.empty() || terminuses.empty()) return false;
     bool multiple_sources=false, multiple_terminuses=false, node_restrictions=false, edge_restrictions=false;
     Network N_aux = *this;
     vector<string> restricted_nodes;
@@ -1015,6 +1016,7 @@ void Network::remove_super_nodes(vector<string> &original_sources, vector<string
 //***************************************************************//
 
 bool Network::primal_minimum_cost_flow(float target_flow) {
+    if (sources.empty() || terminuses.empty()) return false;
     float flow = current_flow();
 
     if (flow > target_flow) return false; // target flow already surpased
@@ -1260,6 +1262,7 @@ void Network::to_digraph(Digraph &D) {
 //***************************************************************//
 
 bool Network::dual_minimum_cost_flow(float target_flow) {
+    if (sources.empty() || terminuses.empty()) return false;
     vector<string> restricted_nodes, original_sources, original_terminuses, path;
     float total_flow = current_flow(), delta;
     bool has_edge_restrictions;
