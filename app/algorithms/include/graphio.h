@@ -90,13 +90,9 @@ Network ReadJsonNetwork(json &network){
         for (json::iterator it = nodes.begin(); it != nodes.end(); ++it) {
             json node = *it;
             
-            if(node["capacity"].is_null() && node["restriction"].is_null())
-                N.add_node(node["tag"]);
+            if (node["capacity"] == 999999999)
+                N.add_node(node["tag"], q, node["restriction"]);
             
-            else if(node["capacity"].is_number())
-                N.add_node(node["tag"], node["capacity"]);
-            else
-               N.add_node(node["tag"], node["capacity"], node["restriction"]); 
             // set sources & terminuses
             if(node["type"] == "terminus") N.set_terminus(node["tag"]);
             if(node["type"] == "source") N.set_source(node["tag"]);
@@ -112,13 +108,13 @@ Network ReadJsonNetwork(json &network){
             c = 0;
 
             //capacity
-            if(!edge["capacity"].is_null()) q = edge["capacity"];
+            if(edge["capacity"] != 999999999) q = edge["capacity"];
             //restriction
-            if(!edge["restriction"].is_null()) r = edge["restriction"];
+            r = edge["restriction"];
             //flow
-            if(!edge["flow"].is_null()) f = edge["flow"];
+            f = edge["flow"];
             //cost
-            if(!edge["cost"].is_null()) c = edge["cost"];
+            c = edge["cost"];
             
             N.add_edge(edge["src"], edge["dest"], edge["tag"], q, r, f, c);
         }
@@ -232,11 +228,10 @@ void WriteNetwork(Network Net, json &write){
         if (it_t != terminuses.end())
             n["type"] = "terminus";
 
-        if(node.capacity != numeric_limits<float>::infinity())
-            n["capacity"] = node.capacity;
+        if(node.capacity == numeric_limits<float>::infinity())
+            n["capacity"] = 999999999;
         
-        if(node.restriction)
-            n["restriction"] = node.restriction;
+        n["restriction"] = node.restriction;
 
         write["nodes"].push_back(n);
 
@@ -246,14 +241,14 @@ void WriteNetwork(Network Net, json &write){
             e["tag"] = edge.tag;
             e["src"] = edge.origin->tag;
             e["dest"] = edge.dest->tag;
-            e["capacity"] = edge.capacity;
 
-            if(edge.restriction)
-                e["restriction"] = edge.restriction;
-            if(edge.flow)
-                e["flow"] = edge.flow;
-            if(edge.cost)
-                e["cost"] = edge.cost;
+            if(edge.capacity == numeric_limits<float>::infinity())
+                e["capacity"] = 999999999;
+            else
+                e["capacity"] = edge.capacity;
+            e["restriction"] = edge.restriction;
+            e["flow"] = edge.flow;
+            e["cost"] = edge.cost;
 
             write["edges"].push_back(e);
 

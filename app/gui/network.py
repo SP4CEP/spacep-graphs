@@ -347,40 +347,48 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
             #si tiene ambos
             if type_node == 0:
                 if capacity_node is not None and restriction_node is not None:
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, info=vertex_value, type="normal")
+                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, type="normal", info = f"{vertex_value} [{capacity_node}, {restriction_node}]")
                 #si tiene capacidad
                 elif capacity_node is not None:
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=None, info=vertex_value,type="normal")
+                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=0, info = f"{vertex_value} [{capacity_node}, 0]",type="normal")
                 #si tiene restriccion
+                elif restriction_node is not None:
+                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=restriction_node, info = f"{vertex_value} [inf, {restriction_node}]",type="normal")
                 else:
-                    current_graph.add_node(vertex_value, capacity=None, restriction=restriction_node, info=vertex_value,type="normal")
+                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=0, info = f"{vertex_value} [inf, 0]",type="normal")
             #SOURCE
             elif type_node == 1:
                 l = f"+ {vertex_value}"
                 print(l)
                 if capacity_node is not None and restriction_node is not None:
                     print("no cap no res")
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, type="source", info=l)
+                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, type="source", info = f"+{vertex_value} [{capacity_node}, {restriction_node}]")
                 #si tiene capacidad
                 elif capacity_node is not None:
                     print("no cap")
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=None, type="source", info=l)
+                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=None, type="source", info=f"+{vertex_value} [{capacity_node}, 0]")
                 #si tiene restriccion
+                elif restriction_node is not None:
+                    print("no nothing")
+                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=restriction_node, type="source", info=f"+{vertex_value} [inf, {restriction_node}]")
+                    print(current_graph.nodes(data=True))
                 else:
                     print("no nothing")
-                    current_graph.add_node(vertex_value, capacity=None, restriction=restriction_node, type="source", info=l)
+                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=0, type="source", info=f"+{vertex_value} [inf, 0]")
                     print(current_graph.nodes(data=True))
             #TERMINUS
             else:
                 if capacity_node is not None and restriction_node is not None:
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, type="terminus", info=f"{vertex_value} -")
+                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, type="terminus", info=f"-{vertex_value} [{capacity_node}, {restriction_node}]")
                 #si tiene capacidad
                 elif capacity_node is not None:
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=None, type="terminus", info=f"{vertex_value} -")
+                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=0, type="terminus", info=f"-{vertex_value} [{capacity_node}, 0]")
                 #si tiene restriccion
+                elif restriction_node is not None:
+                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=restriction_node, type="terminus", info=f"-{vertex_value} [inf, {restriction_node}]")
                 else:
-                    current_graph.add_node(vertex_value, capacity=None, restriction=restriction_node, type="terminus", info=f"{vertex_value} -")
-            
+                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=0, type="terminus", info=f"-{vertex_value} [inf, 0]")
+
             elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
             elements = elements['elements']['nodes'] + elements['elements']['edges']
         else:
@@ -388,7 +396,7 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
 
     # Add edge button
     elif btn_edge is not None and btn_pressed == 1 and source != "" and terminus != "":
-
+        f=0
         # l = f'q: {}'
         if current_graph.has_node(source) and current_graph.has_node(terminus):
             #capacidad y restriccion y costo
@@ -397,49 +405,49 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
                 r = restriction_edge
                 c = cost_edge
 
-                current_graph.add_edge(source, terminus, capacity=capacity_edge, restriction=restriction_edge, cost=cost_edge, info=f"q: {q} r: {r} c: {c}")
+                current_graph.add_edge(source, terminus, capacity=capacity_edge, restriction=restriction_edge, cost=cost_edge, info=f"[q: {q} r: {r} c: {c} f: {f}]")
             
             #capacidad y costo
             elif capacity_edge is not None and cost_edge is not None:
                 q = capacity_edge
                 r = 0
                 c = cost_edge
-                current_graph.add_edge(source, terminus, capacity=capacity_edge, cost=cost_edge, restriction = None, info=f"q: {q} r: {r} c: {c}")
+                current_graph.add_edge(source, terminus, capacity=capacity_edge, cost=cost_edge, flow=0, restriction = 0, info=f"[q: {q} r: {r} c: {c} f: {f}]")
             
             #capacidad y restriccion
             elif capacity_edge is not None and restriction_edge is not None:
                 q = capacity_edge
                 r = restriction_edge
                 c = 0
-                current_graph.add_edge(source, terminus, capacity=capacity_edge, restriction=restriction_edge, cost=None,info=f"q: {q} r: {r} c: {c}")
+                current_graph.add_edge(source, terminus, capacity=capacity_edge, restriction=restriction_edge, cost=0, flow=0, info=f"[q: {q} r: {r} c: {c} f: {f}]")
             #restriccion y costo
             elif restriction_edge is not None and cost_edge is not None:
                 q = float('inf')
                 r = restriction_edge
                 c = cost_edge
-                current_graph.add_edge(source, terminus, restriction=restriction_edge, capacity=None, cost=cost_edge, info=f"q: {q} r: {r} c: {c}")
+                current_graph.add_edge(source, terminus, restriction=restriction_edge, capacity=float('inf'), cost=cost_edge, flow=0, info=f"[q: {q} r: {r} c: {c} f: {f}]")
             
             elif restriction_edge is not None:
                 q = float('inf')
                 r = restriction_edge
                 c = 0
-                current_graph.add_edge(source, terminus, restriction=restriction_edge, capacity=None, cost=None, info=f"q: {q} r: {r} c: {c}")
+                current_graph.add_edge(source, terminus, restriction=restriction_edge, capacity=float('inf'), cost=0, flow= 0, info=f"[q: {q} r: {r} c: {c} f: {f}]")
             elif capacity_edge is not None:
                 q = capacity_edge
                 r = 0
                 c = 0
-                current_graph.add_edge(source, terminus, restriction=None, capacity=capacity_edge, cost=None, info=f"q: {q} r: {r} c: {c}")
+                current_graph.add_edge(source, terminus, restriction=0, capacity=capacity_edge, cost=0, flow=0,info=f"[q: {q} r: {r} c: {c} f: {f}]")
             elif cost_edge is not None:
                 q = float('inf')
                 r = 0
                 c = cost_edge
-                current_graph.add_edge(source, terminus, restriction=None, capacity=None, cost=cost_edge, info=f"q: {q} r: {r} c: {c}")
+                current_graph.add_edge(source, terminus, restriction=0, capacity=float('inf'), cost=cost_edge, flow=0, info=f"[q: {q} r: {r} c: {c} f: {f}]")
 
             else:
                 q = float('inf')
                 r = 0
                 c = 0
-                current_graph.add_edge(source, terminus,restriction=None, capacity=None, cost=None, info=f"q: {q} r: {r} c: {c}")
+                current_graph.add_edge(source, terminus,restriction=0, capacity=float('inf'), cost=0, flow=0, info=f"[q: {q} r: {r} c: {c} f: {f}]")
 
             elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
             elements = elements['elements']['nodes'] + elements['elements']['edges']
@@ -479,12 +487,13 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
     # Run algorithm button
     elif btn_run is not None and btn_pressed == 4:
         
-        print(current_graph.nodes(data=True))
-        print(current_graph.edges(data=True))
+        #print(current_graph.nodes(data=True))
+        #print(current_graph.edges(data=True))
         params = tuple()
 
         if target is not None:
             if algorithm == 13:
+                print("running simplex")
                 params = tuple()
             else:
                 params =(target,)
@@ -496,16 +505,21 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
                 original_graph = current_graph
                 current_graph = g
                 info = i
+                elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
+                elements = elements['elements']['nodes'] + elements['elements']['edges']
             else:
                 original_graph = current_graph
                 current_graph = g
                 info = i
+                elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
+                elements = elements['elements']['nodes'] + elements['elements']['edges']
 
             
         else:
             if algorithm == 11 or algorithm ==12:
                 info = "Please enter target flow"
             else:
+                print("running simplex")
                 params = tuple()
                 res, i, g = controller.run_network(current_graph, algorithm, params)
                 print(g)
@@ -514,10 +528,14 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
                     original_graph = current_graph
                     current_graph = g
                     info = i
+                    elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
+                    elements = elements['elements']['nodes'] + elements['elements']['edges']
                 else:
                     original_graph = current_graph
                     current_graph = g
                     info = i
+                    elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
+                    elements = elements['elements']['nodes'] + elements['elements']['edges']
 
     # Restore graph button (prolly not need)
     elif btn_reset is not None and btn_pressed == 5:

@@ -5,21 +5,26 @@
             "cost": 1.0,
             "dest": "b",
             "flow": 2.0,
+            "restriction": 0.0,
             "src": "a",
             "tag": "e0"
         }
     ],
     "nodes": [
         {
+            "capacity": 999999999,
+            "restriction": 0.0,
             "tag": "a",
             "type": "source"
         },
         {
+            "capacity": 999999999,
+            "restriction": 0.0,
             "tag": "b",
             "type": "terminus"
         }
     ],
+    "optimal_cost": 2.0,
     "res": true,
-    "total_flow": 2.0,
     "type": "network"
 }

@@ -1,1 +1,1 @@
-{"type": "network", "nodes": [], "edges": []}
+{"type": "network", "nodes": [{"tag": "a", "restriction": 0, "capacity": 999999999, "type": "source"}, {"tag": "b", "restriction": 0, "capacity": 999999999, "type": "terminus"}], "edges": [{"tag": "e0", "src": "a", "dest": "b", "capacity": 5, "restriction": 0, "cost": 1, "flow": 0}], "target_flow": 2}

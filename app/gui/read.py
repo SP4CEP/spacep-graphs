@@ -64,32 +64,39 @@ def network(net):
     for n in net["nodes"]:
         q = float('inf')
         r = 0
-        if "capacity" in n:
+        tag = n["tag"]
+        if n["capacity"] == 999999999:
+            q = float('inf')
+        else:
             q = n["capacity"]
-        if "restriction" in n:
-            r = n["restriction"]
-        
-        D.add_node(n["tag"], capacity=q, restriction=r)
-    
+        r = n["restriction"]
+
+        if n["type"] == "source":
+            D.add_node(tag, capacity=q, restriction=r, type="source", info=f"+{tag}, [{q},{r}]")
+        elif n["type"] == "terminus":
+            D.add_node(tag, capacity=q, restriction=r, type="terminus", info=f"-{tag}, [{q},{r}]")
+        else:
+            D.add_node(tag, capacity=q, restriction=r, type="normal", info=f"{tag}, [{q},{r}]")
+
     for e in net["edges"]:
-        q = float('inf')
-        r = 0
-        f = 0
-        c = 0
-        if "capacity" in e:
-            q = e["capacity"]
-        if "restriction" in e:
+        q = 0
+
+        if e["capacity"] == 999999999:
+            q = float('inf')
             r = e["restriction"]
-        if "flow" in e:
             f = e["flow"]
-        if "cost" in e:
             c = e["cost"]
+            D.add_edge(e["src"], e["dest"], tag = e["tag"], capacity = float('inf'), restriction = e["restriction"],flow = e["flow"], cost = e["cost"], info=f"[q: {q} r: {r} c: {c} f: {f}]")
+        else:
+            q=e["capacity"]
+            r = e["restriction"]
+            f = e["flow"]
+            c = e["cost"]
+            D.add_edge(e["src"], e["dest"], tag = e["tag"], capacity = e["capacity"], restriction = e["restriction"],flow = e["flow"], cost = e["cost"], info=f"[q: {q} r: {r} c: {c} f: {f}]")
         
-        D.add_edge(e["src"], e["dest"], tag = e["tag"], capacity = q, restriction = r,
-                    flow = f, cost = c)
     
-    print(type(D.nodes(data=True)))
-    print(type(D.edges(data=True)))
+    print("edges added")
+    print(D.edges(data=True))
     return D
 
 def read_partition(p):

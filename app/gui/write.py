@@ -76,13 +76,16 @@ def write_network(D):
     # Append nodes
     for n in D.nodes(data=True):
         print(n)
-        #if n[1]['restriction'] is not None and n[1]['capacity'] is not None:
         node = {"tag": n[0]}
 
-        if n[1]['restriction'] is not None:
-            node["restriction"] = n[1]['restriction']
-        if n[1]['capacity'] is not None:
+        node["restriction"] = n[1]['restriction']
+        
+        # NUEVE NUEVE NUEVEEEEEE
+        if n[1]['capacity'] == float('inf'):
+            node["capacity"]= 999999999
+        else:
             node["capacity"]=n[1]['capacity']
+        
         if n[1]['type'] == "source":
             node["type"]="source"
         if n[1]['type'] == "terminus":
@@ -99,14 +102,13 @@ def write_network(D):
             "src": e[0],
             "dest": e[1]
         }
-        if e[2]['capacity'] is not None:
-            edge["capacity"] = e[2]['capacity'] 
-
-        if e[2]['restriction'] is not None:
-            edge["restriction"] = e[2]['restriction']
-        
-        if e[2]['cost'] is not None:
-            edge["cost"] = e[2]['cost']
+        if e[2]['capacity'] == float('inf'):
+            edge["capacity"] = 999999999 
+        else:
+            edge['capacity'] = e[2]['capacity']
+        edge["restriction"] = e[2]['restriction']
+        edge["cost"] = e[2]['cost']
+        edge["flow"] = e[2]['flow']
         
         c+=1
         edges.append(edge)
