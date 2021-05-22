@@ -31,6 +31,7 @@ using std::unordered_map;
 using std::queue;
 using std::numeric_limits;
 using std::pair;
+using std::find;
 
 Network::Network() : num_edges(0), num_nodes(0) {
 }
@@ -146,6 +147,8 @@ bool Network::add_edge(string node1_tag, string node2_tag, string edge_tag, floa
 bool Network::remove_node(string tag) {
     NetworkNode* p = get_node(tag);
     if (p) {
+        remove_terminus(tag);
+        remove_source(tag);
         NetworkEdge tmp_edge; // pivot edge to delete edges
         for (NetworkEdge& edge: *(p->inedges)) {
             tmp_edge.tag = edge.tag; // assign the tag to delete from inedges
@@ -370,21 +373,13 @@ void Network::set_terminus(string tag){
 }
 
 void Network::remove_source(string tag){
-    int position;
-    for (position = 0; position < tag.length(); position++) {
-        if (sources[position] == tag)
-            break;
-    }
-    sources.erase(sources.begin() + position);
+    auto p = find(sources.begin(), sources.end(), tag);
+    if (p != sources.end()) sources.erase(p);
 }
 
 void Network::remove_terminus(string tag){
-    int position;
-    for (position = 0; position < tag.length(); position++) {
-        if (terminuses[position] == tag)
-            break;
-    }
-    terminuses.erase(terminuses.begin() + position);
+    auto p = find(terminuses.begin(), terminuses.end(), tag);
+    if (p != terminuses.end()) terminuses.erase(p);
 }
 
 //**********************************************************************//
