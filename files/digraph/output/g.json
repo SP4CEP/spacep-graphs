@@ -1,33 +1,40 @@
 {
-    "edges": [
+    "initial_tag": "a",
+    "no_digs": 2,
+    "paths": [
         {
-            "capacity": 9.0,
-            "cost": 1.0,
-            "dest": "c",
-            "src": "a",
-            "tag": "e0"
+            "edges": [
+                {
+                    "dest": "b",
+                    "src": "a",
+                    "tag": "e0",
+                    "weight": 34.0
+                }
+            ],
+            "nodes": [
+                {
+                    "tag": "a"
+                },
+                {
+                    "tag": "b"
+                }
+            ],
+            "type": "digraph",
+            "weight": 34.0,
+            "weighted": true
         },
         {
-            "capacity": 3.0,
-            "cost": 2.0,
-            "dest": "b",
-            "src": "c",
-            "tag": "e1"
+            "edges": [],
+            "nodes": [
+                {
+                    "tag": "b"
+                }
+            ],
+            "type": "digraph",
+            "weight": 0.0,
+            "weighted": true
         }
     ],
-    "nodes": [
-        {
-            "tag": "a"
-        },
-        {
-            "tag": "b"
-        },
-        {
-            "capacity": 9.0,
-            "tag": "c"
-        }
-    ],
-    "optimal_cost": 0.0,
     "res": true,
-    "type": "network"
+    "type": "short_paths"
 }

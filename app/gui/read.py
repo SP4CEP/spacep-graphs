@@ -35,7 +35,7 @@ def digraph(d, params):
     res = d["res"]
     info ="Shortest paths with initial node: " + d["initial_tag"] 
 
-    if params[1] != "":
+    if len(params) != 1:
         info += ", destination tag: " + params[1]
     info += ", weight: " + str(d["weight"])
     
@@ -71,10 +71,11 @@ def network(net):
             q = n["capacity"]
         r = n["restriction"]
 
-        if n["type"] == "source":
-            D.add_node(tag, capacity=q, restriction=r, type="source", info=f"+{tag}, [{q},{r}]")
-        elif n["type"] == "terminus":
-            D.add_node(tag, capacity=q, restriction=r, type="terminus", info=f"-{tag}, [{q},{r}]")
+        if "type" in n:
+            if n["type"] == "source":
+                D.add_node(tag, capacity=q, restriction=r, type="source", info=f"+{tag}, [{q},{r}]")
+            else: #n["type"] == "terminus":
+                D.add_node(tag, capacity=q, restriction=r, type="terminus", info=f"-{tag}, [{q},{r}]")
         else:
             D.add_node(tag, capacity=q, restriction=r, type="normal", info=f"{tag}, [{q},{r}]")
 
@@ -199,7 +200,7 @@ def read_cycle(p):
 
 def read_paths(forest):
     res = forest["res"]
-    master = nx.MultiDiGra()
+    master = nx.MultiDiGraph()
     info ="Shortest paths with initial node " + forest["initial_tag"] + ": "
     for g in forest["paths"]:
         if len(g["edges"]) != 0:

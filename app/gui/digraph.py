@@ -366,7 +366,7 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
                 params = tuple()
                 if termination_tag != "":
                     #params[1] = termination_tag
-                    params = (initial_tag)
+                    params = (initial_tag,)
                 else:
                     params = (initial_tag, termination_tag)
                 

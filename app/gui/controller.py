@@ -67,9 +67,6 @@ def run_graph(g, algo):
     output, _ = process.communicate()
     print(output)
 
-    #read result
-    #g_json = json.load(open(outfile))
-    #print(g_json)
     gres = nx.MultiGraph()
     res, info, gres = read.read_graph(outfile,3)
     print("RESULTS")
@@ -97,8 +94,11 @@ def run_digraph(d, algorithm, params):
 
     d_json = write.write_digraph(d)
     d_json["initial_tag"] = params[0]
-
-    if algorithm == 8 and params[1] != "":
+    print("param etros")
+    print(len(params))
+    print(params)
+    print(type(params))
+    if algorithm == 8 and len(params) != 1:
         d_json["destination_tag"] = params[1]
     print(d_json)
 
@@ -148,10 +148,15 @@ def run_network(n, algorithm, params):
 
     #read result
     g_json = json.load(open(outfile))
+    print("results read")
     if len(params) != 0:
         g_json["target_flow"] = params[0]
     print(g_json)
     res, info, gres = read.read_network(g_json, algorithm, params)
+    print("from controller got results")
+    print(gres)
+    print(res)
+    print(info)
     return res, info, gres
 
 

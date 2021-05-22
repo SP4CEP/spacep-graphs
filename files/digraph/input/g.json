@@ -1,1 +1,1 @@
-{"type": "network", "nodes": [{"tag": "a"}, {"tag": "b"}], "edges": [{"tag": "e0", "src": "a", "dest": "b", "capacity": 5, "cost": 1}], "target_flow": 2}
+{"type": "digraph", "nodes": [{"tag": "a"}, {"tag": "b"}], "edges": [{"tag": "e0", "src": "a", "dest": "b", "weight": 34}], "weighted": true, "initial_tag": "a"}

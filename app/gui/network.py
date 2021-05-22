@@ -486,7 +486,7 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
     
     # Run algorithm button
     elif btn_run is not None and btn_pressed == 4:
-        
+        print("running algo " + str(algorithm) + " .......")
         #print(current_graph.nodes(data=True))
         #print(current_graph.edges(data=True))
         params = tuple()
@@ -497,10 +497,13 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
                 params = tuple()
             else:
                 params =(target,)
+                print("parameters...")
+                print(params)
             
             res, i, g = controller.run_network(current_graph, algorithm, params)
             print(g)
             print(res)
+            print(info)
             if res:
                 original_graph = current_graph
                 current_graph = g
