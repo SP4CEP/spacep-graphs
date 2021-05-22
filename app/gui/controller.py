@@ -87,7 +87,7 @@ def run_graph(g, algo):
     #read result
     #g_json = json.load(open(outfile))
     #print(g_json)
-    gres = nx.Graph()
+    gres = nx.MultiGraph()
     res, info, gres = read.read_graph(outfile,3)
     print("RESULTS")
     print(res)
@@ -100,7 +100,7 @@ def run_graph(g, algo):
 
 # Write
 #params = tuple()
-#g = nx.Graph()
+#g = nx.MultiGraph()
 #g.graph['type']='graph'
 #g.add_node("a")
 #g.add_node("b")
@@ -139,7 +139,7 @@ def run_digraph(d, algorithm, params):
     d_json = write.write_digraph(d)
     d_json["initial_tag"] = params[0]
 
-    if algorithm == 8 and params[1] is not "":
+    if algorithm == 8 and params[1] != "":
         d_json["destination_tag"] = params[1]
     print(d_json)
 
@@ -176,8 +176,28 @@ g.add_edge("e", "a", weight=4)
 
 l = ("a", "c")
 #run_digraph(g,8,l)
-res, info, gres = run_digraph(g,8,l)
-print("RESULTS")
+params=("a", "")
+infile = "files/digraph/input/g.json"
+outfile = "files/digraph/output/g.json"
+
+#print(g_json)
+
+algorithm=8
+bashCommand = f'{executable} {infile} {outfile} {algorithm}'
+print(f'executing {bashCommand}')
+
+process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+output, _ = process.communicate()
+print(output)
+
+#read result
+g_json = json.load(open(outfile))
+print("reading file from results")
+print(g_json)
+res, info, gres = read.read_digraph(outfile, algorithm, params)
+#res, info, gres = read.read_digraph(outfile, algorithm, params)
+#res, info, gres = run_digraph(g,8,l)
+#print("RESULTS")
 print(res)
 print(info)
 print(gres.nodes())
@@ -204,5 +224,5 @@ print(gres.edges())
     #read result
     #g_json = json.load(open(outfile))
     #print(g_json)
-#    gres = nx.Graph()
+#    gres = nx.MultiGraph()
 #    return res, info, gres

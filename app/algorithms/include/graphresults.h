@@ -93,6 +93,23 @@ json digraph_forest(vector<Digraph> forest){
     return j;
 }
 
+//************************************************************************************************//
+void write_cycle(vector<string> path, json &j){
+    //j["res"] = true;
+    j["type"] = "cycle";
+    j["path"] = json::array({});
+    vector<string>::iterator it = path.begin();
+    //j["path"].push_back(*it);
+    //cout << *it << endl;
+
+    for (it = path.begin(); it != path.end()-1; it+=2){
+        cout << *it << endl;
+        j["path"].push_back(*it);
+    }
+    it = path.begin();
+    j["path"].push_back(*it);
+    cout << j << endl;
+}
 
 //************************************************************************************************//
 

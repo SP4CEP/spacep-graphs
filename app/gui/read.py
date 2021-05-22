@@ -3,11 +3,11 @@ import networkx as nx
 
 """
 Read a graph from a json file,
-returns nx.Graph()
+returns nx.MultiGraph()
 """
 def graph(g):
     # bool, info, graph
-    G = nx.Graph()
+    G = nx.MultiGraph()
     res = g["res"]
     info = ""
     if res:
@@ -97,7 +97,7 @@ def read_network(net):
 def read_partition(p):
     res = p["res"]
     info = ""
-    g = nx.Graph()
+    g = nx.MultiGraph()
     if res:
         P1=""
         P2=""
@@ -119,7 +119,7 @@ def read_partition(p):
 def read_forest(forest):
     info ="Graph is "
     res = forest["res"]
-    master = nx.Graph()
+    master = nx.MultiGraph()
     if res:
         info += "connected"
     else:
@@ -136,7 +136,7 @@ def read_forest(forest):
 def read_path(p):
     res = p["res"]
     info = ""
-    g = nx.Graph()
+    g = nx.MultiGraph()
 
     if res:
         path = ""

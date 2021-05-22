@@ -88,7 +88,7 @@ app.layout = html.Div(children=[
                         html.H6("target: ")
                     ]),
                     html.Td(children=[
-                        dbc.Input(id='target-tag', type='number', className='mx-1 my-1')
+                        dbc.Input(id='target-graph', type='number', className='mx-1 my-1')
                     ]) 
                 ]),
                 html.Tr(children=[
@@ -120,15 +120,31 @@ app.layout = html.Div(children=[
                     ])
                 ]),
                 html.Tr(children=[
+                   html.Td(children=[
+                        html.H6("capacity: ")
+                    ]),
+                    html.Td(children=[
+                        dbc.Input(id='capacity-node-graph', type='number', className='mx-1 my-1')
+                    ]) 
+                ]),
+                html.Tr(children=[
+                   html.Td(children=[
+                        html.H6("restriction: ")
+                    ]),
+                    html.Td(children=[
+                        dbc.Input(id='restriction-node-graph', type='number', className='mx-1 my-1')
+                    ]) 
+                ]),
+                html.Tr(children=[
                     dcc.Dropdown(
-                            id='drop-type-node',
+                            id='drop-type-node-graph',
                             options=[
-                                {'label': 'Normal', 'value': ""},
-                                {'label': 'Source', 'value': "source"},
-                                {'label': 'Terminus', 'value': "terminus"}
+                                {'label': 'Normal', 'value': 0},
+                                {'label': 'Source', 'value': 1},
+                                {'label': 'Terminus', 'value': 2}
                             ],
                             clearable=False,
-                            value=""
+                            value=0
                         )
                 ]),
                 html.Tr(children=[
@@ -161,7 +177,7 @@ app.layout = html.Div(children=[
                         html.H6("capacity: ")
                     ]),
                     html.Td(children=[
-                        dbc.Input(id='capacity-tag', type='number', className='mx-1 my-1')
+                        dbc.Input(id='capacity-edge-graph', type='number', className='mx-1 my-1')
                     ]),
                 ]) 
             ]),
@@ -171,13 +187,13 @@ app.layout = html.Div(children=[
                         html.H6("restriction: ")
                     ]),
                     html.Tr(children=[
-                        dbc.Input(id='restriction-tag', type='number', className='mx-1 my-1')
+                        dbc.Input(id='restriction-edge-graph', type='number', className='mx-1 my-1')
                     ]),
                 html.Tr(children=[
                     html.H6(' cost: ')#,
                 ]),
                 html.Tr(children=[
-                    dbc.Input(id='cost-tag', type='number', className='mx-1 my-1')
+                    dbc.Input(id='cost-edge-tag', type='number', className='mx-1 my-1')
                 ]),
                 html.Tr(children=[
                     html.Br(),
@@ -266,13 +282,13 @@ app.layout = html.Div(children=[
                         {
                             'selector': 'node',
                             'style': {
-                                'label': 'data(name)'
+                                'label': 'data(label)'
                             }
                         },
                         {
                             'selector': 'edge',
                             'style': {
-                                'label': 'data(weight)',
+                                'label': 'data(capacity)',
                                 'curve-style': 'bezier',
                                 'target-arrow-shape': 'vee'
                             }
@@ -280,36 +296,7 @@ app.layout = html.Div(children=[
                     ],
                     elements=[]
                 )
-                ],style={"width":2000, "heigth":1200})#,
-                #html.Td(children=[
-                #    cyto.Cytoscape(
-                #    # results graph
-                #    id='results-graph',
-                #    layout={
-                #            'name': 'cose'
-                #        },
-                #        style={
-                #            'width': '100%',
-                #            'height': '750px'
-                #        },
-                #        stylesheet=[
-                #            {
-                #                'selector': 'node',
-                #                'style': {
-                #                    'label': 'data(id)'
-                #                }
-                #            },
-                #            {
-                #                'selector': 'edge',
-                #                'style': {
-                #                    'label': 'data(weight)',
-                #                    'curve-style': 'bezier',
-                #                }
-                #            },
-                #        ],elements=[]
-                #    ),
-                    #html.Pre(id='cytoscape-tapNodeData-json', style=styles['pre'])
-                #],style={"width":1000, "heigth":1200})
+                ],style={"width":2000, "heigth":1200})
             ])
         ])
     ])
@@ -323,7 +310,6 @@ Updating the graph every time a vertex or an edge are added/removed.
 """
 @app.callback(
     Output(component_id='graph', component_property='elements'),
-    #Output(component_id='results-graph', component_property=result_elements),
     [Input(component_id='btn-vertex-graph', component_property='n_clicks_timestamp'),
      Input(component_id='btn-edge-graph', component_property='n_clicks_timestamp'),
      Input(component_id='btn-rm-vertex-graph', component_property='n_clicks_timestamp'),
@@ -332,21 +318,28 @@ Updating the graph every time a vertex or an edge are added/removed.
      Input(component_id='btn-reset-graph', component_property='n_clicks_timestamp'),
      Input(component_id='btn-empty-graph', component_property='n_clicks_timestamp')],
     [State(component_id='vertex-graph', component_property='value'),
+     State(component_id='capacity-node-graph', component_property='value'),
+     State(component_id='restriction-node-graph', component_property='value'),
+     State(component_id='capacity-edge-graph', component_property='value'),
+     State(component_id='restriction-edge-graph', component_property='value'),
+     State(component_id='cost-edge-tag', component_property='value'),
      State(component_id='source-graph', component_property='value'),
      State(component_id='terminus-graph', component_property='value'),
      State(component_id='rm-vertex-graph', component_property='value'),
      State(component_id='rm-source-graph', component_property='value'),
      State(component_id='rm-terminus-graph', component_property='value'),
      #State(component_id='weight-graph', component_property='value'),
-     State(component_id='target-tag', component_property='value'),
+     State(component_id='target-graph', component_property='value'),
      State('drop-algo-graph', 'value'),
-     #State('target-tag', 'value'),
+     State('drop-type-node-graph', 'value'),
+     #State('target-graph', 'value'),
      State('graph', 'elements')]
      #State('results-graph',result_elements)]
 )
 def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset, 
-                btn_empty, vertex_value, source, terminus,
-    rm_vertex, rm_source, rm_terminus, initial_tag, algorithm, elements):
+                btn_empty, vertex_value, capacity_node, restriction_node, source, terminus,
+                capacity_edge, restriction_edge, cost_edge, rm_vertex, rm_source, 
+                rm_terminus, type_node, algorithm, elements):
     global current_graph
     global file_id
     global original_graph
@@ -364,7 +357,41 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
     # Add vertex button
     if btn_vertex is not None and btn_pressed == 0 and vertex_value != "":
         if not current_graph.has_node(vertex_value):
-            current_graph.add_node(vertex_value)
+            print(vertex_value)
+            print(capacity_node)
+            print(restriction_node)
+            print(type_node)
+            #si tiene ambos
+            if type_node == 0:
+                if capacity_node is not None and restriction_node is not None:
+                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, label=vertex_value, type="normal")
+                #si tiene capacidad
+                elif capacity_node is not None:
+                    current_graph.add_node(vertex_value, capacity=capacity_node, label=vertex_value,type="normal")
+                #si tiene restriccion
+                else:
+                    current_graph.add_node(vertex_value, restriction=restriction_node, label=vertex_value,type="normal")
+            #SOURCE
+            elif type_node == 1:
+                if capacity_node is not None and restriction_node is not None:
+                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, type="source", label=f"+ {vertex_value}")
+                #si tiene capacidad
+                elif capacity_node is not None:
+                    current_graph.add_node(vertex_value, capacity=capacity_node, type="source", label=f"+ {vertex_value}")
+                #si tiene restriccion
+                else:
+                    current_graph.add_node(vertex_value, restriction=restriction_node, type="source", label=f"+ {vertex_value}")
+            #TERMINUS
+            else:
+                if capacity_node is not None and restriction_node is not None:
+                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, type="terminus", label=f"{vertex_value} -")
+                #si tiene capacidad
+                elif capacity_node is not None:
+                    current_graph.add_node(vertex_value, capacity=capacity_node, type="terminus", label=f"{vertex_value} -")
+                #si tiene restriccion
+                else:
+                    current_graph.add_node(vertex_value, restriction=restriction_node, type="terminus", label=f"{vertex_value} -")
+            
             elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
             elements = elements['elements']['nodes'] + elements['elements']['edges']
         else:
@@ -372,11 +399,28 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
 
 
     # Add edge button
-    elif btn_edge is not None and btn_pressed == 1 and source != "" and terminus != "" and weight is not None:
+    elif btn_edge is not None and btn_pressed == 1 and source != "" and terminus != "":
+
+
+        # 
         if current_graph.has_node(source) and current_graph.has_node(terminus):
-            current_graph.add_edge(source, terminus, weight=weight)
+            #capacidad y restriccion y costo
+            if capacity_edge is not None and restriction_edge is not None and cost_edge is not None:
+                current_graph.add_edge(source, terminus, capacity=capacity_edge, restriction=restriction_edge, cost=cost_edge)
+            #capacidad y costo
+            elif capacity_edge is not None and cost_edge is not None:
+                current_graph.add_edge(source, terminus, capacity=capacity_edge, cost=cost_edge)
+            #capacidad y restriccion
+            elif capacity_edge is not None and restriction_edge is not None:
+                current_graph.add_edge(source, terminus, capacity=capacity_edge, restriction=restriction_edge)
+            #restriccion y costo
+            elif restriction_edge is not None and cost_edge is not None:
+                current_graph.add_edge(source, terminus, restriction=restriction_edge, cost=cost_edge)
+
             elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
             elements = elements['elements']['nodes'] + elements['elements']['edges']
+
+        
         elif not current_graph.has_node(source) and current_graph.has_node(terminus):
             info = 'Node {} is not on the graph'.format(source)
         elif current_graph.has_node(source) and not current_graph.has_node(terminus):
@@ -414,33 +458,34 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
         print(current_graph.nodes)
         print(current_graph.edges)
 
-        if initial_tag != "":
+        #if initial_tag != "":
 
             ## Dijkstra
-            if algorithm == 8:
+#            if algorithm == 8:
                 # if algorithm needs parameter, enter it
-                params = tuple()
-                if termination_tag != "":
+#                params = tuple()
+#                if termination_tag != "":
                     #params[1] = termination_tag
-                    params = (initial_tag)
-                else:
-                    params = (initial_tag, termination_tag)
+#                    params = (initial_tag)
+#                else:
+#                    params = (initial_tag, termination_tag)
+#                
+#                res, info, g = controller.run_digraph(current_graph, algorithm, params)
                 
-                res, info, g = controller.run_digraph(current_graph, algorithm, params)
-                
-                print(g)
-                print(info)
-                if res:
-                    nodes = g#nx.readwrite.json_graph.cytoscape_data(g)
-                    print(nodes)
+#                print(g)
+#                print(info)
+#                if res:
+
+#                    nodes = g#nx.readwrite.json_graph.cytoscape_data(g)
+#                    print(nodes)
                     #edges = g.edges
 
 
                 #info = i
                 # controller.run_graph(current_graph)
                 #file_path = file.save_graph(current_graph, file_id)
-                original_graph = current_graph
-                current_graph = g
+#                original_graph = current_graph
+#                current_graph = g
                 #sbp.run(["./lib/bin/graph.out", file_path, str(file_id), algorithm])
                 #result, is_a_graph, info = file.load_graph(file_id)
                 #if is_a_graph:
@@ -449,26 +494,26 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
                 #else:
                 #    info = result
                 #controller.receive_graph(current_graph)
-                elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
-                elements = elements['elements']['nodes'] + elements['elements']['edges']
+#                elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
+#                elements = elements['elements']['nodes'] + elements['elements']['edges']
             # Floyd
-            else:
+#            else:
                # if algorithm needs parameter, enter it
-                params = (initial_tag)
-                res, info, g = controller.run_digraph(current_graph, algorithm, params)
+#                params = (initial_tag)
+#                res, info, g = controller.run_digraph(current_graph, algorithm, params)
                 
-                print(g)
-                print(info)
-                if res:
-                    nodes = g
-                    print(nodes)
-                original_graph = current_graph
-                current_graph = g
-                elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
-                elements = elements['elements']['nodes'] + elements['elements']['edges'] 
+#                print(g)
+#                print(info)
+#                if res:
+#                    nodes = g
+#                    print(nodes)
+#                original_graph = current_graph
+#                current_graph = g
+#                elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
+#                elements = elements['elements']['nodes'] + elements['elements']['edges'] 
 
-        else:
-            info = "Please enter initial tag"
+#        else:
+#            info = "Please enter initial tag"
 
     # Restore graph button (prolly not need)
     elif btn_reset is not None and btn_pressed == 5:

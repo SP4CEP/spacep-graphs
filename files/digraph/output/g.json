@@ -1,70 +1,12 @@
 {
+    "cycle_len": -4.0,
     "initial_tag": "a",
-    "no_digs": 3,
-    "paths": [
-        {
-            "edges": [
-                {
-                    "dest": "b",
-                    "src": "a",
-                    "tag": "e0",
-                    "weight": 1.0
-                },
-                {
-                    "dest": "c",
-                    "src": "b",
-                    "tag": "e2",
-                    "weight": 4.0
-                }
-            ],
-            "nodes": [
-                {
-                    "tag": "a"
-                },
-                {
-                    "tag": "b"
-                },
-                {
-                    "tag": "c"
-                }
-            ],
-            "type": "digraph",
-            "weight": 5.0,
-            "weighted": true
-        },
-        {
-            "edges": [
-                {
-                    "dest": "c",
-                    "src": "b",
-                    "tag": "e2",
-                    "weight": 4.0
-                }
-            ],
-            "nodes": [
-                {
-                    "tag": "b"
-                },
-                {
-                    "tag": "c"
-                }
-            ],
-            "type": "digraph",
-            "weight": 4.0,
-            "weighted": true
-        },
-        {
-            "edges": [],
-            "nodes": [
-                {
-                    "tag": "c"
-                }
-            ],
-            "type": "digraph",
-            "weight": 0.0,
-            "weighted": true
-        }
+    "path": [
+        "f",
+        "a",
+        "b",
+        "f"
     ],
-    "res": true,
-    "type": "short_paths"
+    "res": false,
+    "type": "cycle"
 }

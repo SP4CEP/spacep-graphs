@@ -174,27 +174,31 @@ void menu_digraph(json &d, int algo, string out_file){
         json write;
 
         write["initial_tag"] = d["initial_tag"];
-        if(d["destination_tag"].is_null())
+        if(d["destination_tag"].is_null()){
+            cout << "si tomo buenas decisiones en la vida" << endl;
             res = D.dijkstra(d["initial_tag"], tree, cycle, cycle_len);
-        else{
+
+        }else{
+            cout << d["destination_tag"] << endl;
             res = D.dijkstra(d["initial_tag"], tree, cycle, cycle_len,d["destination_tag"]);
             write["destination_tag"] = d["destination_tag"];
         }
-        
+        cout << "ya termine?" << endl;
         if(res){
             write["res"] = true;
             WriteDigraph(tree, write);
-            dump_file(write, out_file);
         }else{
             write["res"] = false;
             if(cycle_len){
-                path(cycle, write);
+                write_cycle(cycle, write);
                 write["type"]="cycle";
                 write["cycle_len"]=cycle_len;
+                cout << write << endl;
             }else{
                 write["type"] = "disconnected";
             }
         }
+        dump_file(write, out_file);
     // 8. FLOYD ALGORITHM (shortest path)
     }else if(algo == 9){
         cout << "ima run floyd" << endl;
@@ -219,7 +223,7 @@ void menu_digraph(json &d, int algo, string out_file){
         }else{
             cout << "chale" << endl;
             write["cycle_len"] = cycle_len;
-            path(cycle, write);
+            write_cycle(cycle, write);
             write["type"]="cycle";
         }
         write["initial_tag"] = d["initial_tag"];
