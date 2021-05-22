@@ -90,9 +90,11 @@ Network ReadJsonNetwork(json &network){
         for (json::iterator it = nodes.begin(); it != nodes.end(); ++it) {
             json node = *it;
             
-            if (node["capacity"] == 999999999)
+            if (node["capacity"] == 999999999){
                 N.add_node(node["tag"], q, node["restriction"]);
-            
+            }else{
+                N.add_node(node["tag"], node["capacity"], node["restriction"]);
+            }
             // set sources & terminuses
             if(node["type"] == "terminus") N.set_terminus(node["tag"]);
             if(node["type"] == "source") N.set_source(node["tag"]);
@@ -230,6 +232,8 @@ void WriteNetwork(Network Net, json &write){
 
         if(node.capacity == numeric_limits<float>::infinity())
             n["capacity"] = 999999999;
+        else
+            n["capacity"] = node.capacity;
         
         n["restriction"] = node.restriction;
 
@@ -246,6 +250,7 @@ void WriteNetwork(Network Net, json &write){
                 e["capacity"] = 999999999;
             else
                 e["capacity"] = edge.capacity;
+            
             e["restriction"] = edge.restriction;
             e["flow"] = edge.flow;
             e["cost"] = edge.cost;
