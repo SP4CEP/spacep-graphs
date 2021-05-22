@@ -69,6 +69,8 @@ json write_forest(vector<Graph> forest){
     for(int i = 0; i < forest.size(); i++){
         g.clear();
         WriteGraph(forest[i], g);
+        cout << "wrote graph..." << endl;
+        cout << g << endl;
         j["forest"].push_back(g);
     }
     return j;

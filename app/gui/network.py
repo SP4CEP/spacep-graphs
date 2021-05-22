@@ -366,7 +366,7 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
                 #si tiene capacidad
                 elif capacity_node is not None:
                     print("no cap")
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=None, type="source", info=f"+{vertex_value} [{capacity_node}, 0]")
+                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=0, type="source", info=f"+{vertex_value} [{capacity_node}, 0]")
                 #si tiene restriccion
                 elif restriction_node is not None:
                     print("no nothing")
@@ -405,7 +405,7 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
                 r = restriction_edge
                 c = cost_edge
 
-                current_graph.add_edge(source, terminus, capacity=capacity_edge, restriction=restriction_edge, cost=cost_edge, info=f"[q: {q} r: {r} c: {c} f: {f}]")
+                current_graph.add_edge(source, terminus, capacity=capacity_edge, restriction=restriction_edge, cost=cost_edge, flow=0, info=f"[q: {q} r: {r} c: {c} f: {f}]")
             
             #capacidad y costo
             elif capacity_edge is not None and cost_edge is not None:

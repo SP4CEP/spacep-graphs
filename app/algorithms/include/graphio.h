@@ -159,12 +159,15 @@ void WriteDigraph(Digraph D, json &write){
 
 //************************************************************************************************//
 
-void WriteGraph(Graph graph, json &write){
+void WriteGraph(Graph &graph, json &write){
     //copy the graph to not modify original
     Graph G = graph;
     string tag;
     bool weighted;
 
+    cout << "about to write in a json...." << endl;
+
+    G.print();
     //edges, nodes, type
     write["type"] = "graph";
     write["nodes"] = json::array({});
@@ -196,7 +199,7 @@ void WriteGraph(Graph graph, json &write){
             write["edges"].push_back(e);
 
             //Remove it from copy so we don't write it twice
-            G.remove_edge(tag);
+            G.remove_edge(edge.tag);
         }
     }
 }

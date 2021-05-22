@@ -119,6 +119,10 @@ void menu_graph(json &g, int algo, string out_file){
     // 4. BFS FOREST 
     }else if(algo == 4){
         vector<Graph> forest = G.bfs();
+        for(vector<Graph>::iterator it = forest.begin(); it != forest.end(); ++it) {
+            cout << " SOME GRAPH " << endl;
+            it->print();
+        }
         json write = write_forest(forest);
         write["res"] = true;
         dump_file(write, out_file);
