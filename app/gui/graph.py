@@ -29,9 +29,9 @@ app = dash.Dash(
 )
 
 vis_height = '750px'
-current_graph = nx.Graph()
-original_graph = nx.Graph()
-result_graph = nx.Graph()
+current_graph = nx.MultiGraph()
+original_graph = nx.MultiGraph()
+result_graph = nx.MultiGraph()
 graph_elements=[]
 edges=[]
 nodes=[]
@@ -459,8 +459,7 @@ def update_graph_stylesheet(graph):
                 'selector': 'edge',
                 'style': {
                     'label': 'data(weight)',
-                    'curve-style': 'bezier',
-                    'target-arrow-shape': 'vee'
+                    'curve-style': 'bezier'
                 }
             }
         ]

@@ -163,48 +163,6 @@ def run_digraph(d, algorithm, params):
     
 
 
-g = nx.DiGraph()
-g.add_node("a")
-g.add_node("b")
-g.add_node("c")
-g.add_node("d")
-g.add_edge("a", "c", weight=4)
-g.add_edge("c", "b", weight=4)
-g.add_edge("b", "d", weight=4)
-g.add_edge("d", "e", weight=4)
-g.add_edge("e", "a", weight=4)
-
-l = ("a", "c")
-#run_digraph(g,8,l)
-params=("a", "")
-infile = "files/digraph/input/g.json"
-outfile = "files/digraph/output/g.json"
-
-#print(g_json)
-
-algorithm=8
-bashCommand = f'{executable} {infile} {outfile} {algorithm}'
-print(f'executing {bashCommand}')
-
-process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-output, _ = process.communicate()
-print(output)
-
-#read result
-g_json = json.load(open(outfile))
-print("reading file from results")
-print(g_json)
-res, info, gres = read.read_digraph(outfile, algorithm, params)
-#res, info, gres = read.read_digraph(outfile, algorithm, params)
-#res, info, gres = run_digraph(g,8,l)
-#print("RESULTS")
-print(res)
-print(info)
-print(gres.nodes())
-print(gres.edges())
-    # Dijkstra
-#    if algorithm == 8:
-
     
     #print(params)
     
