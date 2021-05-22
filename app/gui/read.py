@@ -33,7 +33,14 @@ def graph(g):
 Read a digraph from a json file,
 returns nx.DiGraph()
 """
-def read_digraph(d):
+def digraph(d, params):
+    res = d["res"]
+    info ="Shortest paths with initial node: " + d["initial_tag"] 
+
+    if params[1] is not "":
+        info += ", destination tag: " + params[1]
+    info += ", weight: " + str(d["weight"])
+    
     D = nx.DiGraph()
     D.graph["type"] = d["type"]
     D.graph["weighted"] = d["weighted"]
@@ -48,7 +55,7 @@ def read_digraph(d):
     
     print(type(D.nodes(data=True)))
     print(type(D.edges(data=True)))
-    return D
+    return res, info, D
 """
 Read a network from a json file,
 returns nx.DiGraph()
@@ -143,7 +150,6 @@ def read_path(p):
 
         for i in range(len(nodes) - 1):
             g.add_edge(nodes[i], nodes[i+1])
-        g.add_edge(nodes[0], nodes[-1])
     else:
         info = "Solution not found"
 
@@ -160,6 +166,71 @@ def read_graph(result, algorithm):
         return read_forest(g)
     elif g["type"] == "path":
         return read_path(g)
+    else:
+        return None, None, None
+
+
+###########################################################
+def read_cycle(p):
+    res = p["res"]
+    info = ""
+    g = nx.DiGraph()
+    path = ""
+    nodes = p["nodes"]
+    print(nodes)
+    for n in nodes:
+        g.add_node(n)
+        path += (n + " ")
+    
+    info = "Found cycle: " + path + " with length: " + str(p["cycle_len"])
+
+    for i in range(len(nodes) - 1):
+        g.add_edge(nodes[i], nodes[i+1])
+    g.add_edge(nodes[0], nodes[-1])
+
+    return res, info, g
+
+###########################################################
+
+def read_paths(forest):
+    res = forest["res"]
+    master = nx.DiGraph()
+    info ="Shortest paths with initial node " + forest["initial_tag"] + ": "
+    for g in forest["paths"]:
+        if len(g["edges"]) != 0:
+            if forest["paths"][0] == g:
+                info += " ["
+            else:
+                info += ", ["
+        for n in g["nodes"]:
+            master.add_node(n["tag"])
+        for e in g["edges"]:
+            master.add_edge(e["src"], e["dest"], weight = e["weight"])
+            if len(g["edges"]) != 0:
+                src = e["src"]
+                dest = e["dest"]
+                if g["edges"][-1] == e:
+                    info += f"({src},{dest})"
+                else:
+                    info += f"({src},{dest}), "
+                    
+        if len(g["edges"]) != 0:
+            info += "] "
+    
+    return res, info, master
+
+###########################################################
+def read_digraph(result, algorithm, params):
+    g = json.load(open(result))
+    if g["type"] == "digraph":
+        print(algorithm)
+        return digraph(g, params)
+    elif g["type"] == "cycle":
+        return read_cycle(g)
+    elif g["type"] == "short_paths":
+        return read_paths(g)
+    elif g["type"] == "disconnected":
+        return False, "Graph is not connected", g
     else:
         return None, None, None
 

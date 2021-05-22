@@ -173,10 +173,13 @@ void menu_digraph(json &d, int algo, string out_file){
         vector<string> cycle;
         json write;
 
+        write["initial_tag"] = d["initial_tag"];
         if(d["destination_tag"].is_null())
             res = D.dijkstra(d["initial_tag"], tree, cycle, cycle_len);
-        else
+        else{
             res = D.dijkstra(d["initial_tag"], tree, cycle, cycle_len,d["destination_tag"]);
+            write["destination_tag"] = d["destination_tag"];
+        }
         
         if(res){
             write["res"] = true;
@@ -187,6 +190,7 @@ void menu_digraph(json &d, int algo, string out_file){
             if(cycle_len){
                 path(cycle, write);
                 write["type"]="cycle";
+                write["cycle_len"]=cycle_len;
             }else{
                 write["type"] = "disconnected";
             }
@@ -218,6 +222,7 @@ void menu_digraph(json &d, int algo, string out_file){
             path(cycle, write);
             write["type"]="cycle";
         }
+        write["initial_tag"] = d["initial_tag"];
         dump_file(write, out_file);
 
     }else{
@@ -283,7 +288,7 @@ void menu_network(json &n, int algo, string out_file){
         res = N.simplex(cost);
         write["res"] = res;
         if(res){
-            write["cost"] = cost;
+            write["optimal_cost"] = cost;
             WriteNetwork(N, write);
         }
         dump_file(write, out_file);

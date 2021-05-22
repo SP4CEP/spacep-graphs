@@ -29,9 +29,9 @@ app = dash.Dash(
 )
 
 vis_height = '750px'
-current_graph = nx.Graph()
-original_graph = nx.Graph()
-result_graph = nx.Graph()
+current_graph = nx.DiGraph()
+original_graph = nx.DiGraph()
+result_graph = nx.DiGraph()
 graph_elements=[]
 edges=[]
 nodes=[]
@@ -56,10 +56,10 @@ app.layout = html.Div(children=[
     html.Div(children=[
         dbc.Row([
             dbc.Col([
-                html.H1('Graphs', className='m-4', id='header-graph',style={'textAlign': 'center'})
+                html.H1('Digraphs', className='m-4', id='header-graph',style={'textAlign': 'center'})
             ], width=3),
             dbc.Col([
-                dcc.Link('Digraph ', href='/', className='btn btn-primary m-2'),
+                dcc.Link('Graph ', href='/', className='btn btn-primary m-2'),
                 html.H4(' '),
                 dcc.Link('Nework', href='/', className='btn btn-primary m-2')
             ], width=2, style={'textAlign': 'center'})
@@ -78,32 +78,54 @@ app.layout = html.Div(children=[
                 ]),
                 html.Tr(children=[
                     #dropdown select
-                    dcc.Dropdown(
-                        id='drop-algo-graph',
-                        options=[
-                            {'label': 'Bipartite', 'value': 2},
-                            {'label': 'Fleury', 'value': 3},
-                            {'label': 'BFS', 'value': 4},
-                            {'label': 'DFS', 'value': 5},
-                            {'label': 'Kruskal', 'value': 6},
-                            {'label': 'Prim', 'value': 7}
-                        ],
-                        clearable=False,
-                        value=2
-                    )
+                    html.Td(children=[
+                        dcc.Dropdown(
+                            id='drop-algo-graph',
+                            options=[
+                                {'label': 'Dijkstra', 'value': 8},
+                                {'label': 'Floyd', 'value': 9}
+                            ],
+                            style={"width":200},
+                            clearable=False,
+                            value=8
+                        )
+                    ], style={"width":400})
+                ]),
+                html.Tr(children=[
+                   html.Td(children=[
+                        html.H6("initial tag: ")
+                    ]),
+                    html.Td(children=[
+                        dbc.Input(id='initial-tag', type='text', className='mx-1 my-1')
+                    ]) 
+                ]),
+                html.Tr(children=[
+                   html.Td(children=[
+                        html.H6("termination tag: ")
+                    ]),
+                    html.Td(children=[
+                        dbc.Input(id='termination-tag', type='text', className='mx-1 my-1',value="")
+                    ]) 
                 ]),
                 html.Tr(children=[
                     # dbc.Button('Previous step', color='info', id='btn-prev-graph', className='mx-2'),
                     # dbc.Button('Next step', color='info', id='btn-next-graph', className='mx-2'),
-                    dbc.Button('Run', color='info', id='btn-run-graph', className='mx-2'),
-                    dbc.Button('Restore', color='warning', id='btn-reset-graph', className='mx-2'),
-                    dbc.Button('Clear', color='warning', id='btn-empty-graph', className='mx-2')
+                    html.Td(children=[
+                        dbc.Button('Run', color='info', id='btn-run-graph', className='mx-2')
+                    ]),
+                    html.Td(children=[
+                        dbc.Button('Restore', color='warning', id='btn-reset-graph', className='mx-2')
+
+                    ]),
+                    html.Td(children=[
+                        dbc.Button('Clear', color='warning', id='btn-empty-graph', className='mx-2')
+                    ])
                 ])
             ]),
             # ADD VERTEX
             html.Td(children=[
                 html.Tr(children=[
-                    html.H4('Add Vertex', className='m-4', id='header-vertex',style={'textAlign': 'center'})
+                    html.H4('Add Node', className='m-4', id='header-vertex',style={'textAlign': 'center'})
                 ]),
                 html.Tr(children=[
                     html.Td(children=[
@@ -156,7 +178,7 @@ app.layout = html.Div(children=[
             # REMOVE VERTEX
             html.Td(children=[
                 html.Tr(children=[
-                    html.H4('Remove Vertex', className='m-4',style={'textAlign': 'center'})
+                    html.H4('Remove Node', className='m-4',style={'textAlign': 'center'})
                 ]),
                 html.Tr(children=[
                     html.Td(children=[
@@ -223,31 +245,32 @@ app.layout = html.Div(children=[
             html.Tbody(children=[
                 html.Td(children=[
                     cyto.Cytoscape(
-                        # graph
-                        id='graph',
-                        layout={
-                            'name': 'cose'
+                    id='graph',
+                    layout={
+                        'name': 'cose'
+                    },
+                    style={
+                        'width': '100%',
+                        'height': '750px'
+                    },
+                    stylesheet=[
+                        {
+                            'selector': 'node',
+                            'style': {
+                                'label': 'data(name)'
+                            }
                         },
-                        style={
-                            'width': '100%',
-                            'height': '750px'
+                        {
+                            'selector': 'edge',
+                            'style': {
+                                'label': 'data(weight)',
+                                'curve-style': 'bezier',
+                                'target-arrow-shape': 'vee'
+                            }
                         },
-                        stylesheet=[
-                            {
-                                'selector': 'node',
-                                'style': {
-                                    'label': 'data(id)'
-                                }
-                            },
-                            {
-                                'selector': 'edge',
-                                'style': {
-                                    'label': 'data(weight)',
-                                    'curve-style': 'bezier',
-                                }
-                            },
-                        ],elements=[]
-                    )
+                    ],
+                    elements=[]
+                )
                 ],style={"width":2000, "heigth":1200})#,
                 #html.Td(children=[
                 #    cyto.Cytoscape(
@@ -306,13 +329,16 @@ Updating the graph every time a vertex or an edge are added/removed.
      State(component_id='rm-source-graph', component_property='value'),
      State(component_id='rm-terminus-graph', component_property='value'),
      State(component_id='weight-graph', component_property='value'),
+     State(component_id='initial-tag', component_property='value'),
+     State(component_id='termination-tag', component_property='value'),
      State('drop-algo-graph', 'value'),
+     #State('initial-tag', 'value'),
      State('graph', 'elements')]
      #State('results-graph',result_elements)]
 )
 def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset, 
                 btn_empty, vertex_value, source, terminus,
-    rm_vertex, rm_source, rm_terminus, weight, algorithm, elements):
+    rm_vertex, rm_source, rm_terminus, weight, initial_tag, termination_tag, algorithm, elements):
     global current_graph
     global file_id
     global original_graph
@@ -334,7 +360,7 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
             elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
             elements = elements['elements']['nodes'] + elements['elements']['edges']
         else:
-            info = 'Vertex {} is already on the graph'.format(vertex_value)
+            info = 'Node {} is already on the graph'.format(vertex_value)
 
 
     # Add edge button
@@ -344,11 +370,11 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
             elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
             elements = elements['elements']['nodes'] + elements['elements']['edges']
         elif not current_graph.has_node(source) and current_graph.has_node(terminus):
-            info = 'Vertex {} is not on the graph'.format(source)
+            info = 'Node {} is not on the graph'.format(source)
         elif current_graph.has_node(source) and not current_graph.has_node(terminus):
-            info = 'Vertex {} is not on the graph'.format(terminus)
+            info = 'Node {} is not on the graph'.format(terminus)
         else:
-            info = 'Vertices {} and {} are not on the graph'.format(source, terminus)
+            info = 'Nodes {} and {} are not on the graph'.format(source, terminus)
    
     # Delete vertex button
     elif btn_rm_v is not None and btn_pressed == 2 and rm_vertex != "":
@@ -357,7 +383,7 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
             elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
             elements = elements['elements']['nodes'] + elements['elements']['edges']
         else:
-            info = 'Vertex {} is not on the graph'.format(rm_vertex)
+            info = 'Node {} is not on the graph'.format(rm_vertex)
     
     # Delete edge button
     elif btn_rm_e is not None and btn_pressed == 3 and rm_source != "" and rm_terminus != "":
@@ -366,49 +392,77 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
             elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
             elements = elements['elements']['nodes'] + elements['elements']['edges']
         elif not current_graph.has_node(rm_source) and current_graph.has_node(rm_terminus):
-            info = 'Vertex {} is not on the graph'.format(rm_source)
+            info = 'Node {} is not on the graph'.format(rm_source)
         elif current_graph.has_node(rm_source) and not current_graph.has_node(rm_terminus):
-            info = 'Vertex {} is not on the graph'.format(rm_terminus)
+            info = 'Nodes {} is not on the graph'.format(rm_terminus)
         elif not current_graph.has_node(rm_source) and not current_graph.has_node(rm_terminus):
-            info = 'Vertices {} and {} are not on the graph'.format(rm_source, rm_terminus)
+            info = 'Nodes {} and {} are not on the graph'.format(rm_source, rm_terminus)
         else:
-            info = "There is not an edge between vertices {} and {}".format(rm_source, rm_terminus)
+            info = "There is not an edge between nodes {} and {}".format(rm_source, rm_terminus)
     
     # Run algorithm button
     elif btn_run is not None and btn_pressed == 4:
-        # if algorithm needs parameter, enter it
-        #params = tuple()
-#        g = nx.Graph()
+        
         print(current_graph.nodes)
         print(current_graph.edges)
 
-        res, info, g = controller.run_graph(current_graph, algorithm)
-        
-        print(g)
-        print(info)
-        if res:
-            nodes = g#nx.readwrite.json_graph.cytoscape_data(g)
-            print(nodes)
-            #edges = g.edges
+        if initial_tag != "":
+
+            ## Dijkstra
+            if algorithm == 8:
+                # if algorithm needs parameter, enter it
+                params = tuple()
+                if termination_tag != "":
+                    #params[1] = termination_tag
+                    params = (initial_tag)
+                else:
+                    params = (initial_tag, termination_tag)
+                
+                res, info, g = controller.run_digraph(current_graph, algorithm, params)
+                
+                print(g)
+                print(info)
+                if res:
+                    nodes = g#nx.readwrite.json_graph.cytoscape_data(g)
+                    print(nodes)
+                    #edges = g.edges
 
 
-        #info = i
-        # controller.run_graph(current_graph)
-        #file_path = file.save_graph(current_graph, file_id)
-        original_graph = current_graph
-        current_graph = g
-        #sbp.run(["./lib/bin/graph.out", file_path, str(file_id), algorithm])
-        #result, is_a_graph, info = file.load_graph(file_id)
-        #if is_a_graph:
-        #    current_graph = result
-        #    file_id += 1
-        #else:
-        #    info = result
-        #controller.receive_graph(current_graph)
-        elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
-        elements = elements['elements']['nodes'] + elements['elements']['edges']
+                #info = i
+                # controller.run_graph(current_graph)
+                #file_path = file.save_graph(current_graph, file_id)
+                original_graph = current_graph
+                current_graph = g
+                #sbp.run(["./lib/bin/graph.out", file_path, str(file_id), algorithm])
+                #result, is_a_graph, info = file.load_graph(file_id)
+                #if is_a_graph:
+                #    current_graph = result
+                #    file_id += 1
+                #else:
+                #    info = result
+                #controller.receive_graph(current_graph)
+                elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
+                elements = elements['elements']['nodes'] + elements['elements']['edges']
+            # Floyd
+            else:
+               # if algorithm needs parameter, enter it
+                params = (initial_tag)
+                res, info, g = controller.run_digraph(current_graph, algorithm, params)
+                
+                print(g)
+                print(info)
+                if res:
+                    nodes = g
+                    print(nodes)
+                original_graph = current_graph
+                current_graph = g
+                elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
+                elements = elements['elements']['nodes'] + elements['elements']['edges'] 
 
-    # Reset graph button (prolly not need)
+        else:
+            info = "Please enter initial tag"
+
+    # Restore graph button (prolly not need)
     elif btn_reset is not None and btn_pressed == 5:
         current_graph = original_graph
         elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
@@ -421,43 +475,6 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
         elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
         elements = elements['elements']['nodes'] + elements['elements']['edges']
     return elements
-
-#Output(component_id='graph', component_property='elements'),
-    #Output(component_id='results-graph', component_property=result_elements),
-    #[Input(component_id='btn-vertex-graph', component_property='n_clicks_timestamp'),
-#@app.callback([Output(component_id='results-graph', component_property='elements')],
-#              [Input(component_id='btn-run-graph', component_property='n_clicks_timestamp')],
-#              [State('results-graph', 'elements')])
-#              
-#def update_result(btn_run, elements):
-#    if btn_run is not None:
-#        buttons = np.array([btn_run])
-#        btn_pressed = np.argmax(buttons)
-#        if btn_pressed is not None:
-#            elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
-#            elements = elements['elements']['nodes'] + elements['elements']['edges'] 
-#            return elements
-
-
-    #return {
-    #    'name': layout,
-    #    'animate': True
-    #}
-
-#"""
-#Display result graph
-#"""
-#@app.callback(
-#    Output(component_id='results-graph', component_property='elements'),
-#    Input(component_id='btn-run-graph', component_property='n_clicks_timestamp')
-#)
-#def update_result_graph(graph):
-#    global result_graph
-#    buttons = np.array([btn if btn is not None else 0 for btn in (btn_run)])
-#    btn_pressed = np.argmax(buttons)
-#    elements = nx.readwrite.json_graph.cytoscape_data(result_graph)
-#    elements = elements['elements']['nodes'] + elements['elements']['edges']
-    
 
 """
 Displaying additional information,
@@ -524,28 +541,6 @@ is changed.
 def update_graph_info(graph):
     return "Nodes: {} Edges: {} ".format(current_graph.number_of_nodes(), current_graph.number_of_edges())
 
-"""
-Input/Output of the current graph to/from text files.
-"""
-# @app.callback(
-#     Output(component_id='header-graph', component_property='children'),
-#    # [Input(component_id='btn-load-graph', component_property='n_clicks'),
-#     [Input(component_id='btn-run-graph', component_property='n_clicks')],
-#     [State('drop-algo-graph', 'value')]
-# )
-# def run_algorithm(n_clicks, algorithm):
-#     global file_id
-#     global original_graph
-#     if n_clicks is not None and n_clicks > 0:
-#         file_path = file.save_graph(current_graph, file_id)
-#         original_graph = current_graph
-#         sbp.run(["../algo/graph.out", file_path, algorithm])
-#         temp = file.load_graph(file_id)
-#         print(temp)
-#         # elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
-#         # elements = elements['elements']['nodes'] + elements['elements']['edges']
-#         # file_id += 1
-#     return "Graphs"
 
 """
 Resetting the Inputs every time their assigned button gets pressed.
@@ -599,7 +594,9 @@ def reset_rm_source_input(n_clicks):
 def reset_rm_terminus_input(n_clicks):
     return ""
 
-#--- End of callbacks
+
+
+
 
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0',debug=True, port=8050)

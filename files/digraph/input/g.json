@@ -1,0 +1,1 @@
+{"type": "digraph", "nodes": [{"tag": "a"}, {"tag": "b"}, {"tag": "c"}], "edges": [{"tag": "e0", "src": "a", "dest": "b", "weight": 1}, {"tag": "e1", "src": "a", "dest": "c", "weight": 1000}, {"tag": "e2", "src": "b", "dest": "c", "weight": 4}], "weighted": true, "initial_tag": "a"}
