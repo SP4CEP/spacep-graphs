@@ -1,4 +1,5 @@
 #from app.gui.write import write_dict
+#from app.gui.write import write_network
 import subprocess
 import networkx as nx
 import json
@@ -41,24 +42,6 @@ executable = "./bin/all.out"
 #   12: Dual algorithm
 #   13: Simplex algorithm
 
-#print(f'executing {bashCommand}')
-
-#process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-#output, error = process.communicate()
-
-#print(output)
-#//print("\n\n\n")
-#print(error)
-
-# 4. Read 
-#G = read.read_file(result, algorithm)
-
-#write = write.write_dict(G)
-#with open(outfile, 'w') as out:
-#    json.dump(write, out)
-        
-#else:
-#    print("ERROR")
 
 def run_graph(g, algo):
     global infile
@@ -98,30 +81,6 @@ def run_graph(g, algo):
 
 
 
-# Write
-#params = tuple()
-#g = nx.MultiGraph()
-#g.graph['type']='graph'
-#g.add_node("a")
-#g.add_node("b")
-#g.add_node("c")
-#g.add_node("d")
-#g.add_edge("a","b", weight=4)
-#g.add_edge("a","c", weight=3)
-#g.add_edge("a","d", weight=1)
-#graph_data = nx.node_link_data(g)
-#print(g.nodes)
-#print(g.edges)
-#print("*")
-#print("*")
-#run_graph(g,7)
-
-test = ""
-if test is None:
-    print("isnone")
-else:
-    print("smt else")
-
 def receive_graph(G):
     graph_data = nx.node_link_data(G)
     print(graph_data)
@@ -159,7 +118,46 @@ def run_digraph(d, algorithm, params):
     res, info, gres = read.read_digraph(outfile, algorithm, params)
     return res, info, gres
 
+def run_network(n, algorithm, params):
+    global infile
+    global outfile
+
+    infile = "files/network/input/g.json"
+    outfile = "files/network/output/g.json"
+
+    n.graph["weighted"] = True
+    n.graph["type"]="network"
+
+    net = write.write_network(n)
+     
+     #ford fulkerson
+    if len(params) != 0:
+        net["target_flow"] = params[0]
     
+    print(net)
+
+    with open(infile, 'w') as out:
+        json.dump(net, out)
+
+    bashCommand = f'{executable} {infile} {outfile} {algorithm}'
+    print(f'executing {bashCommand}')
+
+    process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+    output, _ = process.communicate()
+    print(output)
+
+    #read result
+    g_json = json.load(open(outfile))
+    if len(params) != 0:
+        g_json["target_flow"] = params[0]
+    print(g_json)
+    res, info, gres = read.read_network(g_json, algorithm, params)
+    return res, info, gres
+
+
+
+
+    #return res
     
 
 

@@ -9,17 +9,11 @@ import dash_cytoscape as cyto
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 
-#from nagui import app
 
 import numpy as np
 import networkx as nx
 import controller
 
-# draw and file for the wacky stuff with D.
-#import subapps.file as file
-import subprocess as sbp
-
-#--- Global variables
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -29,9 +23,9 @@ app = dash.Dash(
 )
 
 vis_height = '750px'
-current_graph = nx.DiGraph()
-original_graph = nx.DiGraph()
-result_graph = nx.DiGraph()
+current_graph = nx.MultiDiGraph()
+original_graph = nx.MultiDiGraph()
+result_graph = nx.MultiDiGraph()
 graph_elements=[]
 edges=[]
 nodes=[]
@@ -44,14 +38,6 @@ styles = {
     }
 }
 
-
-#--- End of global variables
-
-#--- GUI
-
-# external_stylesheets = [dbc.themes.BOOTSTRAP] #['https://codepen.io/chriddyp/pen/bWLwgP.css']
-# app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
 app.layout = html.Div(children=[
     html.Div(children=[
         dbc.Row([
@@ -59,16 +45,13 @@ app.layout = html.Div(children=[
                 html.H1('Digraphs', className='m-4', id='header-graph',style={'textAlign': 'center'})
             ], width=3),
             dbc.Col([
-                dcc.Link('Graph ', href='/', className='btn btn-primary m-2'),
-                html.H4(' '),
-                dcc.Link('Nework', href='/', className='btn btn-primary m-2')
+                #dcc.Link('Graph ', href='/', className='btn btn-primary m-2'),
+                html.H4(' ')#,
+                #dcc.Link('Nework', href='/', className='btn btn-primary m-2')
             ], width=2, style={'textAlign': 'center'})
         ], justify='around', align='center')
     ]),
     html.Table(children=[
-        #html.Thead(children=[
-        #   html.Th('', id='additional-info-graph', className='mx-3') 
-        #]),
         #MENU
         html.Tbody(children=[
             # Agorithm select
@@ -108,8 +91,6 @@ app.layout = html.Div(children=[
                     ]) 
                 ]),
                 html.Tr(children=[
-                    # dbc.Button('Previous step', color='info', id='btn-prev-graph', className='mx-2'),
-                    # dbc.Button('Next step', color='info', id='btn-next-graph', className='mx-2'),
                     html.Td(children=[
                         dbc.Button('Run', color='info', id='btn-run-graph', className='mx-2')
                     ]),
@@ -271,36 +252,7 @@ app.layout = html.Div(children=[
                     ],
                     elements=[]
                 )
-                ],style={"width":2000, "heigth":1200})#,
-                #html.Td(children=[
-                #    cyto.Cytoscape(
-                #    # results graph
-                #    id='results-graph',
-                #    layout={
-                #            'name': 'cose'
-                #        },
-                #        style={
-                #            'width': '100%',
-                #            'height': '750px'
-                #        },
-                #        stylesheet=[
-                #            {
-                #                'selector': 'node',
-                #                'style': {
-                #                    'label': 'data(id)'
-                #                }
-                #            },
-                #            {
-                #                'selector': 'edge',
-                #                'style': {
-                #                    'label': 'data(weight)',
-                #                    'curve-style': 'bezier',
-                #                }
-                #            },
-                #        ],elements=[]
-                #    ),
-                    #html.Pre(id='cytoscape-tapNodeData-json', style=styles['pre'])
-                #],style={"width":1000, "heigth":1200})
+                ],style={"width":2000, "heigth":1200})
             ])
         ])
     ])

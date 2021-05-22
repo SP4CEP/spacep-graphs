@@ -1,12 +1,33 @@
 {
-    "cycle_len": -4.0,
-    "initial_tag": "a",
-    "path": [
-        "f",
-        "a",
-        "b",
-        "f"
+    "edges": [
+        {
+            "capacity": 9.0,
+            "cost": 1.0,
+            "dest": "c",
+            "src": "a",
+            "tag": "e0"
+        },
+        {
+            "capacity": 3.0,
+            "cost": 2.0,
+            "dest": "b",
+            "src": "c",
+            "tag": "e1"
+        }
     ],
-    "res": false,
-    "type": "cycle"
+    "nodes": [
+        {
+            "tag": "a"
+        },
+        {
+            "tag": "b"
+        },
+        {
+            "capacity": 9.0,
+            "tag": "c"
+        }
+    ],
+    "optimal_cost": 0.0,
+    "res": true,
+    "type": "network"
 }

@@ -2,24 +2,13 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash_html_components.Table import Table
-from dash_html_components.Tbody import Tbody
-from dash_html_components.Thead import Thead
 import dash_cytoscape as cyto
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 
-#from nagui import app
-
 import numpy as np
 import networkx as nx
 import controller
-
-# draw and file for the wacky stuff with D.
-#import subapps.file as file
-import subprocess as sbp
-
-#--- Global variables
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -35,22 +24,7 @@ result_graph = nx.MultiGraph()
 graph_elements=[]
 edges=[]
 nodes=[]
-file_id = 0
 info = ''
-styles = {
-    'pre': {
-        'border': 'thin lightgrey solid',
-        'overflowX': 'scroll'
-    }
-}
-
-
-#--- End of global variables
-
-#--- GUI
-
-# external_stylesheets = [dbc.themes.BOOTSTRAP] #['https://codepen.io/chriddyp/pen/bWLwgP.css']
-# app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = html.Div(children=[
     html.Div(children=[
@@ -59,16 +33,13 @@ app.layout = html.Div(children=[
                 html.H1('Graphs', className='m-4', id='header-graph',style={'textAlign': 'center'})
             ], width=3),
             dbc.Col([
-                dcc.Link('Digraph ', href='/', className='btn btn-primary m-2'),
-                html.H4(' '),
-                dcc.Link('Nework', href='/', className='btn btn-primary m-2')
+                #dcc.Link('Digraph ', href='/', className='btn btn-primary m-2'),
+                html.H4(' ')
+                #dcc.Link('Nework', href='/', className='btn btn-primary m-2')
             ], width=2, style={'textAlign': 'center'})
         ], justify='around', align='center')
     ]),
     html.Table(children=[
-        #html.Thead(children=[
-        #   html.Th('', id='additional-info-graph', className='mx-3') 
-        #]),
         #MENU
         html.Tbody(children=[
             # Agorithm select
@@ -248,36 +219,7 @@ app.layout = html.Div(children=[
                             },
                         ],elements=[]
                     )
-                ],style={"width":2000, "heigth":1200})#,
-                #html.Td(children=[
-                #    cyto.Cytoscape(
-                #    # results graph
-                #    id='results-graph',
-                #    layout={
-                #            'name': 'cose'
-                #        },
-                #        style={
-                #            'width': '100%',
-                #            'height': '750px'
-                #        },
-                #        stylesheet=[
-                #            {
-                #                'selector': 'node',
-                #                'style': {
-                #                    'label': 'data(id)'
-                #                }
-                #            },
-                #            {
-                #                'selector': 'edge',
-                #                'style': {
-                #                    'label': 'data(weight)',
-                #                    'curve-style': 'bezier',
-                #                }
-                #            },
-                #        ],elements=[]
-                #    ),
-                    #html.Pre(id='cytoscape-tapNodeData-json', style=styles['pre'])
-                #],style={"width":1000, "heigth":1200})
+                ],style={"width":2000, "heigth":1200})
             ])
         ])
     ])
@@ -377,9 +319,6 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
     
     # Run algorithm button
     elif btn_run is not None and btn_pressed == 4:
-        # if algorithm needs parameter, enter it
-        #params = tuple()
-#        g = nx.Graph()
         print(current_graph.nodes)
         print(current_graph.edges)
 

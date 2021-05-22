@@ -26,22 +26,20 @@ def graph(g):
         else:
             G.add_edge(e["src"], e["dest"], tag = e["tag"])
     
-    #print(type(G.nodes(data=True)))
-    #print(type(G.edges(data=True)))
     return res, info, G
 """
 Read a digraph from a json file,
-returns nx.DiGraph()
+returns nx.MultiDiGraph()
 """
 def digraph(d, params):
     res = d["res"]
     info ="Shortest paths with initial node: " + d["initial_tag"] 
 
-    if params[1] is not "":
+    if params[1] != "":
         info += ", destination tag: " + params[1]
     info += ", weight: " + str(d["weight"])
     
-    D = nx.DiGraph()
+    D = nx.MultiDiGraph()
     D.graph["type"] = d["type"]
     D.graph["weighted"] = d["weighted"]
     for n in d["nodes"]:
@@ -58,10 +56,10 @@ def digraph(d, params):
     return res, info, D
 """
 Read a network from a json file,
-returns nx.DiGraph()
+returns nx.MultiDiGraph()
 """
-def read_network(net):
-    D = nx.DiGraph()
+def network(net):
+    D = nx.MultiDiGraph()
     D.graph["type"] = net["type"]
     for n in net["nodes"]:
         q = float('inf')
@@ -174,7 +172,7 @@ def read_graph(result, algorithm):
 def read_cycle(p):
     res = p["res"]
     info = ""
-    g = nx.DiGraph()
+    g = nx.MultiDiGraph()
     path = ""
     nodes = p["nodes"]
     print(nodes)
@@ -194,7 +192,7 @@ def read_cycle(p):
 
 def read_paths(forest):
     res = forest["res"]
-    master = nx.DiGraph()
+    master = nx.MultiDiGra()
     info ="Shortest paths with initial node " + forest["initial_tag"] + ": "
     for g in forest["paths"]:
         if len(g["edges"]) != 0:
@@ -234,6 +232,47 @@ def read_digraph(result, algorithm, params):
     else:
         return None, None, None
 
+###########################################################
+
+def read_network(result, algorithm, params):
+    n = result
+    res = n["res"]
+    info = ""
+    graph_n = nx.MultiDiGraph()#network(n)
+
+    #Ford Fulkerson
+    if algorithm == 10:
+        if res:
+            graph_n = network(n)
+            info = "Total flow: " + str(n["total_flow"])
+        else:
+            info = "Solution not found"
+    #primal
+    elif algorithm == 11:
+        if res:
+            graph_n=network(n)
+            info = "Target flow: "+ str(n["target_flow"]) + " Optimal cost: " + str(n["optimal_cost"])
+        else:
+            info="Solution not found"
+    #dual
+    elif algorithm == 12:
+        if res:
+            graph_n=network(n)
+            info = "Target flow: " + str(n["target_flow"]) + " Optimal cost: " + str(n["optimal_cost"])
+        else:
+            info="Solution not found"
+    #simplex
+    else:
+        if res:
+            graph_n=network(n)
+            info = "Optimal cost: " + str(n["optimal_cost"])
+        else:
+            info = "Solution not found"
+    return res, info, graph_n
+
+
+
+###########################################################
 def read_file(result, algorithm):
     g = json.load(open(result))
     if g["type"] == "graph":
@@ -247,8 +286,6 @@ def read_file(result, algorithm):
         return read_network(g)
     elif g["type"] == "partition":
         return read_partition(g)
-    #elif g["type"] == "forest":
-    #elif g["type"] == "path":
     else:
         return None
     

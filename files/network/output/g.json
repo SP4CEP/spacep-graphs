@@ -1,0 +1,25 @@
+{
+    "edges": [
+        {
+            "capacity": 5.0,
+            "cost": 1.0,
+            "dest": "b",
+            "flow": 2.0,
+            "src": "a",
+            "tag": "e0"
+        }
+    ],
+    "nodes": [
+        {
+            "tag": "a",
+            "type": "source"
+        },
+        {
+            "tag": "b",
+            "type": "terminus"
+        }
+    ],
+    "res": true,
+    "total_flow": 2.0,
+    "type": "network"
+}

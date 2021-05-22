@@ -76,25 +76,39 @@ def write_network(D):
     # Append nodes
     for n in D.nodes(data=True):
         print(n)
-        nodes.append({
-            "tag": n[0],
-            "restriction": n[1]['restriction'],
-            "capacity": n[1]['capacity']
-            })
-    
+        #if n[1]['restriction'] is not None and n[1]['capacity'] is not None:
+        node = {"tag": n[0]}
+
+        if n[1]['restriction'] is not None:
+            node["restriction"] = n[1]['restriction']
+        if n[1]['capacity'] is not None:
+            node["capacity"]=n[1]['capacity']
+        if n[1]['type'] == "source":
+            node["type"]="source"
+        if n[1]['type'] == "terminus":
+            node["type"]="terminus"
+        
+        nodes.append(node)
+        
+
     # Append edges
     for e in D.edges(data=True):
         print(e)
         edge = {
-            "tag": e[2]['tag'],
+            "tag": f"e{c}",
             "src": e[0],
-            "dest": e[1],
-            "restriction": e[2]['restriction'],
-            "flow": e[2]['flow'],
-            "cost": e[2]['cost']
+            "dest": e[1]
         }
-        if e[2]['capacity']:
+        if e[2]['capacity'] is not None:
             edge["capacity"] = e[2]['capacity'] 
+
+        if e[2]['restriction'] is not None:
+            edge["restriction"] = e[2]['restriction']
+        
+        if e[2]['cost'] is not None:
+            edge["cost"] = e[2]['cost']
+        
+        c+=1
         edges.append(edge)
     write = {
         "type": "network",
