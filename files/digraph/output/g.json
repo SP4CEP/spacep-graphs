@@ -1,37 +1,26 @@
 {
-    "initial_tag": "a",
-    "no_digs": 2,
+    "initial_tag": "c",
+    "no_digs": 4,
     "paths": [
         {
             "edges": [
                 {
-                    "dest": "b",
-                    "src": "a",
-                    "tag": "e0",
-                    "weight": 34.0
+                    "dest": "e",
+                    "src": "c",
+                    "tag": "e4",
+                    "weight": 1.0
                 }
             ],
             "nodes": [
                 {
-                    "tag": "a"
+                    "tag": "c"
                 },
                 {
-                    "tag": "b"
+                    "tag": "e"
                 }
             ],
             "type": "digraph",
-            "weight": 34.0,
-            "weighted": true
-        },
-        {
-            "edges": [],
-            "nodes": [
-                {
-                    "tag": "b"
-                }
-            ],
-            "type": "digraph",
-            "weight": 0.0,
+            "weight": 1.0,
             "weighted": true
         }
     ],

@@ -209,6 +209,7 @@ void menu_digraph(json &d, int algo, string out_file){
         Matrix<DijkstraAux> Floyd(1,1);
         vector<string> cycle;
         float cycle_len;
+        string initial_tag = d["initial_tag"];
         unordered_map<string,int> tag_to_index;
 
         bool res;
@@ -222,7 +223,8 @@ void menu_digraph(json &d, int algo, string out_file){
             cout << "ou yea" << endl;
             vector<Digraph> digraphs;
             D.floyd_solutions(digraphs, Floyd, tag_to_index);
-            write = digraph_forest(digraphs);
+            //D.find_shortest_path();
+            write = digraph_forest(digraphs, tag_to_index[initial_tag]);
 //floyd_solutions(vector<Digraph> &digraphs, Matrix<DijkstraAux> floyd, unordered_map<string, int> tag_to_index)
         }else{
             cout << "chale" << endl;

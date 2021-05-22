@@ -1,1 +1,1 @@
-{"type": "digraph", "nodes": [{"tag": "a"}, {"tag": "b"}], "edges": [{"tag": "e0", "src": "a", "dest": "b", "weight": 34}], "weighted": true, "initial_tag": "a"}
+{"type": "digraph", "nodes": [{"tag": "a"}, {"tag": "b"}, {"tag": "c"}, {"tag": "e"}], "edges": [{"tag": "e0", "src": "a", "dest": "b", "weight": 1}, {"tag": "e1", "src": "a", "dest": "c", "weight": 10}, {"tag": "e2", "src": "b", "dest": "c", "weight": 3}, {"tag": "e3", "src": "b", "dest": "e", "weight": 3}, {"tag": "e4", "src": "c", "dest": "e", "weight": 1}], "weighted": true, "initial_tag": "c"}
