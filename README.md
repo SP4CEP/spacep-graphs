@@ -12,9 +12,19 @@ docker build --tag='spacep' .
 
 
 ```
-docker run -it --name graphs -p 8050:8050 -v $PWD:/root/spacep-graphs spacep
+docker run -it --name graphs -p 8050:8050 -v $PWD:/workspace/spacep-graphs spacep
+```
+inside change dir to repo and run:
+
+```
+make
 ```
 
+to run graphs (hi):
+
+```
+python3 app/gui/testdash.py
+```
 
 #### rerun:
 
