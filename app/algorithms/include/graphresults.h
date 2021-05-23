@@ -71,13 +71,10 @@ json write_forest(vector<Graph> forest){
         g.clear();
         WriteGraph(forest[i], g);
         w = g["weight"];
-        cout << g["weight"] << " aaaaaa " << w << endl;
         weight+=w;
-        cout << "wrote graph..." << endl;
         cout << g << endl;
         j["forest"].push_back(g);
     }
-    cout << "graqph weight " << w << endl;
     j["weight"] = weight;
     return j;
 }

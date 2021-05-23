@@ -1,31 +1,11 @@
 {
-    "edges": [
-        {
-            "dest": "c",
-            "src": "a",
-            "tag": "e1",
-            "weight": 1.0
-        },
-        {
-            "dest": "c",
-            "src": "b",
-            "tag": "e2",
-            "weight": 1.0
-        }
+    "P1": [
+        "a"
     ],
-    "nodes": [
-        {
-            "tag": "a"
-        },
-        {
-            "tag": "b"
-        },
-        {
-            "tag": "c"
-        }
+    "P2": [
+        "b",
+        "c"
     ],
     "res": true,
-    "type": "graph",
-    "weight": 2.0,
-    "weighted": true
+    "type": "partition"
 }

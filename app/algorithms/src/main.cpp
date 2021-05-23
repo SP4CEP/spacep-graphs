@@ -295,7 +295,7 @@ void menu_network(json &n, int algo, string out_file){
         json write;
         float cost = 0;
 
-        res = N.simplex(cost);
+        res = N.general_simplex(cost);
         write["res"] = res;
         if(res){
             write["optimal_cost"] = cost;
