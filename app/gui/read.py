@@ -5,7 +5,7 @@ import networkx as nx
 Read a graph from a json file,
 returns nx.MultiGraph()
 """
-def graph(g):
+def graph(g, algorithm):
     # bool, info, graph
     G = nx.MultiGraph()
     res = g["res"]
@@ -14,6 +14,10 @@ def graph(g):
         info = "Graph is connected"
     else:
         info = "Graph is disconnected"
+    
+    if algorithm == 6 or algorithm == 7:
+        w=g["weight"]
+        info += f", weight = {w}"
 
     G.graph["type"] = g["type"]
     G.graph["weighted"] = g["weighted"]
@@ -114,15 +118,15 @@ def read_partition(p):
         
         info = "Partitions P1: " + P1 + "    P2: " + P2
         for n in p["P1"]:
-            g.add_node(n)
+            g.add_node(n, info=f"{n}, [P1]")
         for n in p["P2"]:
-            g.add_node(n)
+            g.add_node(n, info=f"{n} [P2]")
     else:
         info = "Solution not found"
     
     return res, info, g
 
-def read_forest(forest):
+def read_forest(forest, algorithm):
     info ="Graph is "
     res = forest["res"]
     master = nx.MultiGraph()
@@ -130,6 +134,10 @@ def read_forest(forest):
         info += "connected"
     else:
         info += "disconnected"
+    print("running algo: " + str(algorithm))
+    if algorithm == 6 or algorithm == 7:
+        w=forest["weight"]
+        info += f", weight = {w}"
     
     for g in forest["forest"]:
         for n in g["nodes"]:
@@ -165,11 +173,11 @@ def read_graph(result, algorithm):
     g = json.load(open(result))
     if g["type"] == "graph":
         print(algorithm)
-        return graph(g)
+        return graph(g, algorithm)
     elif g["type"] == "partition":
         return read_partition(g)
     elif g["type"] == "forest":
-        return read_forest(g)
+        return read_forest(g, algorithm)
     elif g["type"] == "path":
         return read_path(g)
     else:

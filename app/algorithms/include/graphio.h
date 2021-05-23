@@ -91,9 +91,9 @@ Network ReadJsonNetwork(json &network){
             json node = *it;
             
             if (node["capacity"] == 999999999){
-                N.add_node(node["tag"], q, node["restriction"]);
+                N.add_node(node["tag"], q, node["restriction"], node["production"]);
             }else{
-                N.add_node(node["tag"], node["capacity"], node["restriction"]);
+                N.add_node(node["tag"], node["capacity"], node["restriction"], node["production"]);
             }
             // set sources & terminuses
             if(node["type"] == "terminus") N.set_terminus(node["tag"]);
@@ -239,6 +239,7 @@ void WriteNetwork(Network Net, json &write){
             n["capacity"] = node.capacity;
         
         n["restriction"] = node.restriction;
+        n["production"] = node.production;
 
         write["nodes"].push_back(n);
 

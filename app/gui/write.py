@@ -79,7 +79,7 @@ def write_network(D):
         node = {"tag": n[0]}
 
         node["restriction"] = n[1]['restriction']
-        
+        node["production"] = n[1]['production']
         # NUEVE NUEVE NUEVEEEEEE
         if n[1]['capacity'] == float('inf'):
             node["capacity"]= 999999999

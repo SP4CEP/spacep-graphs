@@ -1,76 +1,31 @@
 {
-    "forest": [
+    "edges": [
         {
-            "edges": [
-                {
-                    "dest": "d",
-                    "src": "a",
-                    "tag": "e0",
-                    "weight": 0.0
-                },
-                {
-                    "dest": "d",
-                    "src": "b",
-                    "tag": "e4",
-                    "weight": 0.0
-                },
-                {
-                    "dest": "c",
-                    "src": "b",
-                    "tag": "e6",
-                    "weight": 0.0
-                }
-            ],
-            "nodes": [
-                {
-                    "tag": "a"
-                },
-                {
-                    "tag": "b"
-                },
-                {
-                    "tag": "c"
-                },
-                {
-                    "tag": "d"
-                }
-            ],
-            "type": "graph",
-            "weight": 0.0,
-            "weighted": true
+            "dest": "c",
+            "src": "a",
+            "tag": "e1",
+            "weight": 1.0
         },
         {
-            "edges": [
-                {
-                    "dest": "g",
-                    "src": "e",
-                    "tag": "e7",
-                    "weight": 0.0
-                },
-                {
-                    "dest": "g",
-                    "src": "f",
-                    "tag": "e10",
-                    "weight": 0.0
-                }
-            ],
-            "nodes": [
-                {
-                    "tag": "e"
-                },
-                {
-                    "tag": "f"
-                },
-                {
-                    "tag": "g"
-                }
-            ],
-            "type": "graph",
-            "weight": 0.0,
-            "weighted": true
+            "dest": "c",
+            "src": "b",
+            "tag": "e2",
+            "weight": 1.0
         }
     ],
-    "no_trees": 2,
+    "nodes": [
+        {
+            "tag": "a"
+        },
+        {
+            "tag": "b"
+        },
+        {
+            "tag": "c"
+        }
+    ],
     "res": true,
-    "type": "forest"
+    "type": "graph",
+    "weight": 2.0,
+    "weighted": true
 }

@@ -1,44 +1,47 @@
 {
     "edges": [
         {
-            "capacity": 5.0,
-            "cost": 7.0,
-            "dest": "c",
-            "flow": 5.0,
+            "capacity": 43.0,
+            "cost": 3.0,
+            "dest": "b",
+            "flow": 0.0,
             "restriction": 0.0,
             "src": "a",
             "tag": "e0"
         },
         {
-            "capacity": 5.0,
-            "cost": 7.0,
-            "dest": "b",
-            "flow": 5.0,
+            "capacity": 23.0,
+            "cost": 8.0,
+            "dest": "c",
+            "flow": 0.0,
             "restriction": 0.0,
-            "src": "c",
+            "src": "b",
             "tag": "e1"
         }
     ],
     "nodes": [
         {
             "capacity": 999999999,
-            "restriction": 0.0,
+            "production": 4.0,
+            "restriction": 54.0,
             "tag": "a",
             "type": "source"
         },
         {
             "capacity": 999999999,
+            "production": 2.0,
             "restriction": 0.0,
-            "tag": "b",
-            "type": "terminus"
+            "tag": "b"
         },
         {
             "capacity": 999999999,
+            "production": 0.0,
             "restriction": 0.0,
-            "tag": "c"
+            "tag": "c",
+            "type": "source"
         }
     ],
-    "optimal_cost": 70.0,
+    "optimal_cost": 0.0,
     "res": true,
     "type": "network"
 }

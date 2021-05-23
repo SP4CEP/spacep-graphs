@@ -60,6 +60,7 @@ void path(vector<string> path, json &j){
 json write_forest(vector<Graph> forest){
     json j, g;
     int fs = forest.size();
+    float weight=0, w=0;
     if(fs > 1) j["res"] = true;
     else j["res"] = false;
     j["type"] = "forest";
@@ -69,10 +70,15 @@ json write_forest(vector<Graph> forest){
     for(int i = 0; i < forest.size(); i++){
         g.clear();
         WriteGraph(forest[i], g);
+        w = g["weight"];
+        cout << g["weight"] << " aaaaaa " << w << endl;
+        weight+=w;
         cout << "wrote graph..." << endl;
         cout << g << endl;
         j["forest"].push_back(g);
     }
+    cout << "graqph weight " << w << endl;
+    j["weight"] = weight;
     return j;
 }
 

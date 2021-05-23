@@ -68,7 +68,7 @@ def run_graph(g, algo):
     print(output)
 
     gres = nx.MultiGraph()
-    res, info, gres = read.read_graph(outfile,3)
+    res, info, gres = read.read_graph(outfile,algo)
     print("RESULTS")
     print(res)
     print(info)

@@ -207,7 +207,7 @@ app.layout = html.Div(children=[
                             {
                                 'selector': 'node',
                                 'style': {
-                                    'label': 'data(id)'
+                                    'label': 'data(info)'
                                 }
                             },
                             {
@@ -273,7 +273,7 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
     if btn_vertex is not None and btn_pressed == 0 and vertex_value != "":
         print(current_graph.edges)
         if not current_graph.has_node(vertex_value):
-            current_graph.add_node(vertex_value)
+            current_graph.add_node(vertex_value, info=vertex_value)
             elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
             elements = elements['elements']['nodes'] + elements['elements']['edges']
         else:
@@ -375,7 +375,7 @@ def update_graph_stylesheet(graph):
             {
                 'selector': 'node',
                 'style': {
-                    'label': 'data(id)'
+                    'label': 'data(info)'
                 }
             },
             {
@@ -391,7 +391,7 @@ def update_graph_stylesheet(graph):
             {
                 'selector': 'node',
                 'style': {
-                    'label': 'data(id)'
+                    'label': 'data(info)'
                 }
             },
             {

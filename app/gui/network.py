@@ -122,6 +122,14 @@ app.layout = html.Div(children=[
                     ]) 
                 ]),
                 html.Tr(children=[
+                   html.Td(children=[
+                        html.H6("production: ")
+                    ]),
+                    html.Td(children=[
+                        dbc.Input(id='production-node-graph', type='number', className='mx-1 my-1')
+                    ]) 
+                ]),
+                html.Tr(children=[
                     dcc.Dropdown(
                             id='drop-type-node-graph',
                             options=[
@@ -303,6 +311,7 @@ Updating the graph every time a vertex or an edge are added/removed.
     [State(component_id='vertex-graph', component_property='value'),
      State(component_id='capacity-node-graph', component_property='value'),
      State(component_id='restriction-node-graph', component_property='value'),
+     State(component_id='production-node-graph', component_property='value'),
      State(component_id='capacity-edge-graph', component_property='value'),
      State(component_id='restriction-edge-graph', component_property='value'),
      State(component_id='cost-edge-tag', component_property='value'),
@@ -320,7 +329,7 @@ Updating the graph every time a vertex or an edge are added/removed.
      #State('results-graph',result_elements)]
 )
 def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset, 
-                btn_empty, vertex_value, capacity_node, restriction_node, 
+                btn_empty, vertex_value, capacity_node, restriction_node, production_node,
                 capacity_edge, restriction_edge, cost_edge,source, terminus, rm_vertex, rm_source, 
                 rm_terminus, target, algorithm, type_node, elements):
     global current_graph
@@ -343,51 +352,27 @@ def update_graph(btn_vertex, btn_edge, btn_rm_v, btn_rm_e, btn_run, btn_reset,
             print(vertex_value)
             print(capacity_node)
             print(restriction_node)
+            print(production_node)
             print(type_node)
-            #si tiene ambos
+            q = float('inf')
+            r = 0
+            p = 0
+            if capacity_node is not None:
+                q = capacity_node
+            if restriction_node is not None:
+                r = restriction_node
+            if production_node is not None:
+                p = production_node
+            
+            #normal node
             if type_node == 0:
-                if capacity_node is not None and restriction_node is not None:
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, type="normal", info = f"{vertex_value} [{capacity_node}, {restriction_node}]")
-                #si tiene capacidad
-                elif capacity_node is not None:
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=0, info = f"{vertex_value} [{capacity_node}, 0]",type="normal")
-                #si tiene restriccion
-                elif restriction_node is not None:
-                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=restriction_node, info = f"{vertex_value} [inf, {restriction_node}]",type="normal")
-                else:
-                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=0, info = f"{vertex_value} [inf, 0]",type="normal")
+                current_graph.add_node(vertex_value, capacity=q, restriction=r, production=p, type="normal", info = f"{vertex_value} [{q}, {r}, {p}]")
             #SOURCE
             elif type_node == 1:
-                l = f"+ {vertex_value}"
-                print(l)
-                if capacity_node is not None and restriction_node is not None:
-                    print("no cap no res")
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, type="source", info = f"+{vertex_value} [{capacity_node}, {restriction_node}]")
-                #si tiene capacidad
-                elif capacity_node is not None:
-                    print("no cap")
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=0, type="source", info=f"+{vertex_value} [{capacity_node}, 0]")
-                #si tiene restriccion
-                elif restriction_node is not None:
-                    print("no nothing")
-                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=restriction_node, type="source", info=f"+{vertex_value} [inf, {restriction_node}]")
-                    print(current_graph.nodes(data=True))
-                else:
-                    print("no nothing")
-                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=0, type="source", info=f"+{vertex_value} [inf, 0]")
-                    print(current_graph.nodes(data=True))
+                current_graph.add_node(vertex_value, capacity=q, restriction=r, production=p, type="source", info = f"+{vertex_value} [{q}, {r}, {p}]")
             #TERMINUS
             else:
-                if capacity_node is not None and restriction_node is not None:
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=restriction_node, type="terminus", info=f"-{vertex_value} [{capacity_node}, {restriction_node}]")
-                #si tiene capacidad
-                elif capacity_node is not None:
-                    current_graph.add_node(vertex_value, capacity=capacity_node, restriction=0, type="terminus", info=f"-{vertex_value} [{capacity_node}, 0]")
-                #si tiene restriccion
-                elif restriction_node is not None:
-                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=restriction_node, type="terminus", info=f"-{vertex_value} [inf, {restriction_node}]")
-                else:
-                    current_graph.add_node(vertex_value, capacity=float('inf'), restriction=0, type="terminus", info=f"-{vertex_value} [inf, 0]")
+                current_graph.add_node(vertex_value, capacity=q, restriction=r, production=p, type="source", info = f"-{vertex_value} [{q}, {r}, {p}]")
 
             elements = nx.readwrite.json_graph.cytoscape_data(current_graph)
             elements = elements['elements']['nodes'] + elements['elements']['edges']
